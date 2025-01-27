@@ -9,4 +9,10 @@ class Driver extends Authenticatable
     use HasApiTokens;
 
     protected $guarded = [];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
 }

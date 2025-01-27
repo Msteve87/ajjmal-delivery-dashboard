@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Driver;
 use App\Http\Controllers\Controller;
 use App\Models\Location;
 use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
@@ -54,7 +55,7 @@ class OrderController extends Controller
                 'total_paid'     => $totalPaid,
                 'payment_method' => $data['data'][0]['payment'],
                 'status'         => 'accepted',
-                'driver_id'      => 1,
+                'driver_id'      => Auth::id(),
                 'location_id'    => $location->id,
             ]
         );

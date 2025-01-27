@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('passport_no')->nullable();
             $table->string('criminal_case')->nullable();
             $table->string('national_no')->nullable();
-            $table->enum('delivery_status', ['avilable', 'not_available']);
+            $table->enum('delivery_status', ['available', 'not_available'])->default('available');
             $table->enum('status', ['pending', 'processing ', 'approved', 'rejected'])->default('pending');
             $table->boolean('is_active')->default(false);
             $table->rememberToken();

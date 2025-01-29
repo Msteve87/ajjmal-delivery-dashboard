@@ -11,13 +11,45 @@ class OrderController extends Controller
 {
     public function getJmOrders()
     {
-        $http = Http::get('http://10.200.130.55/databasetest.php?limit=1000&sort_by=total_paid&order=desc');
+        $response = Http::get('http://10.200.130.55/databasetest.php?limit=1000&sort_by=total_paid&order=desc');
 
-        return response()->json(
-            [
-                'data' => $http->json(),
-            ]
-        );
+        if ($response->successful()) {
+            $items = $response->json()['data'];
+
+            $mergedItems = collect($items)
+                ->groupBy('reference')
+                ->map(function ($group) {
+                    return [
+                        'delivery_date'      => $group->first()['delivery_date'],
+                        'start_time'         => $group->first()['start_time'],
+                        'end_time'           => $group->first()['end_time'],
+                        'id_order'           => $group->first()['id_order'],
+                        'reference'          => $group->first()['reference'],
+                        'payment'            => $group->first()['payment'],
+                        'total_paid'         => $group->sum('total_paid'),
+                        'total_shipping'     => $group->max()['total_shipping'],
+                        'current_state_name' => $group->first()['current_state_name'],
+                        'address1'           => $group->first()['address1'],
+                        'customer_phone'     => $group->first()['customer_phone'],
+                        'customer_mobile'    => $group->first()['customer_mobile'],
+                        'latitude'           => $group->first()['latitude'],
+                        'longitude'          => $group->first()['longitude'],
+                    ];
+                })
+                ->values()
+                ->toArray();
+
+            return response()->json(
+                [
+                    'data' => [
+                        'items' => $mergedItems,
+                    ],
+                ]
+            );
+        } else {
+            return response()->json(['error' => 'Failed to fetch data from API'], 500);
+        }
+
     }
 
     public function acceptOrder(string $reference)

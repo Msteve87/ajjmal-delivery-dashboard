@@ -9,6 +9,19 @@ use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
+    public function listOrders()
+    {
+        $orders = Order::where('driver_id', Auth::id())->get();
+
+        return response()->json(
+            [
+                'data' => [
+                    'items' => $orders,
+                ],
+            ]
+        );
+    }
+
     public function getJmOrders()
     {
         $response = Http::get('http://10.200.130.55/databasetest.php?limit=1000&sort_by=total_paid&order=desc');
@@ -57,35 +70,59 @@ class OrderController extends Controller
         $exist = Order::where('reference', $reference)->exists();
 
         if ($exist) {
-            return response()->json(['message' => 'operation is not allowed'], 400);
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'operation is not allowed',
+            ], 400);
         }
 
-        $http = Http::get("http://10.200.130.55/databasetest.php?reference={$reference}&order=desc");
+        $response = Http::get("http://10.200.130.55/databasetest.php?reference={$reference}&order=desc");
 
-        $data = json_decode($http, associative: true);
-
-        if (empty($data['data'])) {
-            return response()->json(['message' => 'Order not found'], 404);
+        if (empty(json_decode($response, associative: true))) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Order not found',
+            ], 404);
         }
 
-        $totalPaid = 0;
+        $items = $response->json()['data'];
 
-        foreach ($data['data'] as $jmOrder) {
-            $totalPaid += $jmOrder['total_paid'];
-        }
+        $mergedItem = collect($items)
+            ->groupBy('reference')
+            ->map(function ($group) {
+                return [
+                    'delivery_date'      => $group->first()['delivery_date'],
+                    'start_time'         => $group->first()['start_time'],
+                    'end_time'           => $group->first()['end_time'],
+                    'id_order'           => $group->first()['id_order'],
+                    'reference'          => $group->first()['reference'],
+                    'payment'            => $group->first()['payment'],
+                    'total_paid'         => $group->sum('total_paid'),
+                    'total_shipping'     => $group->max()['total_shipping'],
+                    'current_state_name' => $group->first()['current_state_name'],
+                    'address1'           => $group->first()['address1'],
+                    'customer_phone'     => $group->first()['customer_phone'],
+                    'customer_mobile'    => $group->first()['customer_mobile'],
+                    'latitude'           => $group->first()['latitude'],
+                    'longitude'          => $group->first()['longitude'],
+                ];
+            })
+            ->values()
+            ->toArray()[0];
 
         $location = Location::create(
             [
-                'latitude'  => $data['data'][0]['latitude'],
-                'longitude' => $data['data'][0]['longitude'],
+                'latitude'  => $mergedItem['latitude'],
+                'longitude' => $mergedItem['longitude'],
             ]
         );
 
         $order = Order::create(
             [
-                'reference'      => $data['data'][0]['reference'],
-                'total_paid'     => $totalPaid,
-                'payment_method' => $data['data'][0]['payment'],
+                'reference'      => $mergedItem['reference'],
+                'total_paid'     => $mergedItem['total_paid'],
+                'total_shipping' => $mergedItem['total_shipping'],
+                'payment_method' => $mergedItem['payment'],
                 'status'         => 'accepted',
                 'driver_id'      => Auth::id(),
                 'location_id'    => $location->id,
@@ -94,8 +131,9 @@ class OrderController extends Controller
 
         return response()->json(
             [
-                'data' => $order,
-            ]
+                'status' => 'success',
+                'data'   => $order,
+            ], 201
         );
     }
 }

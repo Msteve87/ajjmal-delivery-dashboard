@@ -20,6 +20,7 @@
                 });
             Route::controller(OrderController::class)
                 ->group(function () {
+                    Route::get('/list-orders', 'listOrders');
                     Route::get('/get-jm-orders', 'getJmOrders');
                     Route::get('/{reference}/accept-order', 'acceptOrder');
                 });

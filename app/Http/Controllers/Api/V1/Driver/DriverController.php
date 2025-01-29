@@ -45,7 +45,10 @@ class DriverController extends Controller
 
         $driver->save();
 
-        return response()->json(['message' => 'Driver delivery status updated successfully']);
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Driver delivery status updated successfully']
+        );
     }
 
     /**

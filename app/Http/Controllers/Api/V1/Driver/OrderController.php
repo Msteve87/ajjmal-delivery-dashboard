@@ -42,7 +42,8 @@ class OrderController extends Controller
 
         return response()->json(
             [
-                'data' => [
+                'status' => 'success',
+                'data'   => [
                     'items' => $orders,
                 ],
             ]
@@ -75,6 +76,7 @@ class OrderController extends Controller
                     'total_shipping' => $item['total_shipping'],
                     'payment_method' => $item['payment'],
                     'status'         => 'accepted',
+                    'items'          => $item['items'],
                     'driver_id'      => Auth::id(),
                     'location_id'    => $location->id,
                 ]

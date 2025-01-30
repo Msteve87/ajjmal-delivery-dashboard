@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('status', ['accepted', 'in_progress', 'dileverd', 'canceled']);
             $table->decimal('total_paid', 10, 2);
             $table->decimal('total_shipping', 10, 2);
+            $table->integer('items');
             $table->timestamps();
             $table->foreignId('driver_id')->constrained();
             $table->foreignId('location_id')->constrained();

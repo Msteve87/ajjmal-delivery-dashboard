@@ -15,9 +15,15 @@ class OrderService
         //
     }
 
-    public function getJmOrders()
+    public function getJmOrders($limit = 1000)
     {
-        $response = Http::get(env('JM_API_URL') . '?limit=1000&sort_by=total_paid&order=desc');
+        $params = [
+            'limit'   => $limit,
+            'sort_by' => 'total_paid',
+            'order'   => 'desc',
+        ];
+
+        $response = Http::get(env('JM_API_URL'), $params);
 
         $orderReferences = Order::all()->pluck('reference');
 
@@ -84,6 +90,7 @@ class OrderService
                     'total_shipping'     => $group->max()['total_shipping'],
                     'current_state_name' => $group->first()['current_state_name'],
                     'address'            => $group->first()['customer']['address'],
+                    'customer_name'      => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
                     'customer_phone'     => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
                     'latitude'           => $group->first()['location']['latitude'],
                     'longitude'          => $group->first()['location']['longitude'],

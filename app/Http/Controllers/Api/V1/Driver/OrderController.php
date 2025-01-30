@@ -77,6 +77,9 @@ class OrderController extends Controller
                     'payment_method' => $item['payment'],
                     'status'         => 'accepted',
                     'items'          => $item['items'],
+                    'address'        => $item['address'],
+                    'customer_name'  => $item['customer_name'],
+                    'customer_phone' => $item['customer_phone'],
                     'driver_id'      => Auth::id(),
                     'location_id'    => $location->id,
                 ]

@@ -5,11 +5,38 @@ use App\Http\Controllers\Controller;
 use App\Models\Location;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OrderController extends Controller
 {
-    public function listOrders()
+    public function __construct(
+        protected \App\Services\OrderService $orderService
+    ) {
+    }
+
+    public function listNewOrders()
+    {
+        try {
+            $items = $this->orderService->getJmOrders();
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'data'   => [
+                        'items' => $items,
+                    ],
+                ]
+            );
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error'  => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function listDriverOrders()
     {
         $orders = Order::where('driver_id', Auth::id())->get();
 
@@ -22,118 +49,52 @@ class OrderController extends Controller
         );
     }
 
-    public function getJmOrders()
+    public function acceptOrder(string $reference)
     {
-        $response = Http::get('http://10.200.130.55/databasetest.php?limit=1000&sort_by=total_paid&order=desc');
+        try {
+            $exist = Order::where('reference', $reference)->exists();
 
-        if ($response->successful()) {
-            $items = $response->json()['data'];
+            if ($exist) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'operation is not allowed',
+                ], 400);
+            }
 
-            $mergedItems = collect($items)
-                ->groupBy('reference')
-                ->map(function ($group) {
-                    return [
-                        'delivery_date'      => $group->first()['delivery_date'],
-                        'start_time'         => $group->first()['start_time'],
-                        'end_time'           => $group->first()['end_time'],
-                        'id_order'           => $group->first()['id_order'],
-                        'reference'          => $group->first()['reference'],
-                        'payment'            => $group->first()['payment'],
-                        'total_paid'         => $group->sum('total_paid'),
-                        'total_shipping'     => $group->max()['total_shipping'],
-                        'current_state_name' => $group->first()['current_state_name'],
-                        'address1'           => $group->first()['address1'],
-                        'customer_phone'     => $group->first()['customer_phone'],
-                        'customer_mobile'    => $group->first()['customer_mobile'],
-                        'latitude'           => $group->first()['latitude'],
-                        'longitude'          => $group->first()['longitude'],
-                    ];
-                })
-                ->values()
-                ->toArray();
+            $item = $this->orderService->getJmOrderByReference($reference);
+
+            $location = Location::create([
+                'latitude'  => $item['latitude'],
+                'longitude' => $item['longitude'],
+            ]);
+
+            $order = Order::create(
+                [
+                    'reference'      => $item['reference'],
+                    'total_paid'     => $item['total_paid'],
+                    'total_shipping' => $item['total_shipping'],
+                    'payment_method' => $item['payment'],
+                    'status'         => 'accepted',
+                    'driver_id'      => Auth::id(),
+                    'location_id'    => $location->id,
+                ]
+            );
 
             return response()->json(
                 [
-                    'data' => [
-                        'items' => $mergedItems,
-                    ],
-                ]
+                    'status' => 'success',
+                    'data'   => $order,
+                ], 201
             );
-        } else {
-            return response()->json(['error' => 'Failed to fetch data from API'], 500);
-        }
 
-    }
-
-    public function acceptOrder(string $reference)
-    {
-        $exist = Order::where('reference', $reference)->exists();
-
-        if ($exist) {
+        } catch (HttpException $e) {
             return response()->json([
-                'status'  => 'error',
-                'message' => 'operation is not allowed',
-            ], 400);
-        }
-
-        $response = Http::get("http://10.200.130.55/databasetest.php?reference={$reference}&order=desc");
-
-        if (empty(json_decode($response, associative: true))) {
+                'status' => 'error',
+                'error'  => $e->getMessage()], $e->getStatusCode());
+        } catch (\Exception $e) {
             return response()->json([
-                'status'  => 'error',
-                'message' => 'Order not found',
-            ], 404);
+                'status' => 'error',
+                'error'  => $e->getMessage()], 500);
         }
-
-        $items = $response->json()['data'];
-
-        $mergedItem = collect($items)
-            ->groupBy('reference')
-            ->map(function ($group) {
-                return [
-                    'delivery_date'      => $group->first()['delivery_date'],
-                    'start_time'         => $group->first()['start_time'],
-                    'end_time'           => $group->first()['end_time'],
-                    'id_order'           => $group->first()['id_order'],
-                    'reference'          => $group->first()['reference'],
-                    'payment'            => $group->first()['payment'],
-                    'total_paid'         => $group->sum('total_paid'),
-                    'total_shipping'     => $group->max()['total_shipping'],
-                    'current_state_name' => $group->first()['current_state_name'],
-                    'address1'           => $group->first()['address1'],
-                    'customer_phone'     => $group->first()['customer_phone'],
-                    'customer_mobile'    => $group->first()['customer_mobile'],
-                    'latitude'           => $group->first()['latitude'],
-                    'longitude'          => $group->first()['longitude'],
-                ];
-            })
-            ->values()
-            ->toArray()[0];
-
-        $location = Location::create(
-            [
-                'latitude'  => $mergedItem['latitude'],
-                'longitude' => $mergedItem['longitude'],
-            ]
-        );
-
-        $order = Order::create(
-            [
-                'reference'      => $mergedItem['reference'],
-                'total_paid'     => $mergedItem['total_paid'],
-                'total_shipping' => $mergedItem['total_shipping'],
-                'payment_method' => $mergedItem['payment'],
-                'status'         => 'accepted',
-                'driver_id'      => Auth::id(),
-                'location_id'    => $location->id,
-            ]
-        );
-
-        return response()->json(
-            [
-                'status' => 'success',
-                'data'   => $order,
-            ], 201
-        );
     }
 }

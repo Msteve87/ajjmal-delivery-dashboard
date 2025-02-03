@@ -46,6 +46,7 @@ class OrderService
                         'total_paid'         => $group->sum('total_paid'),
                         'total_shipping'     => $group->max()['total_shipping'],
                         'current_state_name' => $group->first()['current_state_name'],
+                        'customer_name'      => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
                         'address'            => $group->first()['customer']['address'],
                         'customer_phone'     => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
                         'latitude'           => $group->first()['location']['latitude'],

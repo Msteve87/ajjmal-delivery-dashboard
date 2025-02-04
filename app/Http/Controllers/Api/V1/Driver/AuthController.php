@@ -43,10 +43,9 @@ class AuthController extends Controller
         }
 
         return Response::json(["error" => [
-            "apiVersion" => "1.0",
-            "code"       => 401,
-            "message"    => "Unauthorised",
-            "errors"     => ["message" => "Unauthorised"],
+            "code"    => 401,
+            "message" => "Unauthorised",
+            "errors"  => ["message" => "Unauthorised"],
         ]], 401);
     }
 }

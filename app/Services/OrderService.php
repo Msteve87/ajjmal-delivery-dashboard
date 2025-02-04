@@ -51,6 +51,7 @@ class OrderService
                         'customer_phone'     => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
                         'latitude'           => $group->first()['location']['latitude'],
                         'longitude'          => $group->first()['location']['longitude'],
+                        'products'           => $group->first()['products'],
                         'items'              => $group->sum(function ($item) {
                             return count($item['products']);
                         }),

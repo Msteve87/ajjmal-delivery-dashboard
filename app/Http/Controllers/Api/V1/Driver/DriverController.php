@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\V1\Driver;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DriverController extends Controller
 {
@@ -57,5 +58,10 @@ class DriverController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public static function me()
+    {
+        return Auth::user();
     }
 }

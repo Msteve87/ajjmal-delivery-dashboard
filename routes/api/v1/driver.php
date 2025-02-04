@@ -13,6 +13,7 @@
 
             Route::controller(V1\Driver\DriverController::class)
                 ->group(function () {
+                    Route::get('/me', 'me');
                     Route::get('/update-delivery-status', 'update');
                 });
 

@@ -80,6 +80,7 @@ class OrderController extends Controller
                     'address'        => $item['address'],
                     'customer_name'  => $item['customer_name'],
                     'customer_phone' => $item['customer_phone'],
+                    'products'       => $item['products'],
                     'driver_id'      => Auth::id(),
                     'location_id'    => $location->id,
                 ]

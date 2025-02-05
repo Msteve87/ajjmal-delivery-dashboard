@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('customer_phone');
             $table->integer('items');
+            $table->json('products')->nullable();
             $table->timestamps();
             $table->foreignId('driver_id')->constrained();
             $table->foreignId('location_id')->constrained();

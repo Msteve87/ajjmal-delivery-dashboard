@@ -2,17 +2,17 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use Illuminate\Support\Facades\Auth;
 
 class HomepageController extends Controller
 {
+    public function __construct(
+        protected \App\Services\OrderService $orderService
+    ) {
+    }
+
     public function lastOrders()
     {
-        $orders = Order::where('driver_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
+        $orders = $this->orderService->getJmOrders();
 
         return response()->json(
             [

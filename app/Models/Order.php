@@ -10,4 +10,9 @@ class Order extends Model
     protected $casts = [
         'products' => 'json',
     ];
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
 }

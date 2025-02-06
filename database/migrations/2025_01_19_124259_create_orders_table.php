@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('reference')->unique();
             $table->string('payment_method');
-            $table->enum('status', ['pending', 'waiting', 'in_progress', 'delivered', 'canceled']);
+            $table->enum('status', ['pending', 'awaiting', 'in_progress', 'delivered', 'canceled']);
             $table->decimal('total_paid', 10, 2);
             $table->decimal('total_shipping', 10, 2);
             $table->string('customer_name')->nullable();

@@ -19,6 +19,7 @@
 
             Route::controller(V1\Driver\OrderController::class)
                 ->group(function () {
+                    Route::get('/awaiting', 'awaitingOrders');
                     Route::get('/list-orders', 'listDriverOrders');
                     Route::get('/get-jm-orders', 'listNewOrders');
                     Route::get('/{reference}/accept-order', 'acceptOrder');

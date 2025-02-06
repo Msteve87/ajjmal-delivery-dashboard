@@ -14,6 +14,22 @@ class OrderController extends Controller
     ) {
     }
 
+    public function awaitingOrders()
+    {
+        $awaitingOrders = Order::where('status', 'awaiting')
+            ->orWhere('status', 'in_progress')
+            ->get();
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data'   => [
+                    'items' => $awaitingOrders,
+                ],
+            ]
+        );
+    }
+
     public function listNewOrders()
     {
         try {
@@ -75,7 +91,7 @@ class OrderController extends Controller
                     'total_paid'     => $item['total_paid'],
                     'total_shipping' => $item['total_shipping'],
                     'payment_method' => $item['payment'],
-                    'status'         => 'pending',
+                    'status'         => 'awaiting',
                     'items'          => $item['items'],
                     'address'        => $item['address'],
                     'customer_name'  => $item['customer_name'],
@@ -102,5 +118,65 @@ class OrderController extends Controller
                 'status' => 'error',
                 'error'  => $e->getMessage()], 500);
         }
+    }
+
+    public function allOrders()
+    {
+        $newOrders = collect($this->orderService->getJmOrders());
+
+        $storedOrders = Order::with('location')->get();
+
+        $transformedNewOrders = $newOrders->map(function ($order) {
+            return [
+                'delivery_date'      => $order['delivery_date'],
+                'start_time'         => $order['start_time'],
+                'end_time'           => $order['end_time'],
+                'id_order'           => $order['id_order'],
+                'reference'          => $order['reference'],
+                'payment'            => $order['payment'],
+                'total_paid'         => $order['total_paid'],
+                'total_shipping'     => $order['total_shipping'],
+                'current_state_name' => $order['current_state_name'],
+                'customer_name'      => $order['customer_name'],
+                'address'            => $order['address'],
+                'customer_phone'     => $order['customer_phone'],
+                'latitude'           => $order['latitude'],
+                'longitude'          => $order['longitude'],
+                'products'           => $order['products'],
+                'items'              => $order['items'],
+            ];
+        });
+
+        $transformedStoredOrders = $storedOrders->map(function ($order) {
+            return [
+                'delivery_date'      => $order['delivery_date'],
+                'start_time'         => $order['start_time'],
+                'end_time'           => $order['end_time'],
+                'id_order'           => $order['id_order'],
+                'reference'          => $order['reference'],
+                'payment'            => $order['payment'],
+                'total_paid'         => $order['total_paid'],
+                'total_shipping'     => $order['total_shipping'],
+                'current_state_name' => $order['current_state_name'],
+                'customer_name'      => $order['customer_name'],
+                'address'            => $order['customer']['address'],
+                'customer_phone'     => $order['customer_phone'],
+                'latitude'           => $order['latitude'],
+                'longitude'          => $order['longitude'],
+                'products'           => $order['products'],
+                'items'              => $order['items'],
+            ];
+        });
+
+        $allOrders = $transformedNewOrders->merge($transformedStoredOrders);
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data'   => [
+                    'items' => $allOrders,
+                ],
+            ]
+        );
     }
 }

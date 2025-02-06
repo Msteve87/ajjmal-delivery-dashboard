@@ -75,7 +75,7 @@ class OrderController extends Controller
                     'total_paid'     => $item['total_paid'],
                     'total_shipping' => $item['total_shipping'],
                     'payment_method' => $item['payment'],
-                    'status'         => 'accepted',
+                    'status'         => 'pending',
                     'items'          => $item['items'],
                     'address'        => $item['address'],
                     'customer_name'  => $item['customer_name'],

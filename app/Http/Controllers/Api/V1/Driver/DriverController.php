@@ -41,7 +41,7 @@ class DriverController extends Controller
         if ($driver->delivery_status === 'available') {
             $driver->delivery_status = 'not_available';
         } else {
-            $driver->delivery_status = 'avilablel';
+            $driver->delivery_status = 'available';
         }
 
         $driver->save();

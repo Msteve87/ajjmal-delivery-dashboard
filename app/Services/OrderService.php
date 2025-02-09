@@ -25,7 +25,7 @@ class OrderService
 
         $response = Http::get(env('JM_API_URL'), $params);
 
-        $orderReferences = Order::all()->pluck('reference');
+        $orderReferences = Order::whereNot('status', 'pending')->pluck('reference');
 
         if ($response->successful()) {
             $items = $response->json()['data'];
@@ -37,6 +37,7 @@ class OrderService
                 })
                 ->map(function ($group) {
                     return [
+                        'jm_order_id'        => $group->first()['id_order'],
                         'delivery_date'      => $group->first()['delivery_date'],
                         'start_time'         => $group->first()['start_time'],
                         'end_time'           => $group->first()['end_time'],

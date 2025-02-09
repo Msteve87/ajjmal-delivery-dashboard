@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('reference')->unique();
+            $table->unsignedBigInteger('jm_order_id');
             $table->string('payment_method');
             $table->enum('status', ['pending', 'awaiting', 'in_progress', 'delivered', 'canceled']);
             $table->decimal('total_paid', 10, 2);

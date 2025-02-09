@@ -87,6 +87,7 @@ class OrderController extends Controller
 
             $order = Order::create(
                 [
+                    'jm_order_id'    => $item['id_order'],
                     'reference'      => $item['reference'],
                     'total_paid'     => $item['total_paid'],
                     'total_shipping' => $item['total_shipping'],
@@ -118,65 +119,5 @@ class OrderController extends Controller
                 'status' => 'error',
                 'error'  => $e->getMessage()], 500);
         }
-    }
-
-    public function allOrders()
-    {
-        $newOrders = collect($this->orderService->getJmOrders());
-
-        $storedOrders = Order::with('location')->get();
-
-        $transformedNewOrders = $newOrders->map(function ($order) {
-            return [
-                'delivery_date'      => $order['delivery_date'],
-                'start_time'         => $order['start_time'],
-                'end_time'           => $order['end_time'],
-                'id_order'           => $order['id_order'],
-                'reference'          => $order['reference'],
-                'payment'            => $order['payment'],
-                'total_paid'         => $order['total_paid'],
-                'total_shipping'     => $order['total_shipping'],
-                'current_state_name' => $order['current_state_name'],
-                'customer_name'      => $order['customer_name'],
-                'address'            => $order['address'],
-                'customer_phone'     => $order['customer_phone'],
-                'latitude'           => $order['latitude'],
-                'longitude'          => $order['longitude'],
-                'products'           => $order['products'],
-                'items'              => $order['items'],
-            ];
-        });
-
-        $transformedStoredOrders = $storedOrders->map(function ($order) {
-            return [
-                'delivery_date'      => $order['delivery_date'],
-                'start_time'         => $order['start_time'],
-                'end_time'           => $order['end_time'],
-                'id_order'           => $order['id_order'],
-                'reference'          => $order['reference'],
-                'payment'            => $order['payment'],
-                'total_paid'         => $order['total_paid'],
-                'total_shipping'     => $order['total_shipping'],
-                'current_state_name' => $order['current_state_name'],
-                'customer_name'      => $order['customer_name'],
-                'address'            => $order['customer']['address'],
-                'customer_phone'     => $order['customer_phone'],
-                'latitude'           => $order['latitude'],
-                'longitude'          => $order['longitude'],
-                'products'           => $order['products'],
-                'items'              => $order['items'],
-            ];
-        });
-
-        $allOrders = $transformedNewOrders->merge($transformedStoredOrders);
-
-        return response()->json(
-            [
-                'status' => 'success',
-                'data'   => [
-                    'items' => $allOrders,
-                ],
-            ]
-        );
     }
 }

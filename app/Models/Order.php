@@ -15,4 +15,9 @@ class Order extends Model
     {
         return $this->belongsTo(Location::class);
     }
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class);
+    }
 }

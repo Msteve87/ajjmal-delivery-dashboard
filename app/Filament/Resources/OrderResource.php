@@ -71,15 +71,26 @@ class OrderResource extends Resource
                         ToggleButtons::make('status')
                             ->options([
                                 'pending' => 'Pending',
-                                'awaiting' => 'awaiting',
+                                'awaiting' => 'Awaiting',
+                                'in_progress' => 'In Progress',
                                 'delivered' => 'Delivered',
                                 'canceled' => 'Canceld'
                             ])
                             ->icons([
-                                'draft' => 'heroicon-o-pencil',
-                                'scheduled' => 'heroicon-o-clock',
-                                'published' => 'heroicon-o-check-circle',
+                                'pending' => 'heroicon-o-question-mark-circle',
+                                'awaiting' => 'heroicon-o-clock',
+                                'in_progress' => 'heroicon-o-truck',
+                                'canceled' => 'heroicon-o-x-circle',
+                                'delivered' => 'heroicon-o-check',
                             ])
+                            ->colors([
+                                'pending' => 'gray',
+                                'awaiting' => 'accent',
+                                'in_progress' => 'primary',
+                                'delivered' => 'success',
+                                'canceled' => 'danger'
+                            ])
+                            ->columns(2)
                             ->gridDirection('row')
                     ]),
             ])

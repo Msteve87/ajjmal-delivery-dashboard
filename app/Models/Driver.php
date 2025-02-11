@@ -15,4 +15,8 @@ class Driver extends Authenticatable
         'remember_token',
     ];
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

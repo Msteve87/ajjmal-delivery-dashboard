@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,7 +15,11 @@ return new class extends Migration
             $table->string('reference')->unique();
             $table->unsignedBigInteger('jm_order_id');
             $table->string('payment_method');
-            $table->enum('status', ['pending', 'awaiting', 'in_progress', 'delivered', 'canceled']);
+
+            $table->enum('status', allowed: ['pending', 'awaiting', 'in_progress', 'delivered', 'canceled']);
+
+            $table->foreignId('order_status_id')->constrained('order_statuses');
+
             $table->decimal('total_paid', 10, 2);
             $table->decimal('total_shipping', 10, 2);
             $table->string('customer_name')->nullable();

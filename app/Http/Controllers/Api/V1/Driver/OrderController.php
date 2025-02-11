@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\V1\Driver;
 
+use App\Http\Resources\Api\V1\OrdersResource;
 use App\Models\Order;
 use App\Models\Location;
 use App\Models\OrderStatus;
@@ -21,13 +22,14 @@ class OrderController extends Controller
     {
         $awaitingOrders = Order::where('status', 'awaiting')
             ->orWhere('status', 'in_progress')
+            ->with('orderStatus:id,name,name_ar')
             ->get();
 
         return response()->json(
             [
                 'status' => 'success',
                 'data' => [
-                    'items' => $awaitingOrders,
+                    'items' => OrdersResource::collection($awaitingOrders),
                 ],
             ]
         );
@@ -96,6 +98,7 @@ class OrderController extends Controller
                     'total_shipping' => $item['total_shipping'],
                     'payment_method' => $item['payment'],
                     'status' => 'awaiting',
+                    'order_status_id' => 1,
                     'items' => $item['items'],
                     'address' => $item['address'],
                     'customer_name' => $item['customer_name'],
@@ -135,6 +138,8 @@ class OrderController extends Controller
             $status = OrderStatus::findOrFail($request->statusId);
 
             $order->status = $status->slug;
+
+            $order->order_status_id = $request->statusId;
 
             $order->save();
 

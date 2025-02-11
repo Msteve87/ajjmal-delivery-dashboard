@@ -15,7 +15,7 @@ class OrderStatusesSeeder extends Seeder
     {
         DB::table('order_statuses')->insert([
             ['slug' => 'pending', 'name' => 'Pending', 'name_ar' => 'جديدة'],
-            ['slug' => 'awaiting', 'name' => 'In progress', 'name_ar' => 'جاري التوصيل'],
+            ['slug' => 'awaiting', 'name' => 'awaiting', 'name_ar' => 'جاري التنفيد'],
             ['slug' => 'in_progress', 'name' => 'In progress', 'name_ar' => 'جاري التوصيل'],
             ['slug' => 'delivered', 'name' => 'Delivered', 'name_ar' => 'تم التوصيل'],
             ['slug' => 'cancelled', 'name' => 'Cancelled', 'name_ar' => 'تم الإلغاء'],

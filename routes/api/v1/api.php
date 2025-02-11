@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\v1\OrderStatusController;
+use App\Http\Controllers\Api\V1\OrderStatusController;
 
 Route::middleware('auth:sanctum')
     ->group(function () {

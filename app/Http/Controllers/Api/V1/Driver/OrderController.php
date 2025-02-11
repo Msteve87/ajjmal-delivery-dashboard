@@ -65,7 +65,7 @@ class OrderController extends Controller
             [
                 'status' => 'success',
                 'data' => [
-                    'items' => $orders,
+                    'items' => OrdersResource::collection($orders),
                 ],
             ]
         );
@@ -112,7 +112,7 @@ class OrderController extends Controller
             return response()->json(
                 [
                     'status' => 'success',
-                    'data' => $order,
+                    'data' => new OrdersResource($order),
                 ],
                 201
             );

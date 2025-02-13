@@ -74,7 +74,9 @@ class OrderController extends Controller
     public function acceptOrder(string $reference)
     {
         try {
-            $exist = Order::where('reference', $reference)->exists();
+            $exist = Order::where('reference', $reference)
+                ->where('status', '!=', 'pending')
+                ->exists();
 
             if ($exist) {
                 return response()->json([
@@ -90,15 +92,16 @@ class OrderController extends Controller
                 'longitude' => $item['longitude'],
             ]);
 
-            $order = Order::create(
-                [
+            $existingOrder = Order::where('reference', $reference)->first();
+
+            if ($existingOrder) {
+                $existingOrder->update([
                     'jm_order_id' => $item['id_order'],
-                    'reference' => $item['reference'],
                     'total_paid' => $item['total_paid'],
                     'total_shipping' => $item['total_shipping'],
                     'payment_method' => $item['payment'],
                     'status' => 'awaiting',
-                    'order_status_id' => 1,
+                    'order_status_id' => 2,
                     'items' => $item['items'],
                     'address' => $item['address'],
                     'customer_name' => $item['customer_name'],
@@ -106,8 +109,29 @@ class OrderController extends Controller
                     'products' => $item['products'],
                     'driver_id' => Auth::id(),
                     'location_id' => $location->id,
-                ]
-            );
+                ]);
+
+                $order = $existingOrder;
+            } else {
+                $order = Order::create(
+                    [
+                        'jm_order_id' => $item['id_order'],
+                        'reference' => $item['reference'],
+                        'total_paid' => $item['total_paid'],
+                        'total_shipping' => $item['total_shipping'],
+                        'payment_method' => $item['payment'],
+                        'status' => 'awaiting',
+                        'order_status_id' => 2,
+                        'items' => $item['items'],
+                        'address' => $item['address'],
+                        'customer_name' => $item['customer_name'],
+                        'customer_phone' => $item['customer_phone'],
+                        'products' => $item['products'],
+                        'driver_id' => Auth::id(),
+                        'location_id' => $location->id,
+                    ]
+                );
+            }
 
             return response()->json(
                 [

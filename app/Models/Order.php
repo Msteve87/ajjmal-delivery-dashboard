@@ -20,4 +20,9 @@ class Order extends Model
     {
         return $this->belongsTo(Driver::class);
     }
+
+    public function orderStatus()
+    {
+        return $this->belongsTo(OrderStatus::class, 'order_status_id');
+    }
 }

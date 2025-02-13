@@ -1,10 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api\V1\Driver;
 
-use App\Http\Controllers\Controller;
-use App\Models\Location;
+use App\Http\Resources\Api\V1\OrdersResource;
 use App\Models\Order;
+use App\Models\Location;
+use App\Models\OrderStatus;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OrderController extends Controller
@@ -18,13 +22,14 @@ class OrderController extends Controller
     {
         $awaitingOrders = Order::where('status', 'awaiting')
             ->orWhere('status', 'in_progress')
+            ->with('orderStatus:id,name,name_ar')
             ->get();
 
         return response()->json(
             [
                 'status' => 'success',
-                'data'   => [
-                    'items' => $awaitingOrders,
+                'data' => [
+                    'items' => OrdersResource::collection($awaitingOrders),
                 ],
             ]
         );
@@ -38,7 +43,7 @@ class OrderController extends Controller
             return response()->json(
                 [
                     'status' => 'success',
-                    'data'   => [
+                    'data' => [
                         'items' => $items,
                     ],
                 ]
@@ -47,7 +52,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error'  => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -59,8 +64,8 @@ class OrderController extends Controller
         return response()->json(
             [
                 'status' => 'success',
-                'data'   => [
-                    'items' => $orders,
+                'data' => [
+                    'items' => OrdersResource::collection($orders),
                 ],
             ]
         );
@@ -69,11 +74,13 @@ class OrderController extends Controller
     public function acceptOrder(string $reference)
     {
         try {
-            $exist = Order::where('reference', $reference)->exists();
+            $exist = Order::where('reference', $reference)
+                ->where('status', '!=', 'pending')
+                ->exists();
 
             if ($exist) {
                 return response()->json([
-                    'status'  => 'error',
+                    'status' => 'error',
                     'message' => 'operation is not allowed',
                 ], 400);
             }
@@ -81,43 +88,102 @@ class OrderController extends Controller
             $item = $this->orderService->getJmOrderByReference($reference);
 
             $location = Location::create([
-                'latitude'  => $item['latitude'],
+                'latitude' => $item['latitude'],
                 'longitude' => $item['longitude'],
             ]);
 
-            $order = Order::create(
-                [
-                    'jm_order_id'    => $item['id_order'],
-                    'reference'      => $item['reference'],
-                    'total_paid'     => $item['total_paid'],
+            $existingOrder = Order::where('reference', $reference)->first();
+
+            if ($existingOrder) {
+                $existingOrder->update([
+                    'jm_order_id' => $item['id_order'],
+                    'total_paid' => $item['total_paid'],
                     'total_shipping' => $item['total_shipping'],
                     'payment_method' => $item['payment'],
-                    'status'         => 'awaiting',
-                    'items'          => $item['items'],
-                    'address'        => $item['address'],
-                    'customer_name'  => $item['customer_name'],
+                    'status' => 'awaiting',
+                    'order_status_id' => 2,
+                    'items' => $item['items'],
+                    'address' => $item['address'],
+                    'customer_name' => $item['customer_name'],
                     'customer_phone' => $item['customer_phone'],
-                    'products'       => $item['products'],
-                    'driver_id'      => Auth::id(),
-                    'location_id'    => $location->id,
-                ]
-            );
+                    'products' => $item['products'],
+                    'driver_id' => Auth::id(),
+                    'location_id' => $location->id,
+                ]);
+
+                $order = $existingOrder;
+            } else {
+                $order = Order::create(
+                    [
+                        'jm_order_id' => $item['id_order'],
+                        'reference' => $item['reference'],
+                        'total_paid' => $item['total_paid'],
+                        'total_shipping' => $item['total_shipping'],
+                        'payment_method' => $item['payment'],
+                        'status' => 'awaiting',
+                        'order_status_id' => 2,
+                        'items' => $item['items'],
+                        'address' => $item['address'],
+                        'customer_name' => $item['customer_name'],
+                        'customer_phone' => $item['customer_phone'],
+                        'products' => $item['products'],
+                        'driver_id' => Auth::id(),
+                        'location_id' => $location->id,
+                    ]
+                );
+            }
 
             return response()->json(
                 [
                     'status' => 'success',
-                    'data'   => $order,
-                ], 201
+                    'data' => new OrdersResource($order),
+                ],
+                201
             );
 
         } catch (HttpException $e) {
             return response()->json([
                 'status' => 'error',
-                'error'  => $e->getMessage()], $e->getStatusCode());
+                'error' => $e->getMessage()
+            ], $e->getStatusCode());
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error'  => $e->getMessage()], 500);
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update(Request $request, string $id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+
+            $status = OrderStatus::findOrFail($request->statusId);
+
+            $order->status = $status->slug;
+
+            $order->order_status_id = $request->statusId;
+
+            $order->save();
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'Order status updated successfully'
+                ]
+            );
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }

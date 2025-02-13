@@ -19,5 +19,4 @@ class Driver extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
-
 }

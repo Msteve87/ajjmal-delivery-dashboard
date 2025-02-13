@@ -18,9 +18,9 @@ class OrderService
     public function getJmOrders($limit = 1000)
     {
         $params = [
-            'limit'   => $limit,
+            'limit' => $limit,
             'sort_by' => 'total_paid',
-            'order'   => 'desc',
+            'order' => 'desc',
         ];
 
         $response = Http::get(env('JM_API_URL'), $params);
@@ -33,27 +33,29 @@ class OrderService
             $mergedItems = collect($items)
                 ->groupBy('reference')
                 ->filter(function ($group, $reference) use ($orderReferences) {
-                    return ! $orderReferences->contains($reference);
+                    return !$orderReferences->contains($reference);
                 })
                 ->map(function ($group) {
                     return [
-                        'jm_order_id'        => $group->first()['id_order'],
-                        'delivery_date'      => $group->first()['delivery_date'],
-                        'start_time'         => $group->first()['start_time'],
-                        'end_time'           => $group->first()['end_time'],
-                        'id_order'           => $group->first()['id_order'],
-                        'reference'          => $group->first()['reference'],
-                        'payment'            => $group->first()['payment'],
-                        'total_paid'         => $group->sum('total_paid'),
-                        'total_shipping'     => $group->max()['total_shipping'],
+                        'jm_order_id' => $group->first()['id_order'],
+                        'delivery_date' => $group->first()['delivery_date'],
+                        'start_time' => $group->first()['start_time'],
+                        'end_time' => $group->first()['end_time'],
+                        'id_order' => $group->first()['id_order'],
+                        'reference' => $group->first()['reference'],
+                        'payment' => $group->first()['payment'],
+                        'total_paid' => $group->sum('total_paid'),
+                        'total_shipping' => $group->max()['total_shipping'],
+                        'status' => 'pending',
+                        'status_ar' => 'جديدة',
                         'current_state_name' => $group->first()['current_state_name'],
-                        'customer_name'      => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
-                        'address'            => $group->first()['customer']['address'],
-                        'customer_phone'     => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                        'latitude'           => $group->first()['location']['latitude'],
-                        'longitude'          => $group->first()['location']['longitude'],
-                        'products'           => $group->first()['products'],
-                        'items'              => $group->sum(function ($item) {
+                        'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
+                        'address' => $group->first()['customer']['address'],
+                        'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
+                        'latitude' => $group->first()['location']['latitude'],
+                        'longitude' => $group->first()['location']['longitude'],
+                        'products' => $group->first()['products'],
+                        'items' => $group->sum(function ($item) {
                             return count($item['products']);
                         }),
                     ];
@@ -83,22 +85,22 @@ class OrderService
             ->groupBy('reference')
             ->map(function ($group) {
                 return [
-                    'delivery_date'      => $group->first()['delivery_date'],
-                    'start_time'         => $group->first()['start_time'],
-                    'end_time'           => $group->first()['end_time'],
-                    'id_order'           => $group->first()['id_order'],
-                    'reference'          => $group->first()['reference'],
-                    'payment'            => $group->first()['payment'],
-                    'total_paid'         => $group->sum('total_paid'),
-                    'total_shipping'     => $group->max()['total_shipping'],
+                    'delivery_date' => $group->first()['delivery_date'],
+                    'start_time' => $group->first()['start_time'],
+                    'end_time' => $group->first()['end_time'],
+                    'id_order' => $group->first()['id_order'],
+                    'reference' => $group->first()['reference'],
+                    'payment' => $group->first()['payment'],
+                    'total_paid' => $group->sum('total_paid'),
+                    'total_shipping' => $group->max()['total_shipping'],
                     'current_state_name' => $group->first()['current_state_name'],
-                    'address'            => $group->first()['customer']['address'],
-                    'customer_name'      => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
-                    'customer_phone'     => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                    'latitude'           => $group->first()['location']['latitude'],
-                    'longitude'          => $group->first()['location']['longitude'],
-                    'products'           => $group->first()['products'],
-                    'items'              => $group->sum(function ($item) {
+                    'address' => $group->first()['customer']['address'],
+                    'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
+                    'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
+                    'latitude' => $group->first()['location']['latitude'],
+                    'longitude' => $group->first()['location']['longitude'],
+                    'products' => $group->first()['products'],
+                    'items' => $group->sum(function ($item) {
                         return count($item['products']);
                     }),
                 ];

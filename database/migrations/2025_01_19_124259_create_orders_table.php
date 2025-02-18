@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('jm_order_id');
             $table->string('payment_method');
 
-            $table->enum('status', allowed: ['pending', 'awaiting', 'in_progress', 'delivered', 'canceled']);
+            // $table->enum(column: 'status', allowed: ['pending', 'awaiting', 'in_progress', 'delivered', 'canceled']);
 
             $table->foreignId('order_status_id')->constrained('order_statuses');
 

@@ -25,7 +25,9 @@ class OrderService
 
         $response = Http::get(env('JM_API_URL'), $params);
 
-        $orderReferences = Order::whereNot('status', 'pending')->pluck('reference');
+        $orderReferences = Order::whereHas('orderStatus', function ($query) {
+            $query->where('name', '!=', 'pending');
+        })->pluck('reference');
 
         if ($response->successful()) {
             $items = $response->json()['data'];

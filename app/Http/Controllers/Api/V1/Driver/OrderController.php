@@ -75,7 +75,7 @@ class OrderController extends Controller
     {
         try {
             $exist = Order::whereHas('orderStatus', function ($query) {
-                $query->where('name', '!=', 'pending');
+                $query->where('name', '===', 'pending');
             })->exists();
 
             if ($exist) {

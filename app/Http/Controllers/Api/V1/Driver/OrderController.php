@@ -21,8 +21,8 @@ class OrderController extends Controller
     public function awaitingOrders()
     {
         $awaitingOrders = Order::whereHas('orderStatus', function ($query) {
-            $query->where('name', 'awaiting')
-                ->orWhere('name', 'in_progress');
+            $query->where('slug', 'awaiting')
+                ->orWhere('slug', 'in_progress');
         })->with('orderStatus:id,name,name_ar')->get();
 
         return response()->json(

@@ -158,44 +158,46 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
             $status = OrderStatus::findOrFail($request->statusId);
 
-            switch ($status->slug) {
-                case "pending":
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Operation is not allowed'
-                    ], 400);
-                case "awaiting":
-                    if ($order->orderStatus->slug !== "pending") {
+            if (app()->environment('production')) {
+                switch ($status->slug) {
+                    case "pending":
                         return response()->json([
                             'status' => 'error',
                             'message' => 'Operation is not allowed'
                         ], 400);
-                    }
-                    break;
-                case "in_progress":
-                    if ($order->orderStatus->slug !== "awaiting") {
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'Operation is not allowed'
-                        ], 400);
-                    }
-                    break;
-                case "delivered":
-                    if ($order->orderStatus->slug !== "in_progress") {
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'Operation is not allowed'
-                        ], 400);
-                    }
-                    break;
-                case "cancelled":
-                    if ($order->orderStatus->slug === "delivered" || $order->orderStatus->slug === "in_progress") {
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'Operation is not allowed'
-                        ], 400);
-                    }
-                    break;
+                    case "awaiting":
+                        if ($order->orderStatus->slug !== "pending") {
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'Operation is not allowed'
+                            ], 400);
+                        }
+                        break;
+                    case "in_progress":
+                        if ($order->orderStatus->slug !== "awaiting") {
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'Operation is not allowed'
+                            ], 400);
+                        }
+                        break;
+                    case "delivered":
+                        if ($order->orderStatus->slug !== "in_progress") {
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'Operation is not allowed'
+                            ], 400);
+                        }
+                        break;
+                    case "cancelled":
+                        if ($order->orderStatus->slug === "delivered" || $order->orderStatus->slug === "in_progress") {
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'Operation is not allowed'
+                            ], 400);
+                        }
+                        break;
+                }
             }
 
             $order->order_status_id = $request->statusId;

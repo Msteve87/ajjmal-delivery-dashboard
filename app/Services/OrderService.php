@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Order;
@@ -25,7 +26,9 @@ class OrderService
 
         $response = Http::get(env('JM_API_URL'), $params);
 
-        $orderReferences = Order::whereNot('status', 'pending')->pluck('reference');
+        $orderReferences = Order::whereHas('orderStatus', function ($query) {
+            $query->where('name', '!=', 'pending');
+        })->pluck('reference');
 
         if ($response->successful()) {
             $items = $response->json()['data'];
@@ -43,9 +46,9 @@ class OrderService
                         'end_time' => $group->first()['end_time'],
                         'id_order' => $group->first()['id_order'],
                         'reference' => $group->first()['reference'],
-                        'payment' => $group->first()['payment'],
-                        'total_paid' => $group->sum('total_paid'),
-                        'total_shipping' => $group->max()['total_shipping'],
+                        'payment_method' => $group->first()['payment'],
+                        'total_paid' => number_format((float) $group->sum('total_paid'), 2, '.', ''),
+                        'total_shipping' => number_format((float) $group->max('total_shipping'), 2, '.', ''),
                         'status' => 'pending',
                         'status_ar' => 'جديدة',
                         'current_state_name' => $group->first()['current_state_name'],
@@ -54,7 +57,9 @@ class OrderService
                         'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
                         'latitude' => $group->first()['location']['latitude'],
                         'longitude' => $group->first()['location']['longitude'],
-                        'products' => $group->first()['products'],
+                        'products' => $group->map(function ($item) {
+                            return $item['products'];
+                        })->flatten(1)->toArray(),
                         'items' => $group->sum(function ($item) {
                             return count($item['products']);
                         }),
@@ -64,11 +69,9 @@ class OrderService
                 ->toArray();
 
             return $mergedItems;
-
         } else {
             throw new \Exception('Error while fetching JM orders');
         }
-
     }
 
     public function getJmOrderByReference($reference)

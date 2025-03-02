@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Order;
@@ -57,6 +58,9 @@ class OrderService
                         'latitude' => $group->first()['location']['latitude'],
                         'longitude' => $group->first()['location']['longitude'],
                         'products' => $group->first()['products'],
+                        'products' => $group->map(function ($item) {
+                            return $item['products'];
+                        })->flatten(1)->toArray(),
                         'items' => $group->sum(function ($item) {
                             return count($item['products']);
                         }),
@@ -66,11 +70,9 @@ class OrderService
                 ->toArray();
 
             return $mergedItems;
-
         } else {
             throw new \Exception('Error while fetching JM orders');
         }
-
     }
 
     public function getJmOrderByReference($reference)

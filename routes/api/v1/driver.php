@@ -5,11 +5,13 @@ use Illuminate\Support\Facades\Route;
 Route::controller(V1\Driver\AuthController::class)
     ->group(function () {
         Route::post('/login', 'login');
+        Route::post('/send-forgot-password-otp', 'sendForgotPasswordOtp');
+        Route::post('/confirm-reset-otp', 'confirmResetOtp');
+        Route::post('/reset-password', 'resetPassword');
     });
 
 Route::middleware('auth:sanctum')
     ->group(function () {
-
         Route::controller(V1\Driver\DriverController::class)
             ->group(function () {
                 Route::get('/me', 'me');

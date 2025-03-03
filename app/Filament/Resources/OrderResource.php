@@ -5,7 +5,9 @@ use Filament\Tables;
 use App\Models\Order;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\OrderStatus;
 use Filament\Resources\Resource;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
@@ -44,7 +46,7 @@ class OrderResource extends Resource
                 TextColumn::make('driver.first_name')
                     ->label('Driver Name'),
 
-                TextColumn::make('status')
+                TextColumn::make('orderStatus.slug')
                     ->label('Status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
@@ -52,7 +54,7 @@ class OrderResource extends Resource
                         'awaiting' => 'accent',
                         'in_progress' => 'warning',
                         'delivered' => 'success',
-                        'canceled' => 'danger',
+                        'cancelled' => 'danger',
                     }),
 
                 TextColumn::make('total_shipping')
@@ -65,22 +67,34 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->modalHeading('Order Details')
+                    ->modalContent(fn($record) => view('filament.orders.view', ['record' => $record])),
                 Tables\Actions\EditAction::make()
                     ->form([
 
-                        ToggleButtons::make('status')
+                        ToggleButtons::make('order_status_id')
+                            ->label('Status')
                             ->options([
                                 'pending' => 'Pending',
                                 'awaiting' => 'Awaiting',
                                 'in_progress' => 'In Progress',
                                 'delivered' => 'Delivered',
-                                'canceled' => 'Canceld'
+                                'cancelled' => 'Canceld'
                             ])
+                            ->afterStateUpdated(function ($state, $record) {
+                                $id = OrderStatus::where('slug', $state)->value('id');
+                                $record->update([
+                                    'order_status_id' => $id,
+                                    'updated_at' => now()
+                                ]);
+                            })
+                            ->dehydrated(false)
                             ->icons([
                                 'pending' => 'heroicon-o-question-mark-circle',
                                 'awaiting' => 'heroicon-o-clock',
                                 'in_progress' => 'heroicon-o-truck',
-                                'canceled' => 'heroicon-o-x-circle',
+                                'cancelled' => 'heroicon-o-x-circle',
                                 'delivered' => 'heroicon-o-check',
                             ])
                             ->colors([
@@ -88,10 +102,9 @@ class OrderResource extends Resource
                                 'awaiting' => 'accent',
                                 'in_progress' => 'primary',
                                 'delivered' => 'success',
-                                'canceled' => 'danger'
+                                'cancelled' => 'danger'
                             ])
-                            ->columns(2)
-                            ->gridDirection('row')
+                            ->extraAttributes(['class' => 'max-w-xs m-4 flex h-fit flex-wrap items-center gap-2 rounded-xl py-4'])
                     ]),
             ])
             ->bulkActions([
@@ -99,6 +112,7 @@ class OrderResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+
     }
 
     public static function getRelations(): array

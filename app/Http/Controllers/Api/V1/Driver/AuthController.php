@@ -126,7 +126,7 @@ class AuthController extends Controller
 
             return Response::json([
                 'message' => 'OTP confirmed',
-                'resetToken' => $request->resetToken,
+                'resetToken' => app('resetToken'),
             ]);
         } catch (\Exception $e) {
             return Response::json([

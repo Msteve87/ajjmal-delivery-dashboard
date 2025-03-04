@@ -36,9 +36,7 @@ class ConfirmDriverResetOtp
 
                 Redis::del($key);
 
-                $request->merge([
-                    'resetToken' => $resetToken,
-                ]);
+                app()->instance('resetToken', $resetToken);
 
                 return $next($request);
             }

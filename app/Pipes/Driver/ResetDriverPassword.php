@@ -20,7 +20,7 @@ class ResetDriverPassword
     {
         try {
             $driverPasswordResetsToken = DB::table('driver_password_reset_tokens')
-                ->where('token', $request->resetToken)
+                ->where('token', $request->reset_token)
                 ->first();
 
             if (!$driverPasswordResetsToken || $driverPasswordResetsToken->expires_at < now()) {

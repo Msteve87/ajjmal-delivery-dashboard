@@ -44,7 +44,7 @@ class AuthController extends Controller
 
             $driver->setRememberToken(Str::random(60));
 
-            RateLimiter::clear(`driver-identifier {$request->identifier}`);
+            RateLimiter::clear("driver-identifier {$request->identifier}");
 
             return Response::json(
                 [

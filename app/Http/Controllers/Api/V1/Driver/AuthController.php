@@ -29,13 +29,13 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        if (RateLimiter::tooManyAttempts(`driver-identifier {$request->identifier}`, $perMinute = 10)) {
+        if (RateLimiter::tooManyAttempts("driver-identifier {$request->identifier}", $perMinute = 10)) {
             return Response::json([
                 'error' => 'Too many login attempts. Please try again after a minute.',
             ], 429);
         }
 
-        RateLimiter::increment(`driver-identifier {$request->identifier}`, $decaySeconds = 86400);
+        RateLimiter::increment("driver-identifier {$request->identifier}", $decaySeconds = 86400);
 
         $driver = Driver::where('is_active', true)
             ->where('phone', $request->identifier)->first();

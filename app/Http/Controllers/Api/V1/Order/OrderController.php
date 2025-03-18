@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api\Order;
+namespace App\Http\Controllers\Api\V1\Order;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

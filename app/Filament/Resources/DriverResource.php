@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Driver;
 use Filament\Forms\Form;
+use App\Rules\MinAgeRule;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
@@ -29,6 +31,7 @@ class DriverResource extends Resource
     {
         return $form
             ->schema([
+
                 Forms\Components\TextInput::make('first_name')
                     ->label('First Name')
                     ->required(),
@@ -65,7 +68,11 @@ class DriverResource extends Resource
 
                 Forms\Components\DatePicker::make('dob')
                     ->label('Date of Birth')
-                    ->nullable(),
+                    ->required()
+                    ->rules([
+                        'date',
+                        new MinAgeRule(18),
+                    ]),
 
                 Forms\Components\TextInput::make('passport_no')
                     ->label('Passport Number')

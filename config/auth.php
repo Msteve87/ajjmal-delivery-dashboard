@@ -15,8 +15,8 @@ return [
     |
     */
 
-    'defaults'         => [
-        'guard'     => env('AUTH_GUARD', 'web'),
+    'defaults' => [
+        'guard' => env('AUTH_GUARD', 'web'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
     ],
 
@@ -37,20 +37,20 @@ return [
     |
     */
 
-    'guards'           => [
-        'web'    => [
-            'driver'   => 'session',
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
             'provider' => 'users',
         ],
 
-        'api'    => [
-            'driver'   => 'sanctum',
+        'api' => [
+            'driver' => 'sanctum',
             'provider' => 'users',
-            'hash'     => false,
+            'hash' => false,
         ],
 
         'driver' => [
-            'driver'   => 'sanctum',
+            'driver' => 'sanctum',
             'provider' => 'drivers',
         ],
     ],
@@ -72,15 +72,15 @@ return [
     |
     */
 
-    'providers'        => [
-        'users'   => [
+    'providers' => [
+        'users' => [
             'driver' => 'eloquent',
-            'model'  => env('AUTH_MODEL', App\Models\User::class),
+            'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
         'drivers' => [
             'driver' => 'eloquent',
-            'model'  => Driver::class,
+            'model' => Driver::class,
         ],
     ],
 
@@ -103,13 +103,21 @@ return [
     |
     */
 
-    'passwords'        => [
+    'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table'    => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire'   => 60,
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
             'throttle' => 60,
         ],
+
+        'drivers' => [
+            'provider' => 'drivers',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'driver_password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
     ],
 
     /*

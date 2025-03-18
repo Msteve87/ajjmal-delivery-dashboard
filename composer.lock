@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "content-hash": "c2dceb8111baebc3d251f83019f29d4b",
+    "content-hash": "a7f5d0573dc470282f6770005d75fae6",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -10697,12 +10698,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }

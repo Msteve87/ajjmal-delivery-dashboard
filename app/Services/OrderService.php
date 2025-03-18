@@ -102,7 +102,9 @@ class OrderService
                     'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
                     'latitude' => $group->first()['location']['latitude'],
                     'longitude' => $group->first()['location']['longitude'],
-                    'products' => $group->first()['products'],
+                    'products' => $group->map(function ($item) {
+                        return $item['products'];
+                    })->flatten(1)->toArray(),
                     'items' => $group->sum(function ($item) {
                         return count($item['products']);
                     }),

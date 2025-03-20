@@ -28,7 +28,7 @@ return new class extends Migration {
             $table->integer('items');
             $table->json('products')->nullable();
             $table->timestamps();
-            $table->foreignId('driver_id')->constrained();
+            $table->foreignId('driver_id')->constrained()->nullable();
             $table->foreignId('location_id')->constrained();
         });
     }

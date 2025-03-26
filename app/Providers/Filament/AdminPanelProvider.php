@@ -28,6 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->spa()
+            ->brandLogo(asset('images/logo.jpg'))
+            ->brandLogoHeight('120px')
+            ->brandName('Ajjmal')
             ->login()
             ->colors([
                 'primary' => Color::Amber,

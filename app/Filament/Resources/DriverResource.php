@@ -27,31 +27,45 @@ class DriverResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-truck';
 
+    public static function getModelLabel(): string
+    {
+        return __('filament/resources.driver.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament/resources.driver.plural_label');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('filament/resources.driver.plural_label');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-
                 Forms\Components\TextInput::make('first_name')
-                    ->label('First Name')
+                    ->label(__('filament/resources.driver.schema.first_name'))
                     ->required(),
 
                 Forms\Components\TextInput::make('last_name')
-                    ->label('Last Name')
+                    ->label(__('filament/resources.driver.schema.last_name'))
                     ->required(),
 
                 Forms\Components\TextInput::make('phone')
-                    ->label('Phone Number')
+                    ->label(__('filament/resources.driver.schema.phone'))
                     ->unique()
                     ->required(),
 
                 Forms\Components\TextInput::make('password')
-                    ->label('Password')
+                    ->label(__('filament/resources.driver.schema.password'))
                     ->password()
                     ->required(),
 
                 Forms\Components\Select::make('gender')
-                    ->label('Gender')
+                    ->label(__('filament/resources.driver.schema.gender'))
                     ->options([
                         'male' => 'Male',
                         'female' => 'Female',
@@ -59,7 +73,7 @@ class DriverResource extends Resource
                     ->required(),
 
                 Forms\Components\Select::make('driver_type')
-                    ->label('Driver Type')
+                    ->label(__('filament/resources.driver.schema.driver_type'))
                     ->options([
                         'employee' => 'Employee',
                         'independent' => 'Independent',
@@ -67,7 +81,7 @@ class DriverResource extends Resource
                     ->required(),
 
                 Forms\Components\DatePicker::make('dob')
-                    ->label('Date of Birth')
+                    ->label(__('filament/resources.driver.schema.date_of_birth'))
                     ->required()
                     ->rules([
                         'date',
@@ -75,19 +89,19 @@ class DriverResource extends Resource
                     ]),
 
                 Forms\Components\TextInput::make('passport_no')
-                    ->label('Passport Number')
+                    ->label(__('filament/resources.driver.schema.passport_number'))
                     ->nullable(),
 
                 Forms\Components\TextInput::make('criminal_case')
-                    ->label('Criminal Case')
+                    ->label(__('filament/resources.driver.schema.criminal_case'))
                     ->nullable(),
 
                 Forms\Components\TextInput::make('national_no')
-                    ->label('National Number')
+                    ->label(__('filament/resources.driver.schema.national_number'))
                     ->nullable(),
 
                 Forms\Components\Select::make('delivery_status')
-                    ->label('Delivery Status')
+                    ->label(__('filament/resources.driver.schema.delivery_status'))
                     ->options([
                         'available' => 'Available',
                         'not_available' => 'Not Available',
@@ -95,7 +109,7 @@ class DriverResource extends Resource
                     ->default('available'),
 
                 Forms\Components\Select::make('status')
-                    ->label('Status')
+                    ->label(__('filament/resources.driver.schema.status'))
                     ->options([
                         'pending' => 'Pending',
                         'processing' => 'Processing',
@@ -105,7 +119,7 @@ class DriverResource extends Resource
                     ->default('pending'),
 
                 Forms\Components\Toggle::make('is_active')
-                    ->label('Is Active')
+                    ->label(__('filament/resources.driver.schema.is_active'))
                     ->default(false),
             ]);
     }

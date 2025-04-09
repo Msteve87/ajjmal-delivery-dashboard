@@ -82,14 +82,6 @@ class OrderResource extends Resource
                                 'delivered' => 'Delivered',
                                 'cancelled' => 'Canceld'
                             ])
-                            ->afterStateUpdated(function ($state, $record) {
-                                $id = OrderStatus::where('slug', $state)->value('id');
-                                $record->update([
-                                    'order_status_id' => $id,
-                                    'updated_at' => now()
-                                ]);
-                            })
-                            ->dehydrated(false)
                             ->icons([
                                 'pending' => 'heroicon-o-question-mark-circle',
                                 'awaiting' => 'heroicon-o-clock',
@@ -105,6 +97,27 @@ class OrderResource extends Resource
                                 'cancelled' => 'danger'
                             ])
                             ->extraAttributes(['class' => 'max-w-xs m-4 flex h-fit flex-wrap items-center gap-2 rounded-xl py-4'])
+                            ->afterStateUpdated(function ($state, $record, $set, $get) {
+                                $set('pending_status_change', $state);
+                                $set('show_password_field', true);
+                            })
+                            ->dehydrated(false),
+
+                        TextInput::make('password')
+                            ->label('Confirm Password')
+                            ->password()
+                            ->required()
+                            ->visible(fn($get) => $get('show_password_field'))
+                            ->rule('current_password')
+                            ->afterStateUpdated(function ($record, $get) {
+                                $state = $get('pending_status_change');
+                                $id = OrderStatus::where('slug', $state)->value('id');
+                                $record->update([
+                                    'order_status_id' => $id,
+                                    'updated_at' => now()
+                                ]);
+                            })
+                            ->dehydrated(false),
                     ]),
             ])
             ->bulkActions([

@@ -104,7 +104,10 @@ class OrderService
                     'latitude' => $group->first()['location']['latitude'],
                     'longitude' => $group->first()['location']['longitude'],
                     'products' => $group->map(function ($item) {
-                        return $item['products'];
+                        return array_map(function ($product) {
+                            $product['details']['description'] = sanitize_html_string($product['details']['description']);
+                            return $product;
+                        }, $item['products']);
                     })->flatten(1)->toArray(),
                     'items' => $group->sum(function ($item) {
                         return count($item['products']);

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class PaymentMethod extends Model
 {
+    protected $guarded = [];
+
     protected function icon(): Attribute
     {
         return Attribute::make(

@@ -23,7 +23,38 @@ class PaymentMethodResource extends Resource
     {
         return $form
             ->schema([
-                //
+                \Filament\Forms\Components\FileUpload::make('icon')
+                    ->label('Image')
+                    ->image()
+                    ->required()
+                    ->directory('payment-methods/')
+                    ->disk('public')
+                    ->image()
+                    ->maxSize(1000000)
+                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                    ->visibility('public')
+                    ->moveFiles()
+                    ->openable(),
+
+                Forms\Components\TextInput::make('name')
+                    ->label('Name')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+
+                Forms\Components\TextInput::make('name_ar')
+                    ->label('Name (Arabic)')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+
+                Forms\Components\TextInput::make('code')
+                    ->label('Code')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+
+
             ]);
     }
 
@@ -76,7 +107,7 @@ class PaymentMethodResource extends Resource
     {
         return [
             'index' => Pages\ListPaymentMethods::route('/'),
-            'create' => Pages\CreatePaymentMethod::route('/create'),
+            // 'create' => Pages\CreatePaymentMethod::route('/create'),
             'edit' => Pages\EditPaymentMethod::route('/{record}/edit'),
         ];
     }

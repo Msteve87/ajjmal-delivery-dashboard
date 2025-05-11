@@ -26,7 +26,7 @@ class PaymentMethodResource extends Resource
                 \Filament\Forms\Components\FileUpload::make('icon')
                     ->label('Image')
                     ->image()
-                    ->required()
+                    // ->required()
                     ->directory('payment-methods/')
                     ->disk('public')
                     ->image()
@@ -54,6 +54,12 @@ class PaymentMethodResource extends Resource
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 
+                Forms\Components\Toggle::make('status')
+                    ->label('Is Active')
+                    ->helperText('Enable or disable this payment method')
+                    ->default(true)
+                    ->inline()
+                    ->required(),
 
             ]);
     }

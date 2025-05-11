@@ -11,7 +11,7 @@ class PaymentMethodController extends Controller
     public function index()
     {
         $paymentMethods = PaymentMethod::query()
-            ->select('id', 'name', 'name_ar', 'code', 'icon')
+            ->select('id', 'name', 'name_ar', 'code', 'icon', 'status')
             ->get();
 
         return response()->json(

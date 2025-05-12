@@ -23,7 +23,7 @@ class OrderFactory extends Factory
             'total_paid' => $this->faker->randomFloat(2, 10, 1000),
             'total_shipping' => $this->faker->randomFloat(2, 5, 50),
             'payment_method' => "الدفع الإلكتروني عند الإستلام",
-            'order_status_id' => 2,
+            'order_status_id' => 3,
             'items' => 1,
             'products' => json_encode(
                 [

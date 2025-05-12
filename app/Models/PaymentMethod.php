@@ -12,7 +12,7 @@ class PaymentMethod extends Model
     protected function icon(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => asset($value),
+            get: fn(?string $value) => asset($value ? $value : 'assets/images/default.png'),
         );
     }
 }

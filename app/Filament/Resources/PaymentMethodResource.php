@@ -27,6 +27,7 @@ class PaymentMethodResource extends Resource
                     ->label('Image')
                     ->image()
                     // ->required()
+                    ->preserveFilenames()
                     ->directory('payment-methods/')
                     ->disk('public')
                     ->image()

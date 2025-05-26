@@ -19,4 +19,11 @@ class Driver extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function setPasswordAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['password'] = bcrypt($value);
+        }
+    }
 }

@@ -59,7 +59,8 @@ class OrderController extends Controller
 
     public function listDriverOrders()
     {
-        $orders = Order::where('driver_id', Auth::id())->get();
+        $orders = Order::where('driver_id', Auth::id())->get()
+            ->where('orderStatus.slug', '==', 'delivered');
 
         return response()->json(
             [

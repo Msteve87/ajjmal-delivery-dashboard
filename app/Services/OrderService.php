@@ -204,4 +204,21 @@ class OrderService
         }
     }
 
+    public function getStats()
+    {
+        $stats = [
+            'cancelled' => Order::whereHas('orderStatus', function ($query) {
+                $query->where('slug', 'cancelled');
+            })->count(),
+            'in_progress' => Order::whereHas('orderStatus', function ($query) {
+                $query->where('slug', 'in_progress');
+            })->count(),
+            'delivered' => Order::whereHas('orderStatus', function ($query) {
+                $query->where('slug', 'delivered');
+            })->count()
+        ];
+
+        return $stats;
+    }
+
 }

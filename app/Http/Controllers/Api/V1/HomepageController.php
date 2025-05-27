@@ -10,6 +10,20 @@ class HomepageController extends Controller
     ) {
     }
 
+    public function stats()
+    {
+        $stats = $this->orderService->getStats();
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => [
+                    'items' => $stats,
+                ],
+            ]
+        );
+    }
+
     public function lastOrders()
     {
         $orders = $this->orderService->getJmOrders();
@@ -17,7 +31,7 @@ class HomepageController extends Controller
         return response()->json(
             [
                 'status' => 'success',
-                'data'   => [
+                'data' => [
                     'items' => $orders,
                 ],
             ]

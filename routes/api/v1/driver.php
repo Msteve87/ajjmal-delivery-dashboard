@@ -30,5 +30,6 @@ Route::middleware('auth:sanctum')
         Route::controller(V1\HomepageController::class)
             ->group(function () {
                 Route::get('/last-orders', 'lastOrders');
+                Route::get('/delivery-stats', 'stats');
             });
     });

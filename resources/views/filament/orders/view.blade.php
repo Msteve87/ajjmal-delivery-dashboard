@@ -9,13 +9,13 @@
     @endphp
 
     @foreach($productsBySeller as $sellerName => $products)
-        <div class="mb-8 border border-gray-300 rounded-lg shadow-sm bg-gray-50">
+        <div class="mb-8 border border-gray-300 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-800 dar">
             <!-- Seller Info -->
             <div class="flex items-center p-4 border-b">
-                <img src="{{ $products[0]['details']['seller']['logo'] ?? '' }}" alt="{{ $sellerName }}"
-                    class="w-12 h-12 rounded-full border object-cover">
-                <div class="mr-3">
-                    <h4 class="text-base font-semibold">{{ $sellerName }}</h4>
+                <img src="{{ $products[0]['details']['seller']['logo'] ?? '' }}" alt="{{ $sellerName }}" height="120"
+                    width="120" class="m-2 rounded-full border object-cover">
+                <div class="mx-3">
+                    <h4 class="text-base  font-semibold text-slate-900  ">{{ $sellerName }}</h4>
                     <a href="tel:{{ $products[0]['details']['seller']['phone'] ?? '' }}" class="text-xs text-blue-500">
                         {{ $products[0]['details']['seller']['phone'] ?? '' }}
                     </a>
@@ -24,7 +24,7 @@
             <!-- Products List -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
                 @foreach($products as $product)
-                    <div class="max-w-xs bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                    <div class="max-w bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                         <!-- Product Image -->
                         <div class="h-48 bg-gray-100 overflow-hidden">
                             <img src="{{ $product['details']['images'][0]['src'] ?? '' }}" alt="{{ $product['name'] }}"

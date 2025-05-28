@@ -66,8 +66,8 @@ class OrderController extends Controller
     {
         $orders = Order::
             where('driver_id', Auth::id())
-            ->with('location:latitude,longitude')
-            ->where('order_status_id', '==', 4)
+            ->with('location:id,latitude,longitude')
+            ->where('order_status_id', 4)
             ->get();
 
         return response()->json(
@@ -135,6 +135,7 @@ class OrderController extends Controller
                         'customer_phone' => $item['customer_phone'],
                         'products' => $item['products'],
                         'driver_id' => Auth::id(),
+                        // 'delivery_date' => $item['delivery_date'],
                         'location_id' => $location->id,
                     ]
                 );

@@ -35,6 +35,11 @@ class OrderController extends Controller
         );
     }
 
+    /**
+     * List new orders from Ajamal
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function listNewOrders()
     {
         try {
@@ -59,8 +64,11 @@ class OrderController extends Controller
 
     public function listDriverOrders()
     {
-        $orders = Order::where('driver_id', Auth::id())->get()
-            ->where('orderStatus.slug', '==', 'delivered');
+        $orders = Order::
+            where('driver_id', Auth::id())
+            ->with('location:latitude,longitude')
+            ->where('order_status_id', '==', 4)
+            ->get();
 
         return response()->json(
             [

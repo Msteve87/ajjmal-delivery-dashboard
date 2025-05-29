@@ -105,7 +105,6 @@ class OrderController extends Controller
 
             if ($existingOrder) {
                 $existingOrder->update([
-                    'jm_order_id' => $item['id_order'],
                     'price' => $item['total_paid'] - $item['total_shipping'],
                     'total_paid' => $item['total_paid'],
                     'total_shipping' => $item['total_shipping'],
@@ -124,7 +123,6 @@ class OrderController extends Controller
             } else {
                 $order = Order::create(
                     [
-                        'jm_order_id' => $item['id_order'],
                         'reference' => $item['reference'],
                         'price' => $item['total_paid'] - $item['total_shipping'],
                         'total_paid' => $item['total_paid'],
@@ -138,6 +136,8 @@ class OrderController extends Controller
                         'products' => $item['products'],
                         'driver_id' => Auth::id(),
                         'delivery_date' => $item['delivery_date'],
+                        'start_time' => $item['start_time'],
+                        'end_time' => $item['end_time'],
                         'location_id' => $location->id,
                     ]
                 );

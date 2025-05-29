@@ -13,10 +13,11 @@ return new class extends Migration {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('reference')->unique();
-            $table->unsignedBigInteger('jm_order_id'); //TODO: remove this
             $table->string('payment_method');
             $table->foreignId('order_status_id')->constrained('order_statuses');
             $table->dateTime('delivery_date')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->decimal('price', 10, 2);
             $table->decimal('total_paid', 10, 2);
             $table->decimal('total_shipping', 10, 2);

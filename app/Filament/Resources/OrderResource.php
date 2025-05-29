@@ -83,8 +83,18 @@ class OrderResource extends Resource
 
                 TextColumn::make('delivery_date')
                     ->label('Delivery Date')
-                    ->dateTime()
-                    ->sortable()
+                    ->date()
+                    ->sortable(),
+
+                TextColumn::make('start_time')
+                    ->label('Start Time')
+                    ->time()
+                    ->sortable(),
+
+                TextColumn::make('end_time')
+                    ->label('End Time')
+                    ->time()
+                    ->sortable(),
             ])
             ->filters([
                 //

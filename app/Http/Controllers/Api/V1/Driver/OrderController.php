@@ -23,7 +23,7 @@ class OrderController extends Controller
         $awaitingOrders = Order::whereHas('orderStatus', function ($query) {
             $query->where('slug', 'awaiting')
                 ->orWhere('slug', 'in_progress');
-        })->with(['orderStatus:id,name,name_ar', 'location'])->get();
+        })->with(['orderStatus:id,name,name_ar', 'location:id,latitude,longitude'])->get();
 
         return response()->json(
             [
@@ -137,7 +137,7 @@ class OrderController extends Controller
                         'customer_phone' => $item['customer_phone'],
                         'products' => $item['products'],
                         'driver_id' => Auth::id(),
-                        // 'delivery_date' => $item['delivery_date'],
+                        'delivery_date' => $item['delivery_date'],
                         'location_id' => $location->id,
                     ]
                 );

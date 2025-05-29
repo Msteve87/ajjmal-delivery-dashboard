@@ -41,11 +41,9 @@ class OrderService
                 })
                 ->map(function ($group) {
                     return [
-                        'jm_order_id' => $group->first()['id_order'],
                         'delivery_date' => $group->first()['delivery_date'],
                         'start_time' => $group->first()['start_time'],
                         'end_time' => $group->first()['end_time'],
-                        'id_order' => $group->first()['id_order'],
                         'reference' => $group->first()['reference'],
                         'payment_method' => $group->first()['payment'],
                         'total_paid' => number_format((float) $group->sum('total_paid'), 2, '.', ''),
@@ -59,8 +57,13 @@ class OrderService
                         'latitude' => $group->first()['location']['latitude'],
                         'longitude' => $group->first()['location']['longitude'],
                         'products' => $group->map(function ($item) {
-                            return $item['products'];
+                            return array_map(function ($product) use ($item) {
+                                $product['details']['description'] = sanitize_html_string($product['details']['description']);
+                                $product['jm_order_id'] = $item['id_order'];
+                                return $product;
+                            }, $item['products']);
                         })->flatten(1)->toArray(),
+
                         'items' => $group->sum(function ($item) {
                             return count($item['products']);
                         }),

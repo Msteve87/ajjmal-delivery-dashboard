@@ -104,8 +104,9 @@ class OrderService
                     'latitude' => $group->first()['location']['latitude'],
                     'longitude' => $group->first()['location']['longitude'],
                     'products' => $group->map(function ($item) {
-                        return array_map(function ($product) {
+                        return array_map(function ($product) use ($item) {
                             $product['details']['description'] = sanitize_html_string($product['details']['description']);
+                            $product['jm_order_id'] = $item['id_order'];
                             return $product;
                         }, $item['products']);
                     })->flatten(1)->toArray(),

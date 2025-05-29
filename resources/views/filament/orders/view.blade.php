@@ -21,6 +21,13 @@
                     </a>
                 </div>
             </div>
+
+            <!-- Order ID -->
+            <div
+                class="px-4 py-2 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded mb-2 flex items-center space-x-2">
+                <span class="font-semibold">Order ID:</span>
+                <span>{{ $products[0]['jm_order_id'] }}</span>
+            </div>
             <!-- Products List -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
                 @foreach($products as $product)
@@ -54,31 +61,3 @@
     @endforeach
 
 </div>
-
-<!-- "products": [
-                    {
-                        "name": "قراديلا متوسطة",
-                        "price": "30.000000",
-                        "details": {
-                            "name": "قراديلا متوسطة",
-                            "price": "30.00 د.ل.‏",
-                            "images": [
-                                {
-                                    "src": "https://ajjmal.ly/10002-large_default/--6563.jpg"
-                                }
-                            ],
-                            "seller": {
-                                "logo": "https://ajjmal.ly/img/mp_seller/zondsilxwnha.jpeg",
-                                "name": "عروض ومواسم",
-                                "phone": "+218920000000"
-                            },
-                            "description": "قراديلا متوسطة ،مصنوعة من الفولاذ المقاوم للصدأ .",
-                            "seller_location": {
-                                "latitude": "0.00000000",
-                                "longitude": "0.00000000"
-                            }
-                        },
-                        "quantity": 1,
-                        "product_id": 6563
-                    }
-                ], -->

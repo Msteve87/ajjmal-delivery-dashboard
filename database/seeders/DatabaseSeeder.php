@@ -34,11 +34,11 @@ class DatabaseSeeder extends Seeder
         //     'icon' => 'payment-methods/sadad.png',
         // ]);
 
-        $orders = \App\Models\Order::factory(10)->create();
+        // $orders = \App\Models\Order::factory(10)->create();
 
         $this->call([
-            // DriverSeeder::class,
-            // OrderStatusesSeeder::class
+            DriverSeeder::class,
+            OrderStatusesSeeder::class
         ]);
     }
 }

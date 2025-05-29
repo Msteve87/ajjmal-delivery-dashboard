@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\V1\Driver;
 
-use App\Http\Resources\Api\V1\OrdersResource;
+use App\Http\Resources\Api;
 use App\Models\Order;
 use App\Models\Location;
 use App\Models\OrderStatus;
@@ -29,7 +29,7 @@ class OrderController extends Controller
             [
                 'status' => 'success',
                 'data' => [
-                    'items' => OrdersResource::collection($awaitingOrders),
+                    'items' => Api\V2\OrderResource::collection($awaitingOrders),
                 ],
             ]
         );
@@ -74,7 +74,7 @@ class OrderController extends Controller
             [
                 'status' => 'success',
                 'data' => [
-                    'items' => OrdersResource::collection($orders),
+                    'items' => Api\V2\OrderResource::collection($orders),
                 ],
             ]
         );
@@ -146,7 +146,7 @@ class OrderController extends Controller
             return response()->json(
                 [
                     'status' => 'success',
-                    'data' => new OrdersResource($order),
+                    'data' => new Api\V2\OrderResource($order),
                 ],
                 201
             );

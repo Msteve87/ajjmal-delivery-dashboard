@@ -46,11 +46,11 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('jm_order_id', )
+                TextColumn::make('id', )
                     ->label('Id'),
 
                 TextColumn::make('reference')
-                    ->label('reference'),
+                    ->label('Reference'),
 
                 TextColumn::make('payment_method')
                     ->label('Payment Method'),
@@ -71,6 +71,9 @@ class OrderResource extends Resource
                         'delivered' => 'success',
                         'cancelled' => 'danger',
                     }),
+
+                TextColumn::make('price')
+                    ->label('Price'),
 
                 TextColumn::make('total_shipping')
                     ->label('Total Shipping'),

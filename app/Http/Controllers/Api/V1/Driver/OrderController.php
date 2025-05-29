@@ -106,6 +106,7 @@ class OrderController extends Controller
             if ($existingOrder) {
                 $existingOrder->update([
                     'jm_order_id' => $item['id_order'],
+                    'price' => $item['total_paid'] - $item['total_shipping'],
                     'total_paid' => $item['total_paid'],
                     'total_shipping' => $item['total_shipping'],
                     'payment_method' => $item['payment'],
@@ -125,6 +126,7 @@ class OrderController extends Controller
                     [
                         'jm_order_id' => $item['id_order'],
                         'reference' => $item['reference'],
+                        'price' => $item['total_paid'] - $item['total_shipping'],
                         'total_paid' => $item['total_paid'],
                         'total_shipping' => $item['total_shipping'],
                         'payment_method' => $item['payment'],

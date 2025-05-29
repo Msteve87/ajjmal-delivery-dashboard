@@ -15,11 +15,9 @@ return new class extends Migration {
             $table->string('reference')->unique();
             $table->unsignedBigInteger('jm_order_id');
             $table->string('payment_method');
-
-            // $table->enum(column: 'status', allowed: ['pending', 'awaiting', 'in_progress', 'delivered', 'canceled']);
-
             $table->foreignId('order_status_id')->constrained('order_statuses');
-
+            $table->dateTime('delivery_date')->nullable();
+            $table->decimal('price', 10, 2);
             $table->decimal('total_paid', 10, 2);
             $table->decimal('total_shipping', 10, 2);
             $table->string('customer_name')->nullable();

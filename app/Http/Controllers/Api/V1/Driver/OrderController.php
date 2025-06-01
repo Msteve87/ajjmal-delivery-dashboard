@@ -49,7 +49,7 @@ class OrderController extends Controller
                 [
                     'status' => 'success',
                     'data' => [
-                        'items' => $items,
+                        'items' => Api\V1\OrderItemsResource::collection($items),
                     ],
                 ]
             );

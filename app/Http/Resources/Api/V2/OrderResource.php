@@ -35,6 +35,8 @@ class OrderResource extends JsonResource
             'address' => $this->address,
             'customer_phone' => $this->customer_phone,
             'items' => $this->items,
+            'latitude' => $this->location->latitude,
+            'longitude' => $this->location->longitude,
             'products_by_seller' => $productsBySeller->map(function ($products, $sellerName) {
                 $seller = $products[0]['details']['seller'] ?? [];
                 return [

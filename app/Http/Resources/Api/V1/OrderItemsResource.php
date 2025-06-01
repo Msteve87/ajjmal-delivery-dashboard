@@ -14,56 +14,6 @@ class OrderItemsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // Parse this
-        //          "delivery_date" => "2025-05-29"
-//     "start_time" => "09:00"
-//     "end_time" => "10:00"
-//     "reference" => "GIKSTEHBM"
-//     "payment_method" => "الدفع عند الاستلام"
-//     "total_paid" => "155.00"
-//     "total_shipping" => "10.00"
-//     "status" => "pending"
-//     "status_ar" => "جديدة"
-//     "current_state_name" => "Processing in progress"
-//     "customer_name" => "Ajjmal User"
-//     "address" => "يدر"
-//     "customer_phone" => "0910057059"
-//     "latitude" => "32.399504428658"
-//     "longitude" => "15.125762231986"
-//     "products" => array:1 [
-//       0 => array:6 [
-//         "product_id" => 11177
-//         "name" => "عطر خمرة قهوة"
-//         "quantity" => 1
-//         "price" => "145.000000"
-//         "details" => array:6 [
-//           "name" => "عطر خمرة قهوة"
-//           "description" => """
-//             &amp;nbsp;عطر فاخر مميز يجمع بين الحلوة والدافئه والتوابل مع لمحة من القهوه مما يجعاه خيار مثاليا لمحبي العطور الغورماندية
-//             مل100
-//             """
-//           "price" => "145.00\u{A0}د.ل.\u{200F}"
-//           "images" => array:1 [
-//             0 => array:1 [
-//               "src" => "https://ajjmal.ly/18667-large_default/--11177.jpg"
-//             ]
-//           ]
-//           "seller" => array:3 [
-//             "name" => "ماريا بيوتي"
-//             "phone" => "+218918683837"
-//             "logo" => "https://ajjmal.ly/img/mp_seller/whrfcyqtrnpu.png"
-//           ]
-//           "seller_location" => array:2 [
-//             "latitude" => "32.87487300"
-//             "longitude" => "13.25480500"
-//           ]
-//         ]
-//         "jm_order_id" => 3118
-//       ]
-//     ]
-//     "items" => 1
-//   ]
-        // to return this
         $productsBySeller = collect($this['products'])->groupBy(function ($product) {
             return $product['details']['seller']['name'] ?? 'بدون بائع';
         });
@@ -84,6 +34,8 @@ class OrderItemsResource extends JsonResource
             'customer_name' => $this['customer_name'],
             'address' => $this['address'],
             'customer_phone' => $this['customer_phone'],
+            'latitude' => $this['latitude'],
+            'longitude' => $this['longitude'],
             'items' => $this['items'],
             'products_by_seller' => $productsBySeller->map(function ($products, $sellerName) {
                 $seller = $products[0]['details']['seller'] ?? [];

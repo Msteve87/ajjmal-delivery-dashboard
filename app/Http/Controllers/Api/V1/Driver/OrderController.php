@@ -201,7 +201,8 @@ class OrderController extends Controller
                             ], 400);
                         }
                         break;
-                    case "cancelled":
+                    case "cancelled_by_customer":
+                    case "cancelled_by_seller":
                         if ($order->orderStatus->slug === "delivered" || $order->orderStatus->slug === "in_progress") {
                             return response()->json([
                                 'status' => 'error',

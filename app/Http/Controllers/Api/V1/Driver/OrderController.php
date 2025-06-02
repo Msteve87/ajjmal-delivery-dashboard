@@ -11,10 +11,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
+
 class OrderController extends Controller
 {
     public function __construct(
-        protected \App\Services\OrderService $orderService
+        protected \App\Services\OrderService $orderService,
+        protected \App\Services\DeviceTokenService $deviceTokenService
     ) {
     }
 
@@ -142,6 +147,20 @@ class OrderController extends Controller
                     ]
                 );
             }
+
+            $deviceToken = $this->deviceTokenService->getDeviceToken(Auth::id());
+
+            $factory = (new Factory)->withServiceAccount(config('services.firebase.credentials'));
+
+            $messaging = $factory->createMessaging();
+
+            $message = CloudMessage::withTarget('token', $deviceToken)
+                ->withNotification(Notification::create(
+                    'Your Notification Title',
+                    'This is the message body.'
+                ));
+
+            $messaging->send($message);
 
             return response()->json(
                 [

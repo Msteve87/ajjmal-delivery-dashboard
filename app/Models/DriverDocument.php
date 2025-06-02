@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class DriverDocument extends Model
 {
-    //
+    protected $guarded = [];
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id');
+    }
 }

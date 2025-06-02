@@ -69,7 +69,8 @@ class OrderResource extends Resource
                         'awaiting' => 'accent',
                         'in_progress' => 'warning',
                         'delivered' => 'success',
-                        'cancelled' => 'danger',
+                        'cancelled_by_customer' => 'danger',
+                        'cancelled_by_seller' => 'danger',
                     }),
 
                 TextColumn::make('price')
@@ -113,13 +114,15 @@ class OrderResource extends Resource
                                 'awaiting' => 'Awaiting',
                                 'in_progress' => 'In Progress',
                                 'delivered' => 'Delivered',
-                                'cancelled' => 'Canceld'
+                                'cancelled_by_seller' => 'Canceld by Seller',
+                                'cancelled_by_customer' => 'Cancelled by Customer',
                             ])
                             ->icons([
                                 'pending' => 'heroicon-o-question-mark-circle',
                                 'awaiting' => 'heroicon-o-clock',
                                 'in_progress' => 'heroicon-o-truck',
-                                'cancelled' => 'heroicon-o-x-circle',
+                                'cancelled_by_seller' => 'heroicon-o-x-circle',
+                                'cancelled_by_customer' => 'heroicon-o-x-circle',
                                 'delivered' => 'heroicon-o-check',
                             ])
                             ->colors([
@@ -127,7 +130,8 @@ class OrderResource extends Resource
                                 'awaiting' => 'accent',
                                 'in_progress' => 'primary',
                                 'delivered' => 'success',
-                                'cancelled' => 'danger'
+                                'cancelled_by_seller' => 'danger',
+                                'cancelled_by_customer' => 'danger',
                             ])
                             ->extraAttributes(['class' => 'max-w-xs m-4 flex h-fit flex-wrap items-center gap-2 rounded-xl py-4'])
                             ->afterStateUpdated(function ($state, $record, $set, $get) {

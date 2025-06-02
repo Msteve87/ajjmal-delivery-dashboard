@@ -128,7 +128,7 @@ class OrderController extends Controller
                         'total_paid' => $item['total_paid'],
                         'total_shipping' => $item['total_shipping'],
                         'payment_method' => $item['payment'],
-                        'order_status_id' => 2,
+                        'order_status_id' => OrderStatus::where('slug', 'awaiting')->first()->id,
                         'items' => $item['items'],
                         'address' => $item['address'],
                         'customer_name' => $item['customer_name'],

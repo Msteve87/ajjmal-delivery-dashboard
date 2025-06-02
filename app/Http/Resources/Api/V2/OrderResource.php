@@ -21,7 +21,7 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'reference' => $this->reference,
-            'payment_method' => $this->payment_method,
+            'payment_method' => $this->payment_method === "Payment on delivery (POD)" ? "الدفع الإلكتروني عند الإستلام" : $this->payment_method,
             'order_status_id' => $this->order_status_id,
             'status' => $this->orderStatus->name,
             'status_ar' => $this->orderStatus->name_ar,

@@ -18,8 +18,8 @@ class OrderStatusesSeeder extends Seeder
             ['slug' => 'awaiting', 'name' => 'awaiting', 'name_ar' => 'جاري التنفيد'],
             ['slug' => 'in_progress', 'name' => 'In progress', 'name_ar' => 'جاري التوصيل'],
             ['slug' => 'delivered', 'name' => 'Delivered', 'name_ar' => 'تم التوصيل'],
-            ['slug' => 'cancelled_by_customer', 'name' => 'Cancelled by customer', 'name_ar' => 'تم إلغاء الطلب من قبل العميل'],
-            ['slug' => 'cancelled_by_seller', 'name' => 'Cancelled by seller', 'name_ar' => 'تم إلغاء الطلب من قبل البائع'],
+            ['slug' => 'cancelled_by_customer', 'name' => 'Cancelled by customer', 'name_ar' => 'إلغاء من العميل'],
+            ['slug' => 'cancelled_by_seller', 'name' => 'Cancelled by seller', 'name_ar' => 'إلغاء من البائع'],
         ]);
     }
 }

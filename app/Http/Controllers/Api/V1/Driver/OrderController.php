@@ -194,7 +194,7 @@ class OrderController extends Controller
                         }
                         break;
                     case "delivered":
-                        if ($order->orderStatus->slug !== "in_progress") {
+                        if ($order->orderStatus->slug !== "in_progress" && $order->orderStatus->slug !== "awaiting") {
                             return response()->json([
                                 'status' => 'error',
                                 'message' => 'Operation is not allowed'

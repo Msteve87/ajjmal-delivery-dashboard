@@ -155,11 +155,11 @@ class DriverResource extends Resource
                             ->directory('driver_documents')
                             ->nullable(),
 
-                        Forms\Components\FileUpload::make('passport')
-                            ->label(__('filament/resources.driver.form.passport_attachment'))
-                            ->disk('local')
-                            ->directory('driver_documents')
-                            ->nullable(),
+                        // Forms\Components\FileUpload::make('passport')
+                        //     ->label(__('filament/resources.driver.form.passport_attachment'))
+                        //     ->disk('local')
+                        //     ->directory('driver_documents')
+                        //     ->nullable(),
 
                         Forms\Components\FileUpload::make('criminal_case')
                             ->label(__('filament/resources.driver.form.criminal_case_attachment'))
@@ -178,7 +178,9 @@ class DriverResource extends Resource
                             ->disk('local')
                             ->directory('driver_documents')
                             ->nullable(),
-                    ]),
+                    ])
+                    ->deletable(false)
+                    ->columns(2),
             ]);
     }
 

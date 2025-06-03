@@ -19,6 +19,27 @@ return [
             'status' => 'Status',
             'is_active' => 'Is Active',
         ],
+        'form' => [
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'phone' => 'Phone Number',
+            'password' => 'Password',
+            'attachments' => 'Attachments',
+            'vehicle_registration' => 'Vehicle Registration',
+            'vehicle_insurance' => 'Vehicle Insurance',
+            'vehicle_license' => 'Roaming License Image',
+            'license_no' => 'License Number',
+            'passport_no' => 'Passport Number',
+            'criminal_case' => 'Criminal Case',
+            'national_no' => 'National Number',
+            'vehicle_insurance_attachment' => 'Vehicle Insurance Image',
+            'vehicle_registration_attachment' => 'Vehicle Registration Image',
+            'vehicle_license_attachment' => 'Vehicle License Image',
+            'license_attachment' => 'License Image',
+            'passport_attachment' => 'Passport Image',
+            'criminal_case_attachment' => 'Criminal Case Image',
+            'documents' => 'Driver Documents'
+        ]
     ],
     'order' => [
         'label' => 'Order',

@@ -144,31 +144,32 @@ class DriverResource extends Resource
                     ->default(false),
 
                 Forms\Components\Repeater::make('documents')
+                    ->label(__('filament/resources.driver.form.documents'))
                     ->relationship()
                     ->columnSpanFull()
                     ->addable(false)
                     ->schema([
                         Forms\Components\FileUpload::make('license')
                             ->label(__('filament/resources.driver.form.license_attachment'))
-                            ->disk('public')
+                            ->disk('local')
                             ->directory('driver_documents')
                             ->nullable(),
 
                         Forms\Components\FileUpload::make('passport')
                             ->label(__('filament/resources.driver.form.passport_attachment'))
-                            ->disk('public')
+                            ->disk('local')
                             ->directory('driver_documents')
                             ->nullable(),
 
                         Forms\Components\FileUpload::make('criminal_case')
                             ->label(__('filament/resources.driver.form.criminal_case_attachment'))
-                            ->disk('public')
+                            ->disk('local')
                             ->directory('driver_documents')
                             ->nullable(),
 
                         Forms\Components\FileUpload::make('vehicle_registration')
                             ->label(__('filament/resources.driver.form.vehicle_registration_attachment'))
-                            ->disk('public')
+                            ->disk('local')
                             ->directory('driver_documents')
                             ->nullable(),
                     ]),

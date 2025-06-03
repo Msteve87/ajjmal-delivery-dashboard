@@ -39,6 +39,7 @@ return [
             'license_attachment' => 'صورة من الرخصة',
             'passport_attachment' => 'صورة من جواز السفر',
             'criminal_case_attachment' => 'صورة من الحالة الجنائية',
+            'documents' => 'مستندات السائق'
         ]
     ],
     'order' => [

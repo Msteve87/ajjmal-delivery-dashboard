@@ -135,7 +135,7 @@ class DriverResource extends Resource
                             ->nullable(),
 
                         Forms\Components\TextInput::make('license_no')
-                            ->label(__('filament/resources.driver.schema.license_no'))
+                            ->label(__('filament/resources.driver.form.license_no'))
                             ->nullable(),
                     ]),
 

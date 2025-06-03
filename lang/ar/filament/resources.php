@@ -35,7 +35,7 @@ return [
             'national_no' => 'الرقم الوطني',
             'vehicle_insurance_attachment' => 'صورة من تأمين المركبة',
             'vehicle_registration_attachment' => 'صورة من تسجيل المركبة',
-            'vehicle_license_attachment' => 'صورة من رخصة المركبة',
+            'vehicle_license_attachment' => 'صورة من رخصة التجوال',
             'license_attachment' => 'صورة من الرخصة',
             'passport_attachment' => 'صورة من جواز السفر',
             'criminal_case_attachment' => 'صورة من الحالة الجنائية',

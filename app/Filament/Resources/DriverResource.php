@@ -172,6 +172,12 @@ class DriverResource extends Resource
                             ->disk('local')
                             ->directory('driver_documents')
                             ->nullable(),
+
+                        Forms\Components\FileUpload::make('vehicle_license')
+                            ->label(__('filament/resources.driver.form.vehicle_license_attachment'))
+                            ->disk('local')
+                            ->directory('driver_documents')
+                            ->nullable(),
                     ]),
             ]);
     }

@@ -20,6 +20,16 @@ class Driver extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function documents()
+    {
+        return $this->hasMany(DriverDocument::class, 'driver_id');
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'location_id');
+    }
+
     public function setPasswordAttribute($value)
     {
         if ($value) {

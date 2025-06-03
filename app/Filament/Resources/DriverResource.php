@@ -46,81 +46,130 @@ class DriverResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('first_name')
-                    ->label(__('filament/resources.driver.schema.first_name'))
-                    ->required(),
 
-                Forms\Components\TextInput::make('last_name')
-                    ->label(__('filament/resources.driver.schema.last_name'))
-                    ->required(),
+                Forms\Components\Grid::make(3)
+                    ->schema([
+                        Forms\Components\TextInput::make('first_name')
+                            ->label(__('filament/resources.driver.schema.first_name'))
+                            ->required(),
 
-                Forms\Components\TextInput::make('phone')
-                    ->label(__('filament/resources.driver.schema.phone'))
-                    ->unique()
-                    ->required(),
+                        Forms\Components\TextInput::make('last_name')
+                            ->label(__('filament/resources.driver.schema.last_name'))
+                            ->required(),
 
-                Forms\Components\TextInput::make('password')
-                    ->label(__('filament/resources.driver.schema.password'))
-                    ->password()
-                    ->required(),
-
-                Forms\Components\Select::make('gender')
-                    ->label(__('filament/resources.driver.schema.gender'))
-                    ->options([
-                        'male' => 'Male',
-                        'female' => 'Female',
-                    ])
-                    ->required(),
-
-                Forms\Components\Select::make('driver_type')
-                    ->label(__('filament/resources.driver.schema.driver_type'))
-                    ->options([
-                        'employee' => 'Employee',
-                        'independent' => 'Independent',
-                    ])
-                    ->required(),
-
-                Forms\Components\DatePicker::make('dob')
-                    ->label(__('filament/resources.driver.schema.date_of_birth'))
-                    ->required()
-                    ->rules([
-                        'date',
-                        new MinAgeRule(18),
+                        Forms\Components\TextInput::make('phone')
+                            ->label(__('filament/resources.driver.schema.phone'))
+                            ->unique()
+                            ->required(),
                     ]),
 
-                Forms\Components\TextInput::make('passport_no')
-                    ->label(__('filament/resources.driver.schema.passport_number'))
-                    ->nullable(),
+                Forms\Components\Grid::make(3)
+                    ->schema([
+                        Forms\Components\Select::make('gender')
+                            ->label(__('filament/resources.driver.schema.gender'))
+                            ->options([
+                                'male' => 'Male',
+                                'female' => 'Female',
+                            ])
+                            ->required(),
 
-                Forms\Components\TextInput::make('criminal_case')
-                    ->label(__('filament/resources.driver.schema.criminal_case'))
-                    ->nullable(),
+                        Forms\Components\Select::make('driver_type')
+                            ->label(__('filament/resources.driver.schema.driver_type'))
+                            ->options([
+                                'employee' => 'Employee',
+                                'independent' => 'Independent',
+                            ])
+                            ->required(),
 
-                Forms\Components\TextInput::make('national_no')
-                    ->label(__('filament/resources.driver.schema.national_number'))
-                    ->nullable(),
+                        Forms\Components\DatePicker::make('dob')
+                            ->label(__('filament/resources.driver.schema.date_of_birth'))
+                            ->required()
+                            ->rules([
+                                'date',
+                                new MinAgeRule(18),
+                            ]),
+                    ]),
 
-                Forms\Components\Select::make('delivery_status')
-                    ->label(__('filament/resources.driver.schema.delivery_status'))
-                    ->options([
-                        'available' => 'Available',
-                        'not_available' => 'Not Available',
-                    ])
-                    ->default('available'),
+                Forms\Components\Grid::make(3)
+                    ->schema([
+                        Forms\Components\Select::make('delivery_status')
+                            ->label(__('filament/resources.driver.schema.delivery_status'))
+                            ->options([
+                                'available' => 'Available',
+                                'not_available' => 'Not Available',
+                            ])
+                            ->default('available'),
 
-                Forms\Components\Select::make('status')
-                    ->label(__('filament/resources.driver.schema.status'))
-                    ->options([
-                        'pending' => 'Pending',
-                        'processing' => 'Processing',
-                        'approved' => 'Approved',
-                        'rejected' => 'Rejected',
-                    ])
-                    ->default('pending'),
+                        // Forms\Components\Select::make('status')
+                        //     ->label(__('filament/resources.driver.schema.status'))
+                        //     ->options([
+                        //         'pending' => 'Pending',
+                        //         'processing' => 'Processing',
+                        //         'approved' => 'Approved',
+                        //         'rejected' => 'Rejected',
+                        //     ])
+                        //     ->default('pending'),
+
+                        Forms\Components\TextInput::make('passport_no')
+                            ->label(__('filament/resources.driver.schema.passport_number'))
+                            ->nullable(),
+
+                        Forms\Components\TextInput::make('password')
+                            ->label(__('filament/resources.driver.schema.password'))
+                            ->password()
+                            ->required(),
+                    ]),
+
+                Forms\Components\Grid::make(3)
+                    ->schema([
+                        // Forms\Components\TextInput::make('passport_no')
+                        //     ->label(__('filament/resources.driver.schema.passport_number'))
+                        //     ->nullable(),
+
+                        Forms\Components\TextInput::make('criminal_case')
+                            ->label(__('filament/resources.driver.schema.criminal_case'))
+                            ->nullable(),
+
+                        Forms\Components\TextInput::make('national_no')
+                            ->label(__('filament/resources.driver.schema.national_number'))
+                            ->nullable(),
+
+                        Forms\Components\TextInput::make('license_no')
+                            ->label(__('filament/resources.driver.schema.license_no'))
+                            ->nullable(),
+                    ]),
 
                 Forms\Components\Toggle::make('is_active')
                     ->label(__('filament/resources.driver.schema.is_active'))
                     ->default(false),
+
+                Forms\Components\Grid::make(2)
+                    ->schema([
+
+                        Forms\Components\FileUpload::make('documents.license')
+                            ->label(__('filament/resources.driver.form.license_attachment'))
+                            ->disk('public')
+                            ->directory('driver_documents')
+                            ->nullable(),
+
+                        Forms\Components\FileUpload::make('documents.passport')
+                            ->label(__('filament/resources.driver.form.passport_attachment'))
+                            ->disk('public')
+                            ->directory('driver_documents')
+                            ->nullable(),
+
+                        Forms\Components\FileUpload::make('documents.criminal_case')
+                            ->label(__('filament/resources.driver.form.criminal_case_attachment'))
+                            ->disk('private')
+                            ->directory('driver_documents')
+                            ->nullable(),
+
+                        Forms\Components\FileUpload::make('documents.vehicle_registration')
+                            ->label(__('filament/resources.driver.form.vehicle_registration_attachment'))
+                            ->disk('private')
+                            ->directory('driver_documents')
+                            ->nullable(),
+                    ]),
             ]);
     }
 

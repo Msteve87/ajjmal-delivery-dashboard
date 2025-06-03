@@ -143,30 +143,32 @@ class DriverResource extends Resource
                     ->label(__('filament/resources.driver.schema.is_active'))
                     ->default(false),
 
-                Forms\Components\Grid::make(2)
+                Forms\Components\Repeater::make('documents')
+                    ->relationship()
+                    ->columnSpanFull()
+                    ->addable(false)
                     ->schema([
-
-                        Forms\Components\FileUpload::make('documents.license')
+                        Forms\Components\FileUpload::make('license')
                             ->label(__('filament/resources.driver.form.license_attachment'))
                             ->disk('public')
                             ->directory('driver_documents')
                             ->nullable(),
 
-                        Forms\Components\FileUpload::make('documents.passport')
+                        Forms\Components\FileUpload::make('passport')
                             ->label(__('filament/resources.driver.form.passport_attachment'))
                             ->disk('public')
                             ->directory('driver_documents')
                             ->nullable(),
 
-                        Forms\Components\FileUpload::make('documents.criminal_case')
+                        Forms\Components\FileUpload::make('criminal_case')
                             ->label(__('filament/resources.driver.form.criminal_case_attachment'))
-                            ->disk('private')
+                            ->disk('public')
                             ->directory('driver_documents')
                             ->nullable(),
 
-                        Forms\Components\FileUpload::make('documents.vehicle_registration')
+                        Forms\Components\FileUpload::make('vehicle_registration')
                             ->label(__('filament/resources.driver.form.vehicle_registration_attachment'))
-                            ->disk('private')
+                            ->disk('public')
                             ->directory('driver_documents')
                             ->nullable(),
                     ]),

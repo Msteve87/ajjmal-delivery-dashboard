@@ -9,8 +9,10 @@ use App\Models\OrderStatus;
 use Filament\Resources\Resource;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
+use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\OrderResource\Pages;
 
 class OrderResource extends Resource
@@ -162,6 +164,30 @@ class OrderResource extends Resource
                             })
                             ->dehydrated(false),
                     ]),
+
+
+                Tables\Actions\Action::make('Delivery Task')
+                    ->label(__('filament/resources.order.actions.assign_driver'))
+                    ->icon('heroicon-o-truck')
+                    ->modalHeading('Assign Delivery Task')
+                    ->modalButton('Assign')
+                    ->requiresConfirmation()
+                    ->accessSelectedRecords()
+
+                    ->form([
+                        \Filament\Forms\Components\Select::make('drivers')
+                            ->label('Select Drivers')
+                            ->multiple()
+                            ->options(\App\Models\Driver::all()->pluck('first_name', 'id'))
+                            ->searchable(),
+                    ])
+                    ->action(function (Model $record, Collection $selectedRecords) {
+                        $selectedRecords->each(
+                            fn(Model $selectedRecord) =>
+                            // $selectedRecord->notify(new DeliveryTaskNotification($record)),
+                            $selectedRecords->update(['is_active' => false])
+                        );
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

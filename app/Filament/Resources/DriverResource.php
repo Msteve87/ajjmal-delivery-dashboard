@@ -13,9 +13,11 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\DriverResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -194,7 +196,6 @@ class DriverResource extends Resource
                 TextColumn::make('national_no')
                     ->label('National No'),
 
-
                 TextColumn::make('full_name')
                     ->label('Driver Name')
                     ->getStateUsing(function ($record) {
@@ -225,7 +226,31 @@ class DriverResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\Action::make('Delivery Task')
+                        ->label('مهمة توصيل')
+                        ->icon('heroicon-o-truck')
+                        ->modalHeading('Assign Delivery Task')
+                        ->modalContent(fn(Model $record) => view(
+                            'filament.drivers.assign-delivery-task',
+                            [
+                                'orders' => \App\Models\Order::all(),
+                                'driver' => $record
+                            ]
+                        ))
+                        ->modalButton('Assign')
+                        ->requiresConfirmation()
+                        ->accessSelectedRecords()
+                        ->action(function (Model $record, Collection $selectedRecords) {
+                            $selectedRecords->each(
+                                fn(Model $selectedRecord) =>
+                                // $selectedRecord->notify(new DeliveryTaskNotification($record)),
+                                $selectedRecords->update(['is_active' => false])
+                            );
+                        }),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

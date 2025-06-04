@@ -12,7 +12,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use App\Filament\Resources\OrderResource\Pages;
-use function JmesPath\search;
 
 class OrderResource extends Resource
 {
@@ -65,6 +64,7 @@ class OrderResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('driver.first_name')
+                    ->formatStateUsing(fn($state, $record) => $record->driver?->first_name . ' ' . $record->driver?->last_name)
                     ->label(__('filament/resources.order.schema.driver_name')),
 
                 TextColumn::make('orderStatus.slug')

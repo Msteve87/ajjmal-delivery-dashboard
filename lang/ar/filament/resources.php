@@ -63,5 +63,8 @@ return [
             'customer_phone' => 'هاتف العميل',
             'products' => 'المنتجات',
         ],
+        'actions' => [
+            'assign_driver' => 'تعيين سائق',
+        ],
     ],
 ];

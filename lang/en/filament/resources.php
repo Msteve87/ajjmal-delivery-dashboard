@@ -63,5 +63,8 @@ return [
             'customer_phone' => 'Customer Phone',
             'products' => 'Products',
         ],
+        'actions' => [
+            'assign_driver' => 'Assign Driver',
+        ],
     ],
 ];

@@ -12,6 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use App\Filament\Resources\OrderResource\Pages;
+use function JmesPath\search;
 
 class OrderResource extends Resource
 {
@@ -47,22 +48,27 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id', )
-                    ->label('Id'),
+                    ->label(__('filament/resources.order.schema.id')),
 
                 TextColumn::make('reference')
-                    ->label('Reference'),
+                    ->label(__('filament/resources.order.schema.reference'))
+                    ->searchable(),
 
                 TextColumn::make('payment_method')
-                    ->label('Payment Method'),
+                    ->label(__('filament/resources.order.schema.payment_method')),
 
                 TextColumn::make('customer_name')
-                    ->label('Customer Name'),
+                    ->label(__('filament/resources.order.schema.customer_name')),
+
+                TextColumn::make('customer_phone')
+                    ->label(__('filament/resources.order.schema.customer_phone'))
+                    ->searchable(),
 
                 TextColumn::make('driver.first_name')
-                    ->label('Driver Name'),
+                    ->label(__('filament/resources.order.schema.driver_name')),
 
                 TextColumn::make('orderStatus.slug')
-                    ->label('Status')
+                    ->label(__('filament/resources.order.schema.status'))
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'pending' => 'gray',
@@ -74,27 +80,27 @@ class OrderResource extends Resource
                     }),
 
                 TextColumn::make('price')
-                    ->label('Price'),
+                    ->label(__('filament/resources.order.schema.price')),
 
                 TextColumn::make('total_shipping')
-                    ->label('Total Shipping'),
+                    ->label(__('filament/resources.order.schema.total_shipping')),
 
                 TextColumn::make('total_paid')
-                    ->label('Total Paid'),
+                    ->label(__('filament/resources.order.schema.total_paid')),
 
                 TextColumn::make('delivery_date')
-                    ->label('Delivery Date')
+                    ->label(__('filament/resources.order.schema.delivery_date'))
                     ->date()
                     ->sortable(),
 
                 TextColumn::make('start_time')
-                    ->label('Start Time')
-                    ->time()
+                    ->label(__('filament/resources.order.schema.start_time'))
+                    ->time('H:i')
                     ->sortable(),
 
                 TextColumn::make('end_time')
-                    ->label('End Time')
-                    ->time()
+                    ->label(__('filament/resources.order.schema.end_time'))
+                    ->time('H:i')
                     ->sortable(),
             ])
             ->filters([
@@ -104,9 +110,9 @@ class OrderResource extends Resource
                 Tables\Actions\ViewAction::make()
                     ->modalHeading('Order Details')
                     ->modalContent(fn($record) => view('filament.orders.view', ['record' => $record])),
+
                 Tables\Actions\EditAction::make()
                     ->form([
-
                         ToggleButtons::make('order_status_id')
                             ->label('Status')
                             ->options([

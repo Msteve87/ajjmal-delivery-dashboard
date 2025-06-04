@@ -5,6 +5,7 @@ return [
         'label' => 'Driver',
         'plural_label' => 'Drivers',
         'schema' => [
+            'id' => 'ID',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'phone' => 'Phone Number',
@@ -45,6 +46,7 @@ return [
         'label' => 'Order',
         'plural_label' => 'Orders',
         'schema' => [
+            'id' => 'ID',
             'jm_order_id' => 'JM Order ID',
             'reference' => 'Reference Number',
             'payment_method' => 'Payment Method',
@@ -52,6 +54,7 @@ return [
             'driver_name' => 'Driver Name',
             'status' => 'Status',
             'total_shipping' => 'Total Shipping',
+            'price' => 'Price',
             'total_paid' => 'Total Paid',
             'delivery_date' => 'Delivery Date',
             'start_time' => 'Start Time',

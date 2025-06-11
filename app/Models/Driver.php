@@ -39,7 +39,6 @@ class Driver extends Authenticatable
     {
         return $this->deviceTokens()
             ->where('active', true)
-            ->pluck('token')
-            ->toArray();
+            ->value('token');
     }
 }

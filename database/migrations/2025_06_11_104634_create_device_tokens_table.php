@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('token')->unique();
             $table->string('device_type')->nullable();
-            $table->foreignId('driver_id')->constrained()->onDelete('cascade');
+            $table->foreignId(column: 'driver_id')->constrained()->onDelete('cascade');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
@@ -24,8 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('device_tokens', function (Blueprint $table) {
-            $table->dropColumn('device_token');
-        });
+        Schema::dropIfExists('device_tokens');
     }
 };

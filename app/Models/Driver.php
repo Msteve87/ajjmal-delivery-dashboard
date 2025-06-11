@@ -1,9 +1,10 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\DeviceToken;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
 class Driver extends Authenticatable
@@ -27,5 +28,18 @@ class Driver extends Authenticatable
         if ($value) {
             $this->attributes['password'] = bcrypt($value);
         }
+    }
+
+    public function deviceTokens()
+    {
+        return $this->hasMany(DeviceToken::class);
+    }
+
+    public function routeNotificationForFcm()
+    {
+        return $this->deviceTokens()
+            ->where('active', true)
+            ->pluck('token')
+            ->toArray();
     }
 }

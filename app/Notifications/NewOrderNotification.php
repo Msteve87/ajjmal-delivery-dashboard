@@ -22,7 +22,7 @@ class NewOrderNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(public \App\Models\Order $order)
     {
         //
     }
@@ -49,7 +49,10 @@ class NewOrderNotification extends Notification
             ->withNotification(FirebaseNotification::create(
                 'New Order',
                 'You have a new delivery task',
-            ));
+            ))
+            ->withData([
+                'order_id' => $this->order->id,
+            ]);
 
         $messaging->send($message);
     }

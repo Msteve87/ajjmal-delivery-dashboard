@@ -1,7 +1,6 @@
 <?php
 namespace App\Filament\Resources;
 
-use App\Notifications\NewOrderNotification;
 use Filament\Tables;
 use App\Models\Order;
 use Filament\Forms\Form;
@@ -11,6 +10,8 @@ use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use App\Notifications\NewOrderNotification;
 use Filament\Forms\Components\ToggleButtons;
 use App\Filament\Resources\OrderResource\Pages;
 
@@ -181,8 +182,13 @@ class OrderResource extends Resource
                     ->action(function (Model $record, array $data) {
                         collect($data['drivers'])->each(function ($driverId) use ($record) {
                             $driver = \App\Models\Driver::find($driverId);
-                            $driver->notify(new NewOrderNotification());
+                            $driver->notify(new NewOrderNotification($record));
                         });
+
+                        Notification::make()
+                            ->title('Delivery Task Assigned')
+                            ->success()
+                            ->send();
                     })
             ])
             ->bulkActions([

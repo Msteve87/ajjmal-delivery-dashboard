@@ -19,7 +19,8 @@ class AuthController extends Controller
      * Create a new class instance.
      */
     public function __construct(
-        protected \App\Services\OtpService $otpService
+        protected \App\Services\OtpService $otpService,
+        protected \App\Services\DeviceTokenService $deviceTokenService
     ) {
     }
 
@@ -43,6 +44,10 @@ class AuthController extends Controller
         if ($driver && Hash::check($request->password, $driver->password)) {
 
             $driver->setRememberToken(Str::random(60));
+
+            if ($request->has('device_token')) {
+                $this->deviceTokenService->storeDeviceToken($driver->id, $request->device_token);
+            }
 
             RateLimiter::clear("driver-identifier {$request->identifier}");
 

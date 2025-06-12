@@ -14,7 +14,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class OrderController extends Controller
 {
     public function __construct(
-        protected \App\Services\OrderService $orderService
+        protected \App\Services\OrderService $orderService,
+        protected \App\Services\DeviceTokenService $deviceTokenService
     ) {
     }
 

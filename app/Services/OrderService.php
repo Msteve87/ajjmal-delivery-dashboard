@@ -41,9 +41,9 @@ class OrderService
                 })
                 ->map(function ($group) {
                     return [
-                        'delivery_date' => $group->first()['delivery_date'],
-                        'start_time' => $group->first()['start_time'],
-                        'end_time' => $group->first()['end_time'],
+                        'delivery_date' => $group->first()['delivery_date'] ?? null,
+                        'start_time' => $group->first()['start_time'] ?? null,
+                        'end_time' => $group->first()['end_time'] ?? null,
                         'reference' => $group->first()['reference'],
                         'payment_method' => $group->first()['payment'],
                         'total_paid' => number_format((float) $group->sum('total_paid'), 2, '.', ''),
@@ -92,9 +92,9 @@ class OrderService
             ->groupBy('reference')
             ->map(function ($group) {
                 return [
-                    'delivery_date' => $group->first()['delivery_date'],
-                    'start_time' => $group->first()['start_time'],
-                    'end_time' => $group->first()['end_time'],
+                    'delivery_date' => $group->first()['delivery_date'] ?? null,
+                    'start_time' => $group->first()['start_time'] ?? null,
+                    'end_time' => $group->first()['end_time'] ?? null,
                     'id_order' => $group->first()['id_order'],
                     'reference' => $group->first()['reference'],
                     'payment' => $group->first()['payment'],

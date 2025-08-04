@@ -17,65 +17,74 @@ class OrderService
         //
     }
 
-    public function getJmOrders($limit = 1000)
+    public function getJmOrdersByStatus($status)
     {
         $params = [
-            'limit' => $limit,
+            'state' => $status,
             'sort_by' => 'total_paid',
             'order' => 'desc',
         ];
 
         $response = Http::get(env('JM_API_URL'), $params);
 
+        if ($response->successful()) {
+            return $response->json()['data'];
+        } else {
+            throw new \Exception('Error while fetching JM orders by status');
+        }
+    }
+
+    public function getJmOrders()
+    {
+        $processinginProgress = $this->getJmOrdersByStatus('Processing in Progress');
+
+        $paymentAccepted = $this->getJmOrdersByStatus('Payment Accepted');
+
+        $items = collect($processinginProgress)->merge($paymentAccepted);
+
         $orderReferences = Order::whereHas('orderStatus', function ($query) {
             $query->where('name', '!=', 'pending');
         })->pluck('reference');
 
-        if ($response->successful()) {
-            $items = $response->json()['data'];
+        $mergedItems = collect($items)
+            ->groupBy('reference')
+            ->filter(function ($group, $reference) use ($orderReferences) {
+                return !$orderReferences->contains($reference);
+            })
+            ->map(function ($group) {
+                return [
+                    'delivery_date' => $group->first()['delivery_date'] ?? null,
+                    'start_time' => $group->first()['start_time'] ?? null,
+                    'end_time' => $group->first()['end_time'] ?? null,
+                    'reference' => $group->first()['reference'],
+                    'payment_method' => $group->first()['payment'],
+                    'total_paid' => number_format((float) $group->sum('total_paid'), 2, '.', ''),
+                    'total_shipping' => number_format((float) $group->max('total_shipping'), 2, '.', ''),
+                    'status' => 'pending',
+                    'status_ar' => 'جديدة',
+                    'current_state_name' => $group->first()['current_state_name'],
+                    'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
+                    'address' => $group->first()['customer']['address'],
+                    'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
+                    'latitude' => $group->first()['location']['latitude'],
+                    'longitude' => $group->first()['location']['longitude'],
+                    'products' => $group->map(function ($item) {
+                        return array_map(function ($product) use ($item) {
+                            $product['details']['description'] = sanitize_html_string($product['details']['description']);
+                            $product['jm_order_id'] = $item['id_order'];
+                            return $product;
+                        }, $item['products']);
+                    })->flatten(1)->toArray(),
 
-            $mergedItems = collect($items)
-                ->groupBy('reference')
-                ->filter(function ($group, $reference) use ($orderReferences) {
-                    return !$orderReferences->contains($reference);
-                })
-                ->map(function ($group) {
-                    return [
-                        'delivery_date' => $group->first()['delivery_date'] ?? null,
-                        'start_time' => $group->first()['start_time'] ?? null,
-                        'end_time' => $group->first()['end_time'] ?? null,
-                        'reference' => $group->first()['reference'],
-                        'payment_method' => $group->first()['payment'],
-                        'total_paid' => number_format((float) $group->sum('total_paid'), 2, '.', ''),
-                        'total_shipping' => number_format((float) $group->max('total_shipping'), 2, '.', ''),
-                        'status' => 'pending',
-                        'status_ar' => 'جديدة',
-                        'current_state_name' => $group->first()['current_state_name'],
-                        'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
-                        'address' => $group->first()['customer']['address'],
-                        'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                        'latitude' => $group->first()['location']['latitude'],
-                        'longitude' => $group->first()['location']['longitude'],
-                        'products' => $group->map(function ($item) {
-                            return array_map(function ($product) use ($item) {
-                                $product['details']['description'] = sanitize_html_string($product['details']['description']);
-                                $product['jm_order_id'] = $item['id_order'];
-                                return $product;
-                            }, $item['products']);
-                        })->flatten(1)->toArray(),
+                    'items' => $group->sum(function ($item) {
+                        return count($item['products']);
+                    }),
+                ];
+            })
+            ->values()
+            ->toArray();
 
-                        'items' => $group->sum(function ($item) {
-                            return count($item['products']);
-                        }),
-                    ];
-                })
-                ->values()
-                ->toArray();
-
-            return $mergedItems;
-        } else {
-            throw new \Exception('Error while fetching JM orders');
-        }
+        return $mergedItems;
     }
 
     public function getJmOrderByReference($reference)
@@ -148,9 +157,9 @@ class OrderService
                 })
                 ->map(function ($group) {
                     return [
-                        'delivery_date' => $group->first()['delivery_date'],
-                        'start_time' => $group->first()['start_time'],
-                        'end_time' => $group->first()['end_time'],
+                        'delivery_date' => $group->first()['delivery_date'] ?? null,
+                        'start_time' => $group->first()['start_time'] ?? null,
+                        'end_time' => $group->first()['end_time'] ?? null,
                         'id_order' => $group->first()['id_order'],
                         'reference' => $group->first()['reference'],
                         'payment' => $group->first()['payment'],

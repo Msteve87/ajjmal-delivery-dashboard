@@ -9,7 +9,8 @@ Route::middleware('auth:sanctum')
     ->group(function () {
         Route::controller(OrderStatusController::class)
             ->group(function () {
-                Route::get('/order-statuses/list', [OrderStatusController::class, 'index']);
+                Route::get('/order-statuses/list', 'index');
+                Route::get('/jm-order-statuses', 'listJmOrderStatuses');
             });
 
         Route::controller(PaymentMethodController::class)

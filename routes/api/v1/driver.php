@@ -21,6 +21,9 @@ Route::middleware('auth:sanctum')
         Route::controller(V1\Driver\OrderController::class)
             ->group(function () {
                 Route::post('/update-order-status/{id}', 'update');
+
+                Route::post('/update-jm-order-status', 'updateJmOrder');
+
                 Route::get('/awaiting', 'awaitingOrders');
                 Route::get('/list-orders', 'listDriverOrders');
                 Route::get('/get-jm-orders', 'listNewOrders');

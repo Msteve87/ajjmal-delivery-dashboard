@@ -1,10 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\V1\Driver;
 
-use App\Http\Resources\Api;
 use App\Models\Order;
 use App\Models\Location;
+use App\Http\Resources\Api;
 use App\Models\OrderStatus;
+use App\Enums\JmOrderStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +84,7 @@ class OrderController extends Controller
 
     public function acceptOrder(string $reference)
     {
+        $item = $this->orderService->getJmOrderByReference($reference);
         try {
             $exist = Order::whereHas('orderStatus', function ($query) {
                 $query->where('name', '===', 'pending');
@@ -236,5 +238,24 @@ class OrderController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+
+    public function updateJmOrder(Request $request)
+    {
+        $request->validate([
+            'jm_order_id' => 'required|string',
+            'jm_status_id' => 'required|string|in:' . implode(',', array_column(JmOrderStatus::cases(), 'value')),
+        ]);
+
+        $status = JmOrderStatus::from($request->jm_status_id);
+
+        $this->orderService->updateJmStatusOrder($request->jm_order_id, $status->value);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Ajjmal Order status updated successfully'
+        ]);
+
     }
 }

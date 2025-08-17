@@ -209,6 +209,18 @@ class OrderService
         });
     }
 
+    public function updateJmStatusOrder(string $jmOrderId, string $jmStateId)
+    {
+        $response = Http::post(env('JM_API_URL') . "/change_state.php", [
+            'order_id' => $jmOrderId,
+            'state_id' => $jmStateId
+        ]);
+
+        if (!$response->json()['success'] ?? false) {
+            throw new HttpException(400, 'Failed to update JM order');
+        }
+    }
+
     public function getStats()
     {
         $driverId = Auth::id();

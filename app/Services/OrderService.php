@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -210,16 +211,20 @@ class OrderService
 
     public function getStats()
     {
+        $driverId = Auth::id();
+
         $stats = [
-            'cancelled' => Order::whereHas('orderStatus', function ($query) {
-                $query->where('slug', 'cancelled');
-            })->count(),
-            'in_progress' => Order::whereHas('orderStatus', function ($query) {
-                $query->where('slug', 'in_progress');
-            })->count(),
-            'delivered' => Order::whereHas('orderStatus', function ($query) {
-                $query->where('slug', 'delivered');
-            })->count()
+            'cancelled' => Order::where('driver_id', $driverId)
+                ->whereHas('orderStatus', fn($query) => $query->where('slug', 'cancelled'))
+                ->count(),
+
+            'in_progress' => Order::where('driver_id', $driverId)
+                ->whereHas('orderStatus', fn($query) => $query->where('slug', 'in_progress'))
+                ->count(),
+
+            'delivered' => Order::where('driver_id', $driverId)
+                ->whereHas('orderStatus', fn($query) => $query->where('slug', 'delivered'))
+                ->count(),
         ];
 
         return $stats;

@@ -73,7 +73,9 @@ class OrderService
                         return array_map(function ($product) use ($item) {
                             $product['details']['description'] = sanitize_html_string($product['details']['description']);
                             $product['jm_order_id'] = $item['id_order'];
+                            $product['current_state_name'] = $item['current_state_name'];
                             return $product;
+
                         }, $item['products']);
                     })->flatten(1)->toArray(),
 
@@ -84,7 +86,6 @@ class OrderService
             })
             ->values()
             ->toArray();
-
         return $mergedItems;
     }
 
@@ -120,6 +121,7 @@ class OrderService
                         return array_map(function ($product) use ($item) {
                             $product['details']['description'] = sanitize_html_string($product['details']['description']);
                             $product['jm_order_id'] = $item['id_order'];
+                            $product['current_state_name'] = $item['current_state_name'];
                             return $product;
                         }, $item['products']);
                     })->flatten(1)->toArray(),

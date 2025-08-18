@@ -45,6 +45,7 @@ class OrderItemsResource extends JsonResource
                     'seller_phone' => $seller['phone'] ?? '',
                     'seller_location' => $products[0]['details']['seller_location'] ?? '',
                     'jm_order_id' => $products[0]['jm_order_id'] ?? '',
+                    'current_state' => $products[0]['current_state_name'],
                     'products' => collect($products)->map(function ($product) {
                         return [
                             'name' => $product['name'],

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Driver\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\OrderStatusController;
@@ -11,6 +12,11 @@ Route::middleware('auth:sanctum')
             ->group(function () {
                 Route::get('/order-statuses/list', 'index');
                 Route::get('/jm-order-statuses', 'listJmOrderStatuses');
+            });
+
+        Route::controller(OrderController::class)
+            ->group(function () {
+                Route::get('/show-jm-order/{reference}', 'showJmOrder');
             });
 
         Route::controller(PaymentMethodController::class)

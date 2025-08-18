@@ -7,8 +7,10 @@ use App\Http\Resources\Api;
 use App\Models\OrderStatus;
 use App\Enums\JmOrderStatus;
 use Illuminate\Http\Request;
+use App\Events\JmOrderStatusUpdated;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Api\v1\ProductResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -84,7 +86,6 @@ class OrderController extends Controller
 
     public function acceptOrder(string $reference)
     {
-        $item = $this->orderService->getJmOrderByReference($reference);
         try {
             $exist = Order::whereHas('orderStatus', function ($query) {
                 $query->where('name', '===', 'pending');
@@ -240,7 +241,6 @@ class OrderController extends Controller
         }
     }
 
-
     public function updateJmOrder(Request $request)
     {
         $request->validate([
@@ -252,10 +252,24 @@ class OrderController extends Controller
 
         $this->orderService->updateJmStatusOrder($request->jm_order_id, $status->value);
 
+        event(new JmOrderStatusUpdated($request->jm_order_id));
+
         return response()->json([
             'status' => 'success',
             'message' => 'Ajjmal Order status updated successfully'
         ]);
+    }
 
+    public function showJmOrder(string $reference)
+    {
+        $items = $this->orderService->getJmOrderByReference($reference);
+
+        $products = (new ProductResource($items))->resolve();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Ajmal Order retrieved successfully',
+            'data' => $products
+        ]);
     }
 }

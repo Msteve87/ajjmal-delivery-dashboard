@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->string('reference')->unique();
             $table->string('payment_method');
-            $table->foreignId('order_status_id')->constrained('order_statuses');
             $table->dateTime('delivery_date')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();

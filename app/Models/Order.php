@@ -27,4 +27,9 @@ class Order extends Model
     {
         return $this->belongsTo(OrderStatus::class, 'order_status_id');
     }
+
+    public function subOrder()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

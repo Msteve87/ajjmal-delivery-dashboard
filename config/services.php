@@ -38,4 +38,8 @@ return [
     'firebase' => [
         'credentials' => storage_path('app/firebase/firebase_credentials.json'),
     ],
+
+    'ajjmal' => [
+        'api_url' => env('JM_API_URL')
+    ]
 ];

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AjjmalMarketApiService
 {
@@ -28,5 +29,18 @@ class AjjmalMarketApiService
         } else {
             throw new \Exception('Error while fetching JM orders by status');
         }
+    }
+
+    public function getSubOrders($reference)
+    {
+        $response = Http::get(env('JM_API_URL') . "?reference={$reference}&order=desc");
+
+        if (empty(json_decode($response, associative: true)['data'])) {
+            throw new HttpException(404, 'Order not found');
+        }
+
+        $items = $response->json()['data'];
+
+        return $items;
     }
 }

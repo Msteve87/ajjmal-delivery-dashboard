@@ -17,7 +17,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class OrderController extends Controller
 {
     public function __construct(
+        protected \App\Services\AjjmalMarketApiService $ajjmalMarketApiService,
         protected \App\Services\OrderService $orderService,
+        protected \App\Services\SubOrderService $subOrderService,
         protected \App\Services\DeviceTokenService $deviceTokenService
     ) {
     }
@@ -146,6 +148,10 @@ class OrderController extends Controller
                     ]
                 );
             }
+
+            $subOrders = $this->ajjmalMarketApiService->getSubOrders($reference);
+
+            $this->subOrderService->storeSubOrder($order, $subOrders);
 
             return response()->json(
                 [

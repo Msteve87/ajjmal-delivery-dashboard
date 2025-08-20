@@ -12,9 +12,11 @@ return new class extends Migration {
     {
         Schema::create('sub_orders', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('tracking_id');
             $table->decimal('base_price');
             $table->decimal('total');
             $table->decimal('shipping_price');
+            $table->json('products')->nullable();
             $table->boolean('is_picked_up')->default(false);
             $table->foreignId('order_status_id')->constrained('order_statuses');
             $table->foreignId('order_id')->constrained('orders');

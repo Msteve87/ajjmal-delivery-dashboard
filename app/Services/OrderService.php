@@ -37,11 +37,7 @@ class OrderService
 
     public function getJmOrders()
     {
-        $processinginProgress = $this->getJmOrdersByStatus('Processing in Progress');
-
-        $paymentAccepted = $this->getJmOrdersByStatus('Payment Accepted');
-
-        $items = collect($processinginProgress)->merge($paymentAccepted);
+        $items = $this->getJmOrdersByStatus('Processing in Progress');
 
         $orderReferences = Order::whereHas('orderStatus', function ($query) {
             $query->where('name', '!=', 'pending');

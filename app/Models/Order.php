@@ -28,8 +28,8 @@ class Order extends Model
         return $this->belongsTo(OrderStatus::class, 'order_status_id');
     }
 
-    public function subOrder()
+    public function subOrders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(SubOrder::class);
     }
 }

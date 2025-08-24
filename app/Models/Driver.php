@@ -23,6 +23,11 @@ class Driver extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function subOrders()
+    {
+        return $this->hasMany(SubOrder::class);
+    }
+
     public function documents()
     {
         return $this->hasMany(DriverDocument::class, 'driver_id');

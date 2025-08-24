@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->decimal('shipping_price');
             $table->json('products')->nullable();
             $table->boolean('is_picked_up')->default(false);
-            $table->foreignId('order_status_id')->constrained('order_statuses');
+            $table->foreignId('sub_order_status_id')->constrained('sub_order_statuses');
             $table->foreignId('order_id')->constrained('orders');
             $table->foreignId('driver_id')->constrained()->nullable();
             $table->timestamps();

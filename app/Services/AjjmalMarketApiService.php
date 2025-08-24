@@ -43,4 +43,17 @@ class AjjmalMarketApiService
 
         return $items;
     }
+
+    public function getJmOrderStates()
+    {
+        $response = Http::get(env('JM_API_URL') . "/orders/public");
+
+        if (empty(json_decode($response, associative: true)['data'])) {
+            throw new HttpException(404, 'Order not found');
+        }
+
+        $items = $response->json()['data'];
+
+        return $items;
+    }
 }

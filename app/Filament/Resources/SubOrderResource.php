@@ -58,7 +58,15 @@ class SubOrderResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('driver.first_name')
-                    ->label('Driver')
+                    ->formatStateUsing(
+                        fn($state, $record) =>
+                        $record->driver_id == $record->order->driver_id
+                        ? $record->driver?->first_name . ' ' . $record->driver?->last_name
+                        : ($record->order?->driver
+                            ? $record->driver->first_name . ' ' . $record->driver->last_name
+                            : 'N/A')
+                    )
+                    ->label(__('filament/resources.order.schema.driver_name'))
                     ->sortable()
                     ->searchable()
                     ->default('-'),

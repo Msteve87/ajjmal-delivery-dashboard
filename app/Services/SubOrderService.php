@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\JmOrderStatus;
 use App\Models\SubOrder;
 use Illuminate\Support\Facades\DB;
 
@@ -24,7 +25,7 @@ class SubOrderService
                 'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
                 'shipping_price' => $subOrder['total_shipping'],
                 'products' => $subOrder['products'],
-                'order_status_id' => 2,
+                'sub_order_status_id' => JmOrderStatus::processingInProgress->value,
                 'order_id' => $order->id,
                 'driver_id' => $order->driver_id
             ]);

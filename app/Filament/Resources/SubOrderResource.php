@@ -52,9 +52,26 @@ class SubOrderResource extends Resource
                 Tables\Columns\IconColumn::make('is_picked_up')
                     ->boolean(),
 
-                Tables\Columns\TextColumn::make('orderStatus.name')
+                Tables\Columns\TextColumn::make('subOrderStatus.name')
                     ->label('Status')
                     ->sortable()
+                    ->badge()
+                    ->color(
+                        fn(string $state, SubOrder $record) =>
+                        match ($state) {
+                            'Processing in progress' => $record->subOrderStatus->color,
+                            'awaiting' => 'accent',
+                            'in_progress' => 'warning',
+                            'delivered' => 'success',
+                            'cancelled_by_customer' => 'danger',
+                            'cancelled_by_seller' => 'danger',
+                        }
+                    )
+                    ->extraAttributes(fn($state, SubOrder $record) => [
+                        'style' => 'background-color: '
+                            . ($record->subOrderStatus?->color ?? '#6B7280')
+                            . '; color: white; padding: 0.25rem 0.5rem; border-radius: 0.375rem;',
+                    ])
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('driver.first_name')

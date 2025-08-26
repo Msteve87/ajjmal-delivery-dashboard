@@ -21,4 +21,9 @@ class SubOrder extends Model
     {
         return $this->belongsTo(Driver::class);
     }
+
+    public function subOrderStatus()
+    {
+        return $this->belongsTo(SubOrderStatus::class);
+    }
 }

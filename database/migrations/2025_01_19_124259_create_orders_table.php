@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->decimal('total_paid', 10, 2);
             $table->decimal('total_shipping', 10, 2);
+            $table->foreignId('order_status_id')->constrained('order_statuses');
             $table->string('customer_name')->nullable();
             $table->string('address');
             $table->string('customer_phone');

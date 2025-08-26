@@ -2,16 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SubOrderResource\Pages;
-use App\Filament\Resources\SubOrderResource\RelationManagers;
-use App\Models\SubOrder;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\SubOrder;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Grouping\Group;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use App\Notifications\NewOrderNotification;
+use App\Filament\Resources\SubOrderResource\Pages;
+use App\Notifications\NewDeliveryTaskNotification;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\SubOrderResource\RelationManagers;
 
 class SubOrderResource extends Resource
 {
@@ -30,9 +35,11 @@ class SubOrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultGroup('order.reference')
+            ->defaultGroup(
+                Group::make('order.reference')
+                    ->collapsible()
+            )
             ->columns([
-
                 Tables\Columns\TextColumn::make('tracking_id')
                     ->sortable()
                     ->searchable(),
@@ -60,11 +67,14 @@ class SubOrderResource extends Resource
                         fn(string $state, SubOrder $record) =>
                         match ($state) {
                             'Processing in progress' => $record->subOrderStatus->color,
-                            'awaiting' => 'accent',
-                            'in_progress' => 'warning',
-                            'delivered' => 'success',
-                            'cancelled_by_customer' => 'danger',
-                            'cancelled_by_seller' => 'danger',
+                            'Cancellation by customer' => $record->subOrderStatus->color,
+                            'Cancellation by merchant' => $record->subOrderStatus->color,
+                            'Remote payment accepted' => $record->subOrderStatus->color,
+                            'Awaiting bank wire payment' => $record->subOrderStatus->color,
+                            'Awaiting check payment' => $record->subOrderStatus->color,
+                            'Delivered' => $record->subOrderStatus->color,
+                            'Canceled' => $record->subOrderStatus->color,
+                            'Shipped' => $record->subOrderStatus->color,
                         }
                     )
                     ->extraAttributes(fn($state, SubOrder $record) => [
@@ -101,6 +111,34 @@ class SubOrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->modalHeading('Order Details')
+                    ->modalContent(fn($record) => view('filament.orders.sub-orders', ['record' => $record])),
+
+                Tables\Actions\Action::make('Delivery Task')
+                    ->label(__('filament/resources.order.actions.assign_driver'))
+                    ->icon('heroicon-o-truck')
+                    ->modalHeading('Assign Delivery Task')
+                    ->modalButton('Assign')
+                    ->requiresConfirmation()
+                    ->form([
+                        \Filament\Forms\Components\Select::make('drivers')
+                            ->label('Select Drivers')
+                            ->multiple()
+                            ->options(\App\Models\Driver::all()->pluck('first_name', 'id'))
+                            ->searchable(),
+                    ])
+                    ->action(function (Model $record, array $data) {
+                        collect($data['drivers'])->each(function ($driverId) use ($record) {
+                            $driver = \App\Models\Driver::find($driverId);
+                            $driver->notify(new NewDeliveryTaskNotification($record));
+                        });
+
+                        Notification::make()
+                            ->title('Delivery Task Assigned')
+                            ->success()
+                            ->send();
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

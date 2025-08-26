@@ -142,8 +142,8 @@ class OrderController extends Controller
                         'products' => $item['products'],
                         'driver_id' => Auth::id(),
                         'delivery_date' => $item['delivery_date'],
-                        'start_time' => $item['start_time'],
-                        'end_time' => $item['end_time'],
+                        'start_time' => empty($item['start_time']) ? null : $item['start_time'],
+                        'end_time' => empty($item['end_time']) ? null : $item['end_time'],
                         'location_id' => $location->id,
                     ]
                 );

@@ -45,15 +45,15 @@ class SubOrderResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('base_price')
-                    ->money('lyd', true)
+                    ->money('lyd', locale: 'en')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('shipping_price')
-                    ->money('lyd', true)
+                    ->money('lyd', locale: 'en')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total')
-                    ->money('lyd', true)
+                    ->money('lyd', locale: 'en')
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_picked_up')
@@ -125,7 +125,11 @@ class SubOrderResource extends Resource
                         \Filament\Forms\Components\Select::make('drivers')
                             ->label('Select Drivers')
                             ->multiple()
-                            ->options(\App\Models\Driver::all()->pluck('first_name', 'id'))
+                            ->options(
+                                \App\Models\Driver::all()->mapWithKeys(fn($driver) => [
+                                    $driver->id => $driver->first_name . ' ' . $driver->last_name
+                                ])
+                            )
                             ->searchable(),
                     ])
                     ->action(function (Model $record, array $data) {

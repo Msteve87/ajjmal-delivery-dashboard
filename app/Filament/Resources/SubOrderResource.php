@@ -22,7 +22,7 @@ class SubOrderResource extends Resource
 {
     protected static ?string $model = SubOrder::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
     public static function form(Form $form): Form
     {
@@ -110,7 +110,7 @@ class SubOrderResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make()
                     ->modalHeading('Order Details')
                     ->modalContent(fn($record) => view('filament.orders.sub-orders', ['record' => $record])),
@@ -159,7 +159,7 @@ class SubOrderResource extends Resource
         return [
             'index' => Pages\ListSubOrders::route('/'),
             'create' => Pages\CreateSubOrder::route('/create'),
-            'edit' => Pages\EditSubOrder::route('/{record}/edit'),
+            // 'edit' => Pages\EditSubOrder::route('/{record}/edit'),
         ];
     }
 }

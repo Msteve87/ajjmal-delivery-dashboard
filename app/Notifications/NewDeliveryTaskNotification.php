@@ -41,7 +41,7 @@ class NewDeliveryTaskNotification extends Notification
             ->withServiceAccount(storage_path('app/firebase/firebase_credentials.json'))
             ->createMessaging();
 
-        $message = CloudMessage::new()
+        return CloudMessage::new()
             ->withTarget('token', $notifiable->routeNotificationForFcm())
             ->withNotification(FirebaseNotification::create(
                 'New Order',
@@ -49,11 +49,7 @@ class NewDeliveryTaskNotification extends Notification
             ))
             ->withData([
                 'sub_order_id' => $this->subOrder->id,
-            ])->withWebPushConfig(WebPushConfig::fromArray([
-                        'headers' => ['TTL' => '3600'],
-                    ]));
-
-        $messaging->send($message);
+            ]);
     }
 
 

@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->decimal('base_price');
             $table->decimal('total');
             $table->decimal('shipping_price');
+            $table->decimal('total_discounts')->default(0);
             $table->json('products')->nullable();
             $table->boolean('is_picked_up')->default(false);
             $table->foreignId('sub_order_status_id')->constrained('sub_order_statuses');

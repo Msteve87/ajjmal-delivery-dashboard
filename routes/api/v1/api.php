@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')
         Route::controller(SubOrderController::class)
             ->group(function () {
                 Route::post('/sub-orders/{subOrder}/pickup', 'pickup');
+                Route::get('/sub-orders/list', 'listNewOrders');
             });
 
         Route::controller(PaymentMethodController::class)

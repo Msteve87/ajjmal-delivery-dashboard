@@ -57,6 +57,11 @@ class SubOrderResource extends Resource
                     ->money('lyd', locale: 'en')
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('total_discounts')
+                    ->money('lyd', locale: 'en')
+                    ->color(fn($state) => $state != 0 ? 'danger' : null)
+                    ->sortable(),
+
                 Tables\Columns\IconColumn::make('is_picked_up')
                     ->boolean(),
 
@@ -64,20 +69,7 @@ class SubOrderResource extends Resource
                     ->label('Status')
                     ->sortable()
                     ->badge()
-                    ->color(
-                        fn(string $state, SubOrder $record) =>
-                        match ($state) {
-                            'Processing in progress' => $record->subOrderStatus->color,
-                            'Cancellation by customer' => $record->subOrderStatus->color,
-                            'Cancellation by merchant' => $record->subOrderStatus->color,
-                            'Remote payment accepted' => $record->subOrderStatus->color,
-                            'Awaiting bank wire payment' => $record->subOrderStatus->color,
-                            'Awaiting check payment' => $record->subOrderStatus->color,
-                            'Delivered' => $record->subOrderStatus->color,
-                            'Canceled' => $record->subOrderStatus->color,
-                            'Shipped' => $record->subOrderStatus->color,
-                        }
-                    )
+                    ->color(fn(string $state, SubOrder $record) => $record->subOrderStatus->color)
                     ->extraAttributes(fn($state, SubOrder $record) => [
                         'style' => 'background-color: '
                             . ($record->subOrderStatus?->color ?? '#6B7280')

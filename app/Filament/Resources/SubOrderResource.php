@@ -22,7 +22,24 @@ class SubOrderResource extends Resource
 {
     protected static ?string $model = SubOrder::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    // protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+
+    protected static ?string $navigationGroup = 'Orders';
+
+    public static function getModelLabel(): string
+    {
+        return __('filament/resources.sub_order.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament/resources.sub_order.plural_label');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('filament/resources.sub_order.plural_label');
+    }
 
     public static function form(Form $form): Form
     {
@@ -42,31 +59,37 @@ class SubOrderResource extends Resource
             )
             ->columns([
                 Tables\Columns\TextColumn::make('tracking_id')
+                    ->label(__('filament/resources.sub_order.schema.tracking_id'))
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('base_price')
+                    ->label(__('filament/resources.sub_order.schema.base_price'))
                     ->money('lyd', locale: 'en')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('shipping_price')
+                    ->label(__('filament/resources.sub_order.schema.shipping_price'))
                     ->money('lyd', locale: 'en')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total')
+                    ->label(__('filament/resources.sub_order.schema.total'))
                     ->money('lyd', locale: 'en')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total_discounts')
+                    ->label(__('filament/resources.sub_order.schema.total_discounts'))
                     ->money('lyd', locale: 'en')
                     ->color(fn($state) => $state != 0 ? 'danger' : null)
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_picked_up')
+                    ->label(__('filament/resources.sub_order.schema.is_picked_up'))
                     ->boolean(),
 
                 Tables\Columns\TextColumn::make('subOrderStatus.name')
-                    ->label('Status')
+                    ->label(__('filament/resources.sub_order.schema.status'))
                     ->sortable()
                     ->badge()
                     ->color(fn(string $state, SubOrder $record) => $record->subOrderStatus->color)
@@ -102,16 +125,18 @@ class SubOrderResource extends Resource
                             ? $record->driver->first_name . ' ' . $record->driver->last_name
                             : 'N/A')
                     )
-                    ->label(__('filament/resources.order.schema.driver_name'))
+                    ->label(__('filament/resources.sub_order.schema.driver_name'))
                     ->sortable()
                     ->searchable()
                     ->default('-'),
 
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament/resources.sub_order.schema.created_at'))
                     ->dateTime('d M Y H:i')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('filament/resources.sub_order.schema.updated_at'))
                     ->dateTime('d M Y H:i')
                     ->sortable(),
             ])

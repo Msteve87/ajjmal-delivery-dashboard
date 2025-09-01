@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('sub_orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tracking_id');
+            $table->unsignedBigInteger('tracking_id')->unique();
             $table->decimal('base_price');
             $table->decimal('total');
             $table->decimal('shipping_price');

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('sub_order_statuses', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
+            $table->string('slug')->unique()->nullable();
             $table->string('name');
             $table->string('name_ar')->nullable();
             $table->string('color')->nullable();

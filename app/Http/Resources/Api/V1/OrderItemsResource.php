@@ -31,6 +31,7 @@ class OrderItemsResource extends JsonResource
             'price' => $this['total_paid'] - $this['total_shipping'],
             'total_paid' => $this['total_paid'],
             'total_shipping' => $this['total_shipping'],
+            'total_discounts' => $this['total_discounts'],
             'customer_name' => $this['customer_name'],
             'address' => $this['address'],
             'customer_phone' => $this['customer_phone'],

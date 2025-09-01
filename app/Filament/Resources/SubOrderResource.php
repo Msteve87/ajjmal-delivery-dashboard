@@ -35,6 +35,7 @@ class SubOrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn(Builder $query) => $query->orderBy('tracking_id', 'desc'))
             ->defaultGroup(
                 Group::make('order.reference')
                     ->collapsible()

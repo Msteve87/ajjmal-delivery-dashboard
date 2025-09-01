@@ -38,7 +38,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             DriverSeeder::class,
-            OrderStatusesSeeder::class
+            OrderStatusesSeeder::class,
+            SubOrderStatusSeeder::class
         ]);
     }
 }

@@ -7,7 +7,11 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Navigation\NavigationGroup;
+use App\Filament\Resources\OrderResource;
 use Filament\Http\Middleware\Authenticate;
+use Filament\Navigation\NavigationBuilder;
+use App\Filament\Resources\SubOrderResource;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -65,6 +69,12 @@ class AdminPanelProvider extends PanelProvider
                 FilamentEditProfilePlugin::make()
                     ->setIcon('heroicon-o-user-circle'),
                 TranslationManagerPlugin::make()
+            ])
+            ->navigationGroups([
+                NavigationGroup::make('order')
+                    ->label(__('filament/navigations.order'))
+                    ->icon('heroicon-o-shopping-bag'),
             ]);
+
     }
 }

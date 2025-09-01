@@ -43,8 +43,8 @@ return [
         ]
     ],
     'order' => [
-        'label' => 'الطلب',
-        'plural_label' => 'الطلبات',
+        'label' => 'الطلب الرئيسي',
+        'plural_label' => 'الطلبات الرئيسية',
         'schema' => [
             'id' => 'المعرف',
             'jm_order_id' => 'معرف الطلب في النظام',
@@ -62,6 +62,35 @@ return [
             'address' => 'العنوان',
             'customer_phone' => 'هاتف العميل',
             'products' => 'المنتجات',
+        ],
+        'actions' => [
+            'assign_driver' => 'تعيين سائق',
+        ],
+    ],
+    'sub_order' => [
+        'label' => 'الطلب',
+        'plural_label' => 'الطلبات',
+        'schema' => [
+            'id' => 'المعرف',
+            'tracking_id' => 'رقم الطلب في النظام',
+            'reference' => 'الرقم المرجعي',
+            'payment_method' => 'طريقة الدفع',
+            'customer_name' => 'اسم العميل',
+            'driver_name' => 'اسم السائق',
+            'status' => 'الحالة',
+            'base_price' => 'السعر',
+            'shipping_price' => 'إجمالي الشحن',
+            'total' => 'إجمالي المدفوع',
+            'total_discounts' => 'إجمالي الخصومات',
+            'is_picked_up' => 'حالة التجميع',
+            'delivery_date' => 'تاريخ التسليم',
+            'start_time' => 'وقت البدء',
+            'end_time' => 'وقت الانتهاء',
+            'address' => 'العنوان',
+            'customer_phone' => 'هاتف العميل',
+            'products' => 'المنتجات',
+            'created_at' => 'تاريخ الإنشاء',
+            'updated_at' => 'تاريخ التحديث',
         ],
         'actions' => [
             'assign_driver' => 'تعيين سائق',

@@ -88,6 +88,11 @@ class SubOrderResource extends Resource
                     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
                     ->boolean(),
 
+                Tables\Columns\TextColumn::make('order.payment_method')
+                    ->label(__('filament/resources.sub_order.schema.payment_method'))
+                    ->money('lyd', locale: 'en')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('subOrderStatus.name')
                     ->label(__('filament/resources.sub_order.schema.status'))
                     ->sortable()

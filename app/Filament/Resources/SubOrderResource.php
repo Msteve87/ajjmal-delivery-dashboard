@@ -83,7 +83,23 @@ class SubOrderResource extends Resource
                             . ($record->subOrderStatus?->color ?? '#6B7280')
                             . '; color: white; padding: 0.25rem 0.5rem; border-radius: 0.375rem;',
                     ])
-                    ->searchable(),
+                    ->searchable()
+                    ->action(
+                        Tables\Actions\Action::make('updateStatus')
+                            ->label('Change Status')
+                            ->icon('heroicon-m-pencil-square')
+                            ->form([
+                                Forms\Components\Select::make('sub_order_status_id')
+                                    ->label('New Status')
+                                    ->options(\App\Models\SubOrderStatus::pluck('name', 'id'))
+                                    ->required(),
+                            ])
+                            ->action(function (array $data, SubOrder $record): void {
+                                $record->update([
+                                    'sub_order_status_id' => $data['sub_order_status_id'],
+                                ]);
+                            })
+                    ),
 
                 Tables\Columns\TextColumn::make('driver.first_name')
                     ->formatStateUsing(

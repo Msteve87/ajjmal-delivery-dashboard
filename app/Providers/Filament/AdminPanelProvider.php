@@ -71,8 +71,8 @@ class AdminPanelProvider extends PanelProvider
                 TranslationManagerPlugin::make()
             ])
             ->navigationGroups([
-                NavigationGroup::make('order')
-                    ->label(__('filament/navigations.order'))
+                NavigationGroup::make()
+                    ->label(fn(): string => __('filament/navigations.orders'))
                     ->icon('heroicon-o-shopping-bag'),
             ]);
 

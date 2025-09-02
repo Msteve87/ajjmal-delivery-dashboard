@@ -43,8 +43,8 @@ return [
         ]
     ],
     'order' => [
-        'label' => 'Order',
-        'plural_label' => 'Orders',
+        'label' => 'Main Order',
+        'plural_label' => 'Main Orders',
         'schema' => [
             'id' => 'ID',
             'jm_order_id' => 'JM Order ID',

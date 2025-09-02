@@ -24,7 +24,10 @@ class SubOrderResource extends Resource
 
     // protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static ?string $navigationGroup = 'orders';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament/navigations.orders');
+    }
 
     public static function getModelLabel(): string
     {

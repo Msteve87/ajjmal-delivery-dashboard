@@ -181,7 +181,11 @@ class OrderResource extends Resource
                         \Filament\Forms\Components\Select::make('drivers')
                             ->label('Select Drivers')
                             ->multiple()
-                            ->options(\App\Models\Driver::all()->pluck('first_name', 'id'))
+                            ->options(
+                                \App\Models\Driver::all()->mapWithKeys(fn($driver) => [
+                                    $driver->id => $driver->first_name . ' ' . $driver->last_name
+                                ])
+                            )
                             ->searchable(),
                     ])
                     ->action(function (Model $record, array $data) {

@@ -13,8 +13,10 @@ class OrderService
     /**
      * Create a new class instance.
      */
-    public function __construct()
-    {
+    public function __construct(
+        protected SubOrderService $subOrderService,
+        protected AjjmalMarketApiService $ajjmalMarketApiService
+    ) {
         //
     }
 
@@ -136,78 +138,96 @@ class OrderService
 
     public function storeNewJmOrders()
     {
-        $processinginProgress = $this->getJmOrdersByStatus('Processing in Progress');
+        try {
 
-        $paymentAccepted = $this->getJmOrdersByStatus('Payment Accepted');
+            $processinginProgress = $this->getJmOrdersByStatus('Processing in Progress');
 
-        $items = collect($processinginProgress)->merge($paymentAccepted);
+            $paymentAccepted = $this->getJmOrdersByStatus('Payment Accepted');
 
-        $orderReferences = Order::whereHas('orderStatus', function ($query) {
-            $query->where('name', '!=', 'pending');
-        })->pluck('reference');
+            $items = collect($processinginProgress)->merge($paymentAccepted);
 
-        $mergedItems = collect($items)
-            ->groupBy('reference')
-            ->filter(function ($group, $reference) use ($orderReferences) {
-                return !$orderReferences->contains($reference);
-            })
-            ->map(function ($group) {
-                return [
-                    'delivery_date' => $group->first()['delivery_date'] ?? null,
-                    'start_time' => $group->first()['start_time'] ?? null,
-                    'end_time' => $group->first()['end_time'] ?? null,
-                    'id_order' => $group->first()['id_order'],
-                    'reference' => $group->first()['reference'],
-                    'payment' => $group->first()['payment'],
-                    'total_paid' => $group->sum('total_paid'),
-                    'total_shipping' => $group->max()['total_shipping'],
-                    'total_discounts' => $group->max()['total_discounts'],
-                    'current_state_name' => $group->first()['current_state_name'],
-                    'address' => $group->first()['customer']['address'],
-                    'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
-                    'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                    'latitude' => $group->first()['location']['latitude'],
-                    'longitude' => $group->first()['location']['longitude'],
-                    'products' => $group->map(function ($item) {
-                        return $item['products'];
-                    })->flatten(1)->toArray(),
-                    'items' => $group->sum(function ($item) {
-                        return count($item['products']);
-                    }),
-                ];
-            })
-            ->values()
-            ->toArray();
+            $orderReferences = Order::whereHas('orderStatus', function ($query) {
+                $query->where('name', '!=', 'pending');
+            })->pluck('reference');
 
-        DB::transaction(function () use ($mergedItems) {
-            foreach ($mergedItems as $item) {
-                $existingOrder = Order::where('reference', $item['reference'])->first();
+            $mergedItems = collect($items)
+                ->groupBy('reference')
+                ->filter(function ($group, $reference) use ($orderReferences) {
+                    return !$orderReferences->contains($reference);
+                })
+                ->map(function ($group) {
+                    return [
+                        'delivery_date' => $group->first()['delivery_date'] ?? null,
+                        'start_time' => $group->first()['start_time'] ?? null,
+                        'end_time' => $group->first()['end_time'] ?? null,
+                        'id_order' => $group->first()['id_order'],
+                        'reference' => $group->first()['reference'],
+                        'payment' => $group->first()['payment'],
+                        'total_paid' => $group->sum('total_paid'),
+                        'total_shipping' => $group->max()['total_shipping'],
+                        'total_discounts' => $group->max()['total_discounts'],
+                        'current_state_name' => $group->first()['current_state_name'],
+                        'address' => $group->first()['customer']['address'],
+                        'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
+                        'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
+                        'latitude' => $group->first()['location']['latitude'],
+                        'longitude' => $group->first()['location']['longitude'],
+                        'products' => $group->map(function ($item) {
+                            return array_map(function ($product) use ($item) {
+                                $product['details']['description'] = sanitize_html_string($product['details']['description']);
+                                $product['jm_order_id'] = $item['id_order'];
+                                $product['current_state_name'] = $item['current_state_name'];
+                                return $product;
+                            }, $item['products']);
+                        })->flatten(1)->toArray(),
+                        'items' => $group->sum(function ($item) {
+                            return count($item['products']);
+                        }),
+                    ];
+                })
+                ->values()
+                ->toArray();
 
-                if ($existingOrder) {
-                    continue;
+            DB::transaction(function () use ($mergedItems) {
+                foreach ($mergedItems as $item) {
+                    $existingOrder = Order::where('reference', $item['reference'])->first();
+
+                    if ($existingOrder) {
+                        continue;
+                    }
+
+                    $location = \App\Models\Location::create([
+                        'latitude' => $item['latitude'],
+                        'longitude' => $item['longitude'],
+                    ]);
+
+                    $order = Order::create([
+                        'reference' => $item['reference'],
+                        'price' => $item['total_paid'] - $item['total_shipping'],
+                        'total_paid' => $item['total_paid'],
+                        'total_shipping' => $item['total_shipping'],
+                        'total_discounts' => $item['total_discounts'],
+                        'payment_method' => $item['payment'],
+                        'order_status_id' => 1,
+                        'items' => $item['items'],
+                        'address' => $item['address'],
+                        'customer_name' => $item['customer_name'],
+                        'customer_phone' => $item['customer_phone'],
+                        'products' => $item['products'],
+                        'start_time' => empty($item['start_time']) ? null : $item['start_time'],
+                        'end_time' => empty($item['end_time']) ? null : $item['end_time'],
+                        'location_id' => $location->id,
+                    ]);
+
+                    $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);
+
+                    $this->subOrderService->storeSubOrder($order, $subOrders);
+
                 }
-
-                $location = \App\Models\Location::create([
-                    'latitude' => $item['latitude'],
-                    'longitude' => $item['longitude'],
-                ]);
-
-                Order::create([
-                    'jm_order_id' => $item['id_order'],
-                    'reference' => $item['reference'],
-                    'total_paid' => $item['total_paid'],
-                    'total_shipping' => $item['total_shipping'],
-                    'payment_method' => $item['payment'],
-                    'order_status_id' => 1,
-                    'items' => $item['items'],
-                    'address' => $item['address'],
-                    'customer_name' => $item['customer_name'],
-                    'customer_phone' => $item['customer_phone'],
-                    'products' => $item['products'],
-                    'location_id' => $location->id,
-                ]);
-            }
-        });
+            });
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 
     public function updateJmStatusOrder(string $jmOrderId, string $jmStateId)

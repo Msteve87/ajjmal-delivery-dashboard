@@ -28,7 +28,9 @@ return new class extends Migration {
             $table->integer('items');
             $table->json('products')->nullable();
             $table->timestamps();
-            $table->foreignId('driver_id')->constrained()->nullable();
+
+            $table->unsignedBigInteger('driver_id')->nullable();
+            $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('set null');
             $table->foreignId('location_id')->constrained();
         });
     }

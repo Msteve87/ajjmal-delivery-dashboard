@@ -21,7 +21,9 @@ return new class extends Migration {
             $table->boolean('is_picked_up')->default(false);
             $table->foreignId('sub_order_status_id')->constrained('sub_order_statuses');
             $table->foreignId('order_id')->constrained('orders');
-            $table->foreignId('driver_id')->constrained()->nullable();
+
+            $table->unsignedBigInteger('driver_id')->nullable();
+            $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('set null');
             $table->timestamps();
         });
     }

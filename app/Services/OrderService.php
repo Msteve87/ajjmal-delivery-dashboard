@@ -139,12 +139,7 @@ class OrderService
     public function storeNewJmOrders()
     {
         try {
-
-            $processinginProgress = $this->getJmOrdersByStatus('Processing in Progress');
-
-            $paymentAccepted = $this->getJmOrdersByStatus('Payment Accepted');
-
-            $items = collect($processinginProgress)->merge($paymentAccepted);
+            $items = $this->getJmOrdersByStatus('Processing in Progress');
 
             $orderReferences = Order::whereHas('orderStatus', function ($query) {
                 $query->where('name', '!=', 'pending');
@@ -226,7 +221,7 @@ class OrderService
                 }
             });
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

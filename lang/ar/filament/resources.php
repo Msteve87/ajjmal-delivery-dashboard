@@ -89,6 +89,7 @@ return [
             'address' => 'العنوان',
             'customer_phone' => 'هاتف العميل',
             'products' => 'المنتجات',
+            'date_add' => 'تاريخ الإضافة',
             'created_at' => 'تاريخ الإنشاء',
             'updated_at' => 'تاريخ التحديث',
         ],

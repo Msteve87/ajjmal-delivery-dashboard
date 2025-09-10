@@ -138,10 +138,15 @@ class SubOrderResource extends Resource
                     ->searchable()
                     ->default('-'),
 
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('filament/resources.sub_order.schema.created_at'))
+                Tables\Columns\TextColumn::make('date_add')
+                    ->label(__('filament/resources.sub_order.schema.date_add'))
                     ->dateTime('d M Y H:i')
                     ->sortable(),
+
+                // Tables\Columns\TextColumn::make('created_at')
+                //     ->label(__('filament/resources.sub_order.schema.created_at'))
+                //     ->dateTime('d M Y H:i')
+                //     ->sortable(),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('filament/resources.sub_order.schema.updated_at'))

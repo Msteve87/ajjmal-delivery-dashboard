@@ -89,6 +89,7 @@ return [
             'address' => 'Address',
             'customer_phone' => 'Customer Phone',
             'products' => 'Products',
+            'date_add' => 'Date',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ],

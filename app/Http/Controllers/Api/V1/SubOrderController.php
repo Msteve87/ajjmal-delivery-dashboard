@@ -19,8 +19,9 @@ class SubOrderController extends Controller
     ) {
     }
 
-    public function pickup(SubOrder $subOrder)
+    public function pickup(string $trackingId)
     {
+        $subOrder = SubOrder::where('tracking_id', $trackingId)->firstOrFail();
         $subOrder->update([
             'is_picked_up' => true,
         ]);

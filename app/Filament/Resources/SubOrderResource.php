@@ -127,11 +127,9 @@ class SubOrderResource extends Resource
                 Tables\Columns\TextColumn::make('driver.first_name')
                     ->formatStateUsing(
                         fn($state, $record) =>
-                        $record->driver_id == $record->order->driver_id
+                        $record->driver_id
                         ? $record->driver?->first_name . ' ' . $record->driver?->last_name
-                        : ($record->order?->driver
-                            ? $record->driver->first_name . ' ' . $record->driver->last_name
-                            : 'N/A')
+                        : 'N/A'
                     )
                     ->label(__('filament/resources.sub_order.schema.driver_name'))
                     ->sortable()

@@ -183,9 +183,10 @@ class SubOrderResource extends Resource
                             ->label('Select Drivers')
                             ->multiple()
                             ->options(
-                                \App\Models\Driver::all()->mapWithKeys(fn($driver) => [
-                                    $driver->id => $driver->first_name . ' ' . $driver->last_name
-                                ])
+                                \App\Models\Driver::where('is_active', true)->get()
+                                    ->mapWithKeys(fn($driver) => [
+                                        $driver->id => $driver->first_name . ' ' . $driver->last_name
+                                    ])
                             )
                             ->searchable(),
                     ])

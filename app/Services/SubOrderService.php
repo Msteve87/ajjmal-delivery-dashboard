@@ -11,12 +11,29 @@ class SubOrderService
     /**
      * Create a new class instance.
      */
-    public function __construct()
-    {
+    public function __construct(
+        protected AjjmalMarketApiService $ajjmalMarketApiService
+    ) {
         //
     }
 
-    public function storeSubOrder($order, $subOrders)
+    public function storeSubOrder($parentOrder, $subOrder, $driverId)
+    {
+        return SubOrder::create([
+            'total' => $subOrder['total_paid'] + $subOrder['total_shipping'],
+            'tracking_id' => $subOrder['id_order'],
+            'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
+            'shipping_price' => $subOrder['total_shipping'],
+            'products' => $subOrder['products'],
+            'sub_order_status_id' => JmOrderStatus::processingInProgress->value,
+            'order_id' => $parentOrder->id,
+            'date_add' => $subOrder['date_add'],
+            'date_upd' => $subOrder['date_upd'],
+            'driver_id' => $driverId
+        ]);
+    }
+
+    public function storeSubOrders($order, $subOrders)
     {
         foreach ($subOrders as $subOrder) {
             SubOrder::create([
@@ -34,4 +51,16 @@ class SubOrderService
         }
     }
 
+    public function getSubOrderByTrackingId(string $trackingId)
+    {
+        return $this->ajjmalMarketApiService->getJmOrderById($trackingId);
+    }
+
+    public function getUnassignedSubOrders()
+    {
+        return SubOrder::query()
+            ->whereNull('driver_id')
+            ->with('order')
+            ->get();
+    }
 }

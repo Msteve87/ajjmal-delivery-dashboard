@@ -27,9 +27,7 @@ Route::middleware('auth:sanctum')
                 Route::get('/awaiting', 'awaitingOrders');
                 Route::get('/list-orders', 'listDriverOrders');
                 Route::get('/get-jm-orders', 'listNewOrders');
-                Route::get('/sub-orders/list', 'listNewSubOrders');
                 Route::get('/{reference}/accept-order', 'acceptOrder');
-                Route::get('/{trackingId}/accept-sub-order', 'acceptSubOrder');
             });
 
         Route::controller(V1\HomepageController::class)

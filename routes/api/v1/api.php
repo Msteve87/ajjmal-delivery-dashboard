@@ -18,12 +18,14 @@ Route::middleware('auth:sanctum')
         Route::controller(OrderController::class)
             ->group(function () {
                 Route::get('/show-jm-order-products/{reference}', 'showJmOrderProducts');
+                Route::get('/sub-orders/list', 'listNewSubOrders');
             });
 
         Route::controller(SubOrderController::class)
             ->group(function () {
+                Route::get('/sub-orders/{trackingId}/accept-sub-order', 'acceptSubOrder');
                 Route::post('/sub-orders/{trackingId}/pickup', 'pickup');
-                Route::get('/sub-orders/list', 'listNewOrders');
+                Route::get('/sub-orders/list', 'listNewSubOrders');
             });
 
         Route::controller(PaymentMethodController::class)

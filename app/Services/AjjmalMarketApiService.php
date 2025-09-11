@@ -44,10 +44,32 @@ class AjjmalMarketApiService
         return $items;
     }
 
+    public function getJmOrderById($id)
+    {
+        $params = [
+            'state' => 'Processing in Progress',
+            'sort_by' => 'total_paid',
+            'order' => 'desc',
+        ];
+
+        $response = Http::get($this->ajjmalBaseUrl, $params);
+
+        if (empty(json_decode($response, associative: true)['data'])) {
+            throw new HttpException(404, 'not found');
+        }
+
+        $item = collect($response->json()['data'])->firstWhere('id_order', $id);
+
+        if ($item === null) {
+            throw new HttpException(404, 'not found');
+        }
+
+        return $item;
+    }
+
     public function getJmOrderStates()
     {
-        $response = Http::withoutVerifying()
-            ->get(env('JM_API_URL') . "orders/public");
+        $response = Http::get(env('JM_API_URL') . "orders/public");
 
         if (empty(json_decode($response, associative: true)['data'])) {
             throw new HttpException(404, 'not found');

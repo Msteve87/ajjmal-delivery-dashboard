@@ -3,10 +3,12 @@ namespace App\Http\Controllers\Api\V1\Driver;
 
 use App\Models\Order;
 use App\Models\Location;
+use App\Models\SubOrder;
 use App\Http\Resources\Api;
 use App\Models\OrderStatus;
 use App\Enums\JmOrderStatus;
 use Illuminate\Http\Request;
+use App\Models\SubOrderStatus;
 use App\Events\JmOrderStatusUpdated;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -151,7 +153,7 @@ class OrderController extends Controller
 
             $subOrders = $this->ajjmalMarketApiService->getSubOrders($reference);
 
-            $this->subOrderService->storeSubOrder($order, $subOrders);
+            $this->subOrderService->storeSubOrders($order, $subOrders);
 
             return response()->json(
                 [
@@ -266,7 +268,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function showJmOrder(string $reference)
+    public function showJmOrderProducts(string $reference)
     {
         $items = $this->orderService->getJmOrderByReference($reference);
 

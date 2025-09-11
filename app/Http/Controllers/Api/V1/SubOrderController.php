@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\SubOrder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Api\v1\ProductResource;
 use App\Http\Resources\Api\V1\SubOrderResource;
 use App\Http\Resources\Api\V1\OrderItemsResource;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class SubOrderController extends Controller
 {
@@ -38,10 +40,10 @@ class SubOrderController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function listNewOrders()
+    public function listNewSubOrders()
     {
         try {
-            $items = $this->ajjmalMarketApiService->getNewOrders();
+            $items = $this->subOrderService->getUnassignedSubOrders();
 
             return response()->json(
                 [
@@ -56,6 +58,36 @@ class SubOrderController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function acceptSubOrder(string $trackingId)
+    {
+        try {
+            $subOrder = SubOrder::where('tracking_id', $trackingId)->first();
+
+            $subOrder->update([
+                'driver_id' => Auth::id(),
+            ]);
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'data' => new SubOrderResource($subOrder),
+                ],
+                200
+            );
+
+        } catch (HttpException $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => $e->getMessage()
+            ], $e->getStatusCode());
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

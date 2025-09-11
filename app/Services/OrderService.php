@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\OrderStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -216,13 +217,37 @@ class OrderService
 
                     $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);
 
-                    $this->subOrderService->storeSubOrder($order, $subOrders);
+                    $this->subOrderService->storeSubOrders($order, $subOrders);
 
                 }
             });
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function storeOrder($data)
+    {
+        return Order::create(
+            [
+                'reference' => $data['reference'],
+                'price' => $data['total_paid'] - $data['total_shipping'],
+                'total_paid' => $data['total_paid'],
+                'total_shipping' => $data['total_shipping'],
+                'payment_method' => $data['payment'],
+                'order_status_id' => OrderStatus::where('slug', 'awaiting')->first()->id,
+                'items' => $data['items'],
+                'address' => $data['address'],
+                'customer_name' => $data['customer_name'],
+                'customer_phone' => $data['customer_phone'],
+                'products' => $data['products'],
+                'driver_id' => Auth::id(),
+                'delivery_date' => $data['delivery_date'],
+                'start_time' => empty($data['start_time']) ? null : $data['start_time'],
+                'end_time' => empty($data['end_time']) ? null : $data['end_time'],
+                'location_id' => $data['location_id'],
+            ]
+        );
     }
 
     public function updateJmStatusOrder(string $jmOrderId, string $jmStateId)

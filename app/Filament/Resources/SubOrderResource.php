@@ -98,6 +98,11 @@ class SubOrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('subOrderStatus.name')
                     ->label(__('filament/resources.sub_order.schema.status'))
+                    ->getStateUsing(
+                        fn($record) => app()->getLocale() === 'ar'
+                        ? $record->subOrderStatus->name_ar
+                        : $record->subOrderStatus->name
+                    )
                     ->sortable()
                     ->badge()
                     ->color(fn(string $state, SubOrder $record) => $record->subOrderStatus->color)
@@ -114,7 +119,14 @@ class SubOrderResource extends Resource
                             ->form([
                                 Forms\Components\Select::make('sub_order_status_id')
                                     ->label('New Status')
-                                    ->options(\App\Models\SubOrderStatus::pluck('name', 'id'))
+                                    ->options(
+                                        function () {
+                                            $locale = app()->getLocale();
+                                            $column = $locale === 'ar' ? 'name_ar' : 'name';
+
+                                            return \App\Models\SubOrderStatus::pluck($column, 'id');
+                                        }
+                                    )
                                     ->required(),
                             ])
                             ->action(function (array $data, SubOrder $record): void {

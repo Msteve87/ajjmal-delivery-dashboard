@@ -260,7 +260,7 @@ class OrderService
 
 
         foreach ($items as $item) {
-            SubOrder::where('tracking_id', $item['id_order'])->first()
+            $subOrder = SubOrder::where('tracking_id', (int) $item['id_order'])->first()
                     ?->update([
                     'total' => $item['total_paid'] + $item['total_shipping'],
                     'base_price' => $item['total_paid'] - $item['total_shipping'],

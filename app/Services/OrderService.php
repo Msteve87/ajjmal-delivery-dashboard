@@ -234,6 +234,7 @@ class OrderService
                 'price' => $data['total_paid'] - $data['total_shipping'],
                 'total_paid' => $data['total_paid'],
                 'total_shipping' => $data['total_shipping'],
+                'total_discounts' => $data['total_discounts'],
                 'payment_method' => $data['payment'],
                 'order_status_id' => OrderStatus::where('slug', 'awaiting')->first()->id,
                 'items' => $data['items'],
@@ -248,6 +249,23 @@ class OrderService
                 'location_id' => $data['location_id'],
             ]
         );
+    }
+
+    public function updateJmOrders()
+    {
+        $items = $this->ajjmalMarketApiService->getAllJmOrders();
+
+        foreach ($items as $item) {
+            $order = Order::where('reference', $item['reference'])->first();
+
+            if (!$order) {
+                continue;
+            }
+
+            $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);
+
+            $this->subOrderService->updateSubOrders($order, $subOrders);
+        }
     }
 
     public function updateJmStatusOrder(string $jmOrderId, string $jmStateId)

@@ -31,6 +31,22 @@ class AjjmalMarketApiService
         }
     }
 
+    public function getAllJmOrders()
+    {
+        $params = [
+            'sort_by' => 'total_paid',
+            'order' => 'desc',
+        ];
+
+        $response = Http::get($this->ajjmalBaseUrl, $params);
+
+        if ($response->json()['success']) {
+            return $response->json()['data'];
+        } else {
+            throw new \Exception('Error while fetching JM orders by status');
+        }
+    }
+
     public function getSubOrders($reference)
     {
         $response = Http::get(env('JM_API_URL') . "?reference={$reference}&order=desc");

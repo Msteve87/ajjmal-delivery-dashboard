@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\JmOrderStatus;
 use App\Models\SubOrder;
+use App\Models\SubOrderStatus;
 use Illuminate\Support\Facades\DB;
 
 class SubOrderService
@@ -41,6 +42,7 @@ class SubOrderService
                 'tracking_id' => $subOrder['id_order'],
                 'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
                 'shipping_price' => $subOrder['total_shipping'],
+                'total_discounts' => $subOrder['total_discounts'],
                 'products' => $subOrder['products'],
                 'sub_order_status_id' => JmOrderStatus::processingInProgress->value,
                 'order_id' => $order->id,
@@ -48,6 +50,26 @@ class SubOrderService
                 'date_upd' => $subOrder['date_upd'],
                 'driver_id' => $order->driver_id
             ]);
+        }
+    }
+
+    public function updateSubOrders($order, $subOrders)
+    {
+        foreach ($subOrders as $subOrder) {
+            SubOrder::where('tracking_id', $subOrder['id_order'])->first()
+                ->update([
+                    'total' => $subOrder['total_paid'] + $subOrder['total_shipping'],
+                    'tracking_id' => $subOrder['id_order'],
+                    'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
+                    'shipping_price' => $subOrder['total_shipping'],
+                    'total_discounts' => $subOrder['total_discounts'],
+                    'products' => $subOrder['products'],
+                    'sub_order_status_id' => SubOrderStatus::where('name', $subOrder['current_state_name'])->first()->id,
+                    'order_id' => $order->id,
+                    'date_add' => $subOrder['date_add'],
+                    'date_upd' => $subOrder['date_upd'],
+                    'driver_id' => $order->driver_id
+                ]);
         }
     }
 

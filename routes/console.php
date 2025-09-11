@@ -14,5 +14,9 @@ Artisan::command('inspire', function () {
 
 Schedule::call(function (OrderService $orderService) {
     $orderService->storeNewJmOrders();
-})->everyFifteenSeconds();
+})->everyTenSeconds();
 
+
+Schedule::call(function (OrderService $orderService) {
+    $orderService->updateJmOrders();
+})->everyTenSeconds();

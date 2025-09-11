@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\SubOrder;
 use Illuminate\Http\Request;
+use App\Events\JmOrderStatusUpdated;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\Api\v1\ProductResource;
 use App\Http\Resources\Api\V1\SubOrderResource;
-use App\Http\Resources\Api\V1\OrderItemsResource;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class SubOrderController extends Controller
@@ -90,5 +89,24 @@ class SubOrderController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function updateSubOrderStatus(string $trackingId, Request $request)
+    {
+        $request->validate([
+            'statusId' => 'required|string|exists:sub_order_statuses,id',
+        ]);
+
+        $this->orderService->updateJmStatusOrder(
+            $trackingId,
+            $request->statusId
+        );
+
+        event(new JmOrderStatusUpdated($trackingId));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Ajjmal Order status updated successfully'
+        ]);
     }
 }

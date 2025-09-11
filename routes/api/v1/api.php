@@ -12,7 +12,7 @@ Route::middleware('auth:sanctum')
         Route::controller(OrderStatusController::class)
             ->group(function () {
                 Route::get('/order-statuses/list', 'index');
-                Route::get('/jm-order-statuses', 'listJmOrderStatuses');
+                Route::get('/sub-order-statuses/list', 'listSubOrderStatuses');
             });
 
         Route::controller(OrderController::class)

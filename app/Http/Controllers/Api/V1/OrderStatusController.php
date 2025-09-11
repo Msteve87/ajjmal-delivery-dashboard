@@ -17,9 +17,19 @@ class OrderStatusController extends Controller
         return response()->json(['items' => $statuses]);
     }
 
-    public function listJmOrderStatuses()
+    public function listSubOrderStatuses()
     {
-        $items = SubOrderStatus::all();
+        $items = SubOrderStatus::whereIn(
+            'id',
+            [
+                JmOrderStatus::processingInProgress->value,
+                JmOrderStatus::delivered->value,
+                JmOrderStatus::cancellationByCustomer->value,
+                JmOrderStatus::cancellationByMerchant->value,
+                JmOrderStatus::refunded->value,
+                JmOrderStatus::canceled->value,
+            ]
+        )->get();
 
         return response()->json([
             'status' => 'success',

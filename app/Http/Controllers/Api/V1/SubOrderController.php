@@ -102,7 +102,7 @@ class SubOrderController extends Controller
             $request->statusId
         );
 
-        event(new JmOrderStatusUpdated($trackingId));
+        // event(new JmOrderStatusUpdated($trackingId));
 
         return response()->json([
             'status' => 'success',

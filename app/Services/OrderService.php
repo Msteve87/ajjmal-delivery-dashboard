@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\SubOrder;
 use App\Models\OrderStatus;
+use App\Enums\JmOrderStatus;
+use App\Models\SubOrderStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -255,16 +258,19 @@ class OrderService
     {
         $items = $this->ajjmalMarketApiService->getAllJmOrders();
 
+
         foreach ($items as $item) {
-            $order = Order::where('reference', $item['reference'])->first();
-
-            if (!$order) {
-                continue;
-            }
-
-            $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);
-
-            $this->subOrderService->updateSubOrders($order, $subOrders);
+            SubOrder::where('tracking_id', $item['id_order'])->first()
+                    ?->update([
+                    'total' => $item['total_paid'] + $item['total_shipping'],
+                    'base_price' => $item['total_paid'] - $item['total_shipping'],
+                    'shipping_price' => $item['total_shipping'],
+                    'total_discounts' => $item['total_discounts'],
+                    'products' => $item['products'],
+                    'sub_order_status_id' => SubOrderStatus::where('name', $item['current_state_name'])->first()->id ?? JmOrderStatus::processingInProgress->value,
+                    'date_add' => $item['date_add'],
+                    'date_upd' => $item['date_upd'],
+                ]);
         }
     }
 

@@ -21,20 +21,20 @@ class OrderResource extends Resource
 
     // protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('filament/navigations.orders');
-    }
+    // public static function getNavigationGroup(): ?string
+    // {
+    //     return __('filament/navigations.orders');
+    // }
 
     public static function getModelLabel(): string
     {
         return __('filament/resources.order.label');
     }
 
-    public static function getNavigationLabel(): string
-    {
-        return __('filament/resources.order.plural_label');
-    }
+    // public static function getNavigationLabel(): string
+    // {
+    //     return __('filament/resources.order.plural_label');
+    // }
 
     public static function getPluralLabel(): ?string
     {
@@ -222,5 +222,10 @@ class OrderResource extends Resource
             'create' => Pages\CreateOrder::route('/create'),
             // 'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return false;
     }
 }

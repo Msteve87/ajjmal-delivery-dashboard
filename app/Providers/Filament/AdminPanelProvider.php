@@ -69,11 +69,6 @@ class AdminPanelProvider extends PanelProvider
                 FilamentEditProfilePlugin::make()
                     ->setIcon('heroicon-o-user-circle'),
                 TranslationManagerPlugin::make()
-            ])
-            ->navigationGroups([
-                NavigationGroup::make(__('filament/navigations.orders'))
-                    ->label(fn(): string => __('filament/navigations.orders'))
-                    ->icon('heroicon-o-shopping-bag'),
             ]);
 
     }

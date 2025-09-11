@@ -249,25 +249,6 @@ class OrderController extends Controller
         }
     }
 
-    public function updateJmOrder(Request $request)
-    {
-        $request->validate([
-            'jm_order_id' => 'required|string',
-            'jm_status_id' => 'required|string|in:' . implode(',', array_column(JmOrderStatus::cases(), 'value')),
-        ]);
-
-        $status = JmOrderStatus::from($request->jm_status_id);
-
-        $this->orderService->updateJmStatusOrder($request->jm_order_id, $status->value);
-
-        event(new JmOrderStatusUpdated($request->jm_order_id));
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Ajjmal Order status updated successfully'
-        ]);
-    }
-
     public function showJmOrderProducts(string $reference)
     {
         $items = $this->orderService->getJmOrderByReference($reference);

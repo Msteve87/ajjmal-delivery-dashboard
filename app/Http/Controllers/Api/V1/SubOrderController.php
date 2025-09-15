@@ -109,4 +109,25 @@ class SubOrderController extends Controller
             'message' => 'Ajjmal Order status updated successfully'
         ]);
     }
+
+    public function addSubOrderDiscount(Request $request)
+    {
+        $request->validate([
+            'id_order' => 'required|string|exists:sub_order,tracking_id',
+            'discount_type' => ['required', 'string', 'in:percent,fixed'],
+            'discount_value' => ['required', 'numeric', 'min:0'],
+            'discount_name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $orderdDetails = $this->subOrderService->addDiscount(
+            $request->all()
+        );
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => $orderdDetails
+            ]
+        );
+    }
 }

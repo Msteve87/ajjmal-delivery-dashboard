@@ -21,7 +21,7 @@ class SubOrderService
     public function storeSubOrder($parentOrder, $subOrder, $driverId)
     {
         return SubOrder::create([
-            'total' => $subOrder['total_paid'] + $subOrder['total_shipping'],
+            'total' => $subOrder['total_paid'],
             'tracking_id' => $subOrder['id_order'],
             'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
             'shipping_price' => $subOrder['total_shipping'],
@@ -58,7 +58,7 @@ class SubOrderService
         foreach ($subOrders as $subOrder) {
             SubOrder::where('tracking_id', $subOrder['id_order'])->first()
                 ->update([
-                    'total' => $subOrder['total_paid'] + $subOrder['total_shipping'],
+                    'total' => $subOrder['total_paid'],
                     'tracking_id' => $subOrder['id_order'],
                     'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
                     'shipping_price' => $subOrder['total_shipping'],

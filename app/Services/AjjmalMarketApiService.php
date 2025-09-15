@@ -8,10 +8,11 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class AjjmalMarketApiService
 {
     public $ajjmalBaseUrl;
+    public $ajjmalStandaloneUrl;
 
     public function __construct()
     {
-        $this->ajjmalBaseUrl = config('services.ajjmal.api_url');
+        $this->ajjmalStandaloneUrl = config('services.ajjmal.api_url');
     }
 
     public function getNewOrders()
@@ -22,7 +23,7 @@ class AjjmalMarketApiService
             'order' => 'desc',
         ];
 
-        $response = Http::get($this->ajjmalBaseUrl, $params);
+        $response = Http::get($this->ajjmalStandaloneUrl, $params);
 
         if ($response->json()['success']) {
             return $response->json()['data'];
@@ -38,7 +39,7 @@ class AjjmalMarketApiService
             'order' => 'desc',
         ];
 
-        $response = Http::get($this->ajjmalBaseUrl, $params);
+        $response = Http::get($this->ajjmalStandaloneUrl, $params);
 
         if ($response->json()['success']) {
             return $response->json()['data'];
@@ -68,7 +69,7 @@ class AjjmalMarketApiService
             'order' => 'desc',
         ];
 
-        $response = Http::get($this->ajjmalBaseUrl, $params);
+        $response = Http::get($this->ajjmalStandaloneUrl, $params);
 
         if (empty(json_decode($response, associative: true)['data'])) {
             throw new HttpException(404, 'not found');
@@ -85,7 +86,7 @@ class AjjmalMarketApiService
 
     public function getJmOrderStates()
     {
-        $response = Http::get(env('JM_API_URL') . "orders/public");
+        $response = Http::get(env('JM_API_URL'), ["route" => "states"]);
 
         if (empty(json_decode($response, associative: true)['data'])) {
             throw new HttpException(404, 'not found');

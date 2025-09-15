@@ -32,7 +32,7 @@ class OrderService
             'order' => 'desc',
         ];
 
-        $response = Http::get(env('JM_API_URL'), $params);
+        $response = Http::get(env('JM_API_URL_STANDALONE'), $params);
 
         if ($response->successful()) {
             return $response->json()['data'];
@@ -256,21 +256,28 @@ class OrderService
 
     public function updateJmOrders()
     {
-        $items = $this->ajjmalMarketApiService->getAllJmOrders();
+        $res = Http::get(env('JM_API_URL'), ['route' => 'list']);
 
+        $items = $res->json()['data'];
 
-        foreach ($items as $item) {
-            $subOrder = SubOrder::where('tracking_id', (int) $item['id_order'])->first()
-                    ?->update([
+        try {
+
+            foreach ($items as $item) {
+                $subOrder = SubOrder::where('tracking_id', $item['id_order'])->first();
+
+                $subOrder?->update([
                     'total' => $item['total_paid'] + $item['total_shipping'],
                     'base_price' => $item['total_paid'] - $item['total_shipping'],
                     'shipping_price' => $item['total_shipping'],
                     'total_discounts' => $item['total_discounts'],
-                    'products' => $item['products'],
-                    'sub_order_status_id' => SubOrderStatus::where('name', $item['current_state_name'])->first()->id ?? JmOrderStatus::processingInProgress->value,
+                    // 'products' => $item['products'],
+                    'sub_order_status_id' => $item['current_state'],
                     'date_add' => $item['date_add'],
                     'date_upd' => $item['date_upd'],
                 ]);
+            }
+        } catch (\Exception $e) {
+            throw new \Exception('Error while fetching JM orders by status');
         }
     }
 

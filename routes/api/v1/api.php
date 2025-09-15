@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')
                 Route::post('/sub-orders/update/{trackingId}', 'updateSubOrderStatus');
                 Route::post('/sub-orders/{trackingId}/pickup', 'pickup');
                 Route::get('/sub-orders/list', 'listNewSubOrders');
-                Route::post('/sub-orders/add-discount', 'addSubOrderDiscount');
+                Route::post('/sub-orders/{trackingId}/add-discount', 'addSubOrderDiscount');
             });
 
         Route::controller(PaymentMethodController::class)

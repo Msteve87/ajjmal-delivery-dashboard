@@ -110,17 +110,19 @@ class SubOrderController extends Controller
         ]);
     }
 
-    public function addSubOrderDiscount(Request $request)
+    public function addSubOrderDiscount(string $trackingId, Request $request)
     {
         $request->validate([
-            'id_order' => 'required|string|exists:sub_order,tracking_id',
-            'discount_type' => ['required', 'string', 'in:percent,fixed'],
+            'discount_type' => ['required', 'string', 'in:amount,percent'],
             'discount_value' => ['required', 'numeric', 'min:0'],
             'discount_name' => ['required', 'string', 'max:255'],
         ]);
 
         $orderdDetails = $this->subOrderService->addDiscount(
-            $request->all()
+            [
+                'id_order' => $trackingId,
+                ...$request->all()
+            ]
         );
 
         return response()->json(

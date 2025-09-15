@@ -38,7 +38,7 @@ class SubOrderService
     {
         foreach ($subOrders as $subOrder) {
             SubOrder::create([
-                'total' => $subOrder['total_paid'] + $subOrder['total_shipping'],
+                'total' => $subOrder['total_paid'],
                 'tracking_id' => $subOrder['id_order'],
                 'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
                 'shipping_price' => $subOrder['total_shipping'],

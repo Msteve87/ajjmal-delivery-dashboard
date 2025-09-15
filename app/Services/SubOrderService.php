@@ -2,20 +2,24 @@
 
 namespace App\Services;
 
-use App\Enums\JmOrderStatus;
 use App\Models\SubOrder;
+use App\Enums\JmOrderStatus;
 use App\Models\SubOrderStatus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class SubOrderService
 {
     /**
      * Create a new class instance.
      */
+    protected $apiToken;
+
     public function __construct(
         protected AjjmalMarketApiService $ajjmalMarketApiService
     ) {
-        //
+        $this->apiToken = env('');
     }
 
     public function storeSubOrder($parentOrder, $subOrder, $driverId)
@@ -84,5 +88,21 @@ class SubOrderService
             ->whereNull('driver_id')
             ->with('order')
             ->get();
+    }
+
+    public function addDiscount(array $data)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->apiToken
+        ])->post(
+                env('JM_BASE_URL') . '/module/orderdiscount/api',
+                $data
+            );
+
+        if (!$response->json()['success'] ?? false) {
+            throw new HttpException(400, 'Failed to add order discount');
+        }
+
+        return $response->json()['order_details'];
     }
 }

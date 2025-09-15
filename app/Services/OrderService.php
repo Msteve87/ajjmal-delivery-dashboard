@@ -33,6 +33,7 @@ class OrderService
         ];
 
         $response = Http::get(env('JM_API_URL_STANDALONE') . '/delivery', $params);
+
         if ($response->successful()) {
             return $response->json()['data'];
         } else {
@@ -94,7 +95,6 @@ class OrderService
     public function getJmOrderByReference($reference)
     {
         $response = Http::get(env('JM_API_URL_STANDALONE') . "/delivery?reference={$reference}&order=desc");
-
         if (empty(json_decode($response, associative: true)['data'])) {
             throw new HttpException(404, 'Order not found');
         }
@@ -260,12 +260,11 @@ class OrderService
         $items = $res->json()['data'];
 
         try {
-
             foreach ($items as $item) {
                 $subOrder = SubOrder::where('tracking_id', $item['id_order'])->first();
 
                 $subOrder?->update([
-                    'total' => $item['total_paid'] + $item['total_shipping'],
+                    'total' => $item['total_paid'],
                     'base_price' => $item['total_paid'] - $item['total_shipping'],
                     'shipping_price' => $item['total_shipping'],
                     'total_discounts' => $item['total_discounts'],
@@ -282,7 +281,7 @@ class OrderService
 
     public function updateJmStatusOrder(string $jmOrderId, string $jmStateId)
     {
-        $response = Http::post(env('JM_API_URL') . "/change_state.php", [
+        $response = Http::post(env('JM_API_URL_STANDALONE') . "/delivery/change_state.php", [
             'order_id' => $jmOrderId,
             'state_id' => $jmStateId
         ]);

@@ -19,7 +19,7 @@ class SubOrderService
     public function __construct(
         protected AjjmalMarketApiService $ajjmalMarketApiService
     ) {
-        $this->apiToken = env('');
+        $this->apiToken = env('JM_API_KEY');
     }
 
     public function storeSubOrder($parentOrder, $subOrder, $driverId)

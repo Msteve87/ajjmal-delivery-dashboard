@@ -12,7 +12,8 @@ class AjjmalMarketApiService
 
     public function __construct()
     {
-        $this->ajjmalStandaloneUrl = config('services.ajjmal.api_url');
+        $this->ajjmalBaseUrl = config('services.api_url');
+        $this->ajjmalStandaloneUrl = config('services.ajjmal.standalone_url') . '/delivery';
     }
 
     public function getNewOrders()
@@ -24,6 +25,7 @@ class AjjmalMarketApiService
         ];
 
         $response = Http::get($this->ajjmalStandaloneUrl, $params);
+
 
         if ($response->json()['success']) {
             return $response->json()['data'];
@@ -50,7 +52,7 @@ class AjjmalMarketApiService
 
     public function getSubOrders($reference)
     {
-        $response = Http::get(env('JM_API_URL') . "?reference={$reference}&order=desc");
+        $response = Http::get($this->ajjmalStandaloneUrl . "?reference={$reference}&order=desc");
 
         if (empty(json_decode($response, associative: true)['data'])) {
             throw new HttpException(404, 'Order not found');
@@ -86,7 +88,7 @@ class AjjmalMarketApiService
 
     public function getJmOrderStates()
     {
-        $response = Http::get(env('JM_API_URL'), ["route" => "states"]);
+        $response = Http::get($this->ajjmalBaseUrl, ["route" => "states"]);
 
         if (empty(json_decode($response, associative: true)['data'])) {
             throw new HttpException(404, 'not found');

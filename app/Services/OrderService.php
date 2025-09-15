@@ -32,8 +32,7 @@ class OrderService
             'order' => 'desc',
         ];
 
-        $response = Http::get(env('JM_API_URL_STANDALONE'), $params);
-
+        $response = Http::get(env('JM_API_URL_STANDALONE') . '/delivery', $params);
         if ($response->successful()) {
             return $response->json()['data'];
         } else {
@@ -94,7 +93,7 @@ class OrderService
 
     public function getJmOrderByReference($reference)
     {
-        $response = Http::get(env('JM_API_URL') . "?reference={$reference}&order=desc");
+        $response = Http::get(env('JM_API_URL_STANDALONE') . "/delivery?reference={$reference}&order=desc");
 
         if (empty(json_decode($response, associative: true)['data'])) {
             throw new HttpException(404, 'Order not found');

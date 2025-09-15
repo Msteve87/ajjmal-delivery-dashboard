@@ -40,6 +40,8 @@ return [
     ],
 
     'ajjmal' => [
-        'api_url' => env('JM_API_URL')
+        'api_url' => env('JM_API_URL'),
+        'standalone_url' => env('JM_API_URL_STANDALONE')
+
     ]
 ];

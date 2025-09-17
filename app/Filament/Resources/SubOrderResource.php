@@ -130,9 +130,14 @@ class SubOrderResource extends Resource
                                     ->required(),
                             ])
                             ->action(function (array $data, SubOrder $record): void {
+                                $orderService = app(\App\Services\OrderService::class);
+
+                                $orderService->updateJmStatusOrder($record->tracking_id, $data['sub_order_status_id']);
+
                                 $record->update([
                                     'sub_order_status_id' => $data['sub_order_status_id'],
                                 ]);
+
                             })
                     ),
 

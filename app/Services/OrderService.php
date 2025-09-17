@@ -142,7 +142,11 @@ class OrderService
     public function storeNewJmOrders()
     {
         try {
-            $items = $this->getJmOrdersByStatus('Processing in Progress');
+            $processinginProgress = $this->getJmOrdersByStatus('Processing in Progress');
+
+            $awaitingCashOnDeliveryValidation = $this->getJmOrdersByStatus('Awaiting Cash On Delivery validation');
+
+            $items = collect($processinginProgress)->merge($awaitingCashOnDeliveryValidation);
 
             $orderReferences = Order::whereHas('orderStatus', function ($query) {
                 $query->where('name', '!=', 'pending');

@@ -48,7 +48,7 @@ class SubOrderService
                 'shipping_price' => $subOrder['total_shipping'],
                 'total_discounts' => $subOrder['total_discounts'],
                 'products' => $subOrder['products'],
-                'sub_order_status_id' => JmOrderStatus::processingInProgress->value,
+                'sub_order_status_id' => $subOrder['current_state'],
                 'order_id' => $order->id,
                 'date_add' => $subOrder['date_add'],
                 'date_upd' => $subOrder['date_upd'],
@@ -85,6 +85,10 @@ class SubOrderService
     public function getUnassignedSubOrders()
     {
         return SubOrder::query()
+            ->whereIn('sub_order_status_id', [
+                JmOrderStatus::processingInProgress->value,
+                JmOrderStatus::awaitingCashOnDelivery->value
+            ])
             ->whereNull('driver_id')
             ->with('order')
             ->get();

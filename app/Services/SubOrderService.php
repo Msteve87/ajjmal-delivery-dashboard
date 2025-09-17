@@ -48,7 +48,7 @@ class SubOrderService
                 'shipping_price' => $subOrder['total_shipping'],
                 'total_discounts' => $subOrder['total_discounts'],
                 'products' => $subOrder['products'],
-                'sub_order_status_id' => $subOrder['current_state'],
+                'sub_order_status_id' => SubOrderStatus::where('name', $subOrder['current_state_name'])->first()->id,
                 'order_id' => $order->id,
                 'date_add' => $subOrder['date_add'],
                 'date_upd' => $subOrder['date_upd'],

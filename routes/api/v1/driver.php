@@ -31,7 +31,8 @@ Route::middleware('auth:sanctum')
         Route::controller(V1\DriverSubOrderController::class)
             ->group(
                 function () {
-                    Route::get('/list-sub-orders', 'listDriverSubOrders');
+                    Route::get('/sub-orders', 'getSubOrders');
+                    Route::get('/sub-orders/awaiting', 'getAwaitingSubOrders');
                 }
             );
 

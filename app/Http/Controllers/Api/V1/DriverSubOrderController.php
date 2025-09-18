@@ -11,10 +11,30 @@ use Illuminate\Support\Facades\Auth;
 
 class DriverSubOrderController extends Controller
 {
-    public function listDriverSubOrders()
+    public function getSubOrders()
     {
         $subOrders = SubOrder::where('driver_id', Auth::id())
             ->with('order')
+            ->get();
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => [
+                    'items' => Api\V1\SubOrderResource::collection($subOrders),
+                ],
+            ]
+        );
+    }
+
+    public function getAwaitingSubOrders()
+    {
+        $subOrders = SubOrder::where('driver_id', Auth::id())
+            ->with('order')
+            ->whereIn('sub_order_status_id', [
+                JmOrderStatus::processingInProgress->value,
+                JmOrderStatus::awaitingCashOnDelivery->value
+            ])
             ->get();
 
         return response()->json(

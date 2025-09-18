@@ -11,14 +11,10 @@ use Illuminate\Support\Facades\Auth;
 
 class DriverSubOrderController extends Controller
 {
-    public function listDriverOrders()
+    public function listDriverSubOrders()
     {
         $subOrders = SubOrder::where('driver_id', Auth::id())
             ->with('order')
-            ->whereIn('sub_order_status_id', [
-                JmOrderStatus::processingInProgress->value,
-                JmOrderStatus::awaitingCashOnDelivery->value
-            ])
             ->get();
 
         return response()->json(

@@ -21,14 +21,19 @@ Route::middleware('auth:sanctum')
         Route::controller(V1\Driver\OrderController::class)
             ->group(function () {
                 Route::post('/update-order-status/{id}', 'update');
-
                 Route::post('/update-jm-order-status', 'updateJmOrder');
-
                 Route::get('/awaiting', 'awaitingOrders');
                 Route::get('/list-orders', 'listDriverOrders');
                 Route::get('/get-jm-orders', 'listNewOrders');
                 Route::get('/{reference}/accept-order', 'acceptOrder');
             });
+
+        Route::controller(V1\DriverSubOrderController::class)
+            ->group(
+                function () {
+                    Route::get('/list-sub-orders', 'listDriverSubOrders');
+                }
+            );
 
         Route::controller(V1\HomepageController::class)
             ->group(function () {

@@ -18,12 +18,15 @@ return new class extends Migration {
             $table->decimal('shipping_price');
             $table->decimal('total_discounts')->default(0);
             $table->json('products')->nullable();
-            $table->boolean('is_picked_up')->default(false);
             $table->foreignId('sub_order_status_id')->constrained('sub_order_statuses');
             $table->foreignId('order_id')->constrained('orders');
             $table->timestamp('date_add')->nullable();
             $table->timestamp('date_upd')->nullable();
             $table->unsignedBigInteger('driver_id')->nullable();
+            $table->unsignedBigInteger('picked_up_by')->nullable();
+            $table->foreign('picked_up_by')
+                ->references('id')
+                ->on('drivers');
             $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('set null');
             $table->timestamps();
         });

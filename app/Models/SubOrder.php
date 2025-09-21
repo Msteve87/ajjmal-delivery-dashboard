@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class SubOrder extends Model
 {
@@ -12,6 +13,18 @@ class SubOrder extends Model
         'products' => 'array',
     ];
 
+    protected function isPickedUp(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->picked_up_by !== null
+        );
+    }
+
+    public function scopeIsPickedUp($query)
+    {
+        return $query->whereNotNull('picked_up_by');
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -20,6 +33,12 @@ class SubOrder extends Model
     public function driver()
     {
         return $this->belongsTo(Driver::class);
+    }
+
+
+    public function pickedUpBy()
+    {
+        return $this->belongsTo(Driver::class, 'picked_up_by');
     }
 
     public function subOrderStatus()

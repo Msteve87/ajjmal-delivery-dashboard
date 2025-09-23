@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\DeviceTokenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\SubOrderController;
@@ -27,6 +28,11 @@ Route::middleware('auth:sanctum')
                 Route::post('/sub-orders/{trackingId}/pickup', 'pickup');
                 Route::get('/sub-orders/list', 'listNewSubOrders');
                 Route::post('/sub-orders/{trackingId}/add-discount', 'addSubOrderDiscount');
+            });
+
+        Route::controller(DeviceTokenController::class)
+            ->group(function () {
+                Route::post('/device-token', 'store');
             });
 
         Route::controller(PaymentMethodController::class)

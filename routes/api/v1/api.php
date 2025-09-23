@@ -18,7 +18,6 @@ Route::middleware('auth:sanctum')
         Route::controller(OrderController::class)
             ->group(function () {
                 Route::get('/show-jm-order-products/{reference}', 'showJmOrderProducts');
-                Route::get('/sub-orders/list', 'listNewSubOrders');
             });
 
         Route::controller(SubOrderController::class)

@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')
 
         Route::controller(DeviceTokenController::class)
             ->group(function () {
-                Route::post('/device-token', 'store');
+                Route::post('/device-tokens', 'store');
             });
 
         Route::controller(PaymentMethodController::class)

@@ -78,8 +78,8 @@ class DriverResource extends Resource
                         Forms\Components\Select::make('driver_type')
                             ->label(__('filament/resources.driver.schema.driver_type'))
                             ->options([
-                                'employee' => 'Employee',
-                                'independent' => 'Independent',
+                                'employee' => 'موظف',
+                                'independent' => 'مستقل',
                             ])
                             ->required(),
 
@@ -194,28 +194,29 @@ class DriverResource extends Resource
                     ->label('Id'),
 
                 TextColumn::make('national_no')
-                    ->label('National No'),
+                    ->label(__('filament/resources.driver.schema.national_number')),
 
                 TextColumn::make('full_name')
-                    ->label('Driver Name')
+                    ->label(__('filament/resources.driver.schema.name'))
                     ->getStateUsing(function ($record) {
                         return $record->first_name . ' ' . $record->last_name;
                     }),
 
                 TextColumn::make('phone')
-                    ->label('Phone'),
+                    ->label(__('filament/resources.driver.schema.phone')),
 
                 TextColumn::make('gender')
-                    ->label('Gender'),
+                    ->label(__('filament/resources.driver.schema.gender')),
 
                 IconColumn::make('is_active')
+                    ->label(__('filament/resources.driver.schema.is_active'))
                     ->boolean(),
 
                 TextColumn::make('driver_type')
-                    ->label('Driver Type'),
+                    ->label(__('filament/resources.driver.schema.driver_type')),
 
                 TextColumn::make('delivery_status')
-                    ->label('Delivery Status')
+                    ->label(__('filament/resources.driver.schema.delivery_status'))
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'available' => 'success',
@@ -272,6 +273,7 @@ class DriverResource extends Resource
             'index' => Pages\ListDrivers::route('/'),
             'create' => Pages\CreateDriver::route('/create'),
             'edit' => Pages\EditDriver::route('/{record}/edit'),
+            'view' => Pages\ViewDriver::route('/{record}/view')
         ];
     }
 }

@@ -5,7 +5,9 @@ return [
         'label' => 'السائق',
         'plural_label' => 'السائقين',
         'schema' => [
+            'id' => 'الرقم',
             'license_no' => 'رقم الرخصة',
+            'name' => 'إسم السائق',
             'first_name' => 'الاسم الأول',
             'last_name' => 'الاسم الأخير',
             'phone' => 'رقم الهاتف',

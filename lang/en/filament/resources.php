@@ -6,6 +6,7 @@ return [
         'plural_label' => 'Drivers',
         'schema' => [
             'id' => 'ID',
+            'name' => 'Name',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'phone' => 'Phone Number',

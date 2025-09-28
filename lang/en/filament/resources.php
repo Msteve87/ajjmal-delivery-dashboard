@@ -98,4 +98,16 @@ return [
             'assign_driver' => 'Assign Driver',
         ],
     ],
+
+    'users' => [
+        'label' => 'User',
+        'plural_label' => 'Users',
+        'schema' => [
+            'id' => 'Id',
+            'name' => 'Name',
+            'email' => 'Email',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ]
+    ],
 ];

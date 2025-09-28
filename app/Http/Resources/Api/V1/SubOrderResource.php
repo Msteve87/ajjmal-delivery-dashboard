@@ -22,6 +22,7 @@ class SubOrderResource extends JsonResource
         return [
             'id' => $this->id,
             'reference' => Order::where('id', $this->order_id)->value('reference'),
+            'payment_method' => $this->order->payment_method === "Payment on delivery (POD)" ? "الدفع الإلكتروني عند الإستلام" : $this->payment_method,
             'tracking_id' => $this->tracking_id,
             'order_status_id' => $this->sub_order_status_id,
             'delivery_date' => $this->delivery_date ? \Carbon\Carbon::parse($this->delivery_date)->format('Y-m-d') : null,

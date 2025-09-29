@@ -14,6 +14,7 @@ class DriverSubOrderController extends Controller
     public function getSubOrders()
     {
         $subOrders = SubOrder::where('driver_id', Auth::id())
+            ->where('sub_order_status_id', JmOrderStatus::delivered->value)
             ->with('order')
             ->get();
 

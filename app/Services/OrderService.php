@@ -221,6 +221,8 @@ class OrderService
                             'end_time' => empty($item['end_time']) ? null : $item['end_time'],
                             'location_id' => $location->id ?? null,
                         ]);
+                    } else {
+                        $order = $existingOrder;
                     }
 
                     $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);

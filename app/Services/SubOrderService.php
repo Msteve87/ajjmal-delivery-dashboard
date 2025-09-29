@@ -29,7 +29,7 @@ class SubOrderService
             'tracking_id' => $subOrder['id_order'],
             'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
             'shipping_price' => $subOrder['total_shipping'],
-            'products' => $subOrder['products'],
+            'products' => json_encode($subOrder['products']),
             'sub_order_status_id' => JmOrderStatus::processingInProgress->value,
             'order_id' => $parentOrder->id,
             'date_add' => $subOrder['date_add'],
@@ -41,19 +41,36 @@ class SubOrderService
     public function storeSubOrders($order, $subOrders)
     {
         foreach ($subOrders as $subOrder) {
-            SubOrder::create([
-                'total' => $subOrder['total_paid'],
-                'tracking_id' => $subOrder['id_order'],
-                'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
-                'shipping_price' => $subOrder['total_shipping'],
-                'total_discounts' => $subOrder['total_discounts'],
-                'products' => $subOrder['products'],
-                'sub_order_status_id' => SubOrderStatus::where('name', $subOrder['current_state_name'])->first()->id,
-                'order_id' => $order->id,
-                'date_add' => $subOrder['date_add'],
-                'date_upd' => $subOrder['date_upd'],
-                'driver_id' => $order->driver_id
-            ]);
+            SubOrder::upsert(
+                [
+                    [
+                        'total' => $subOrder['total_paid'],
+                        'tracking_id' => $subOrder['id_order'],
+                        'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
+                        'shipping_price' => $subOrder['total_shipping'],
+                        'total_discounts' => $subOrder['total_discounts'],
+                        'products' => json_encode($subOrder['products']),
+                        'sub_order_status_id' => SubOrderStatus::where('name', $subOrder['current_state_name'])->first()->id,
+                        'order_id' => $order->id,
+                        'date_add' => $subOrder['date_add'],
+                        'date_upd' => $subOrder['date_upd'],
+                        'driver_id' => $order->driver_id
+                    ]
+                ],
+                ['tracking_id'],
+                [
+                    'total',
+                    'base_price',
+                    'shipping_price',
+                    'total_discounts',
+                    'products',
+                    'sub_order_status_id',
+                    'order_id',
+                    'date_add',
+                    'date_upd',
+                    'driver_id'
+                ]
+            );
         }
     }
 

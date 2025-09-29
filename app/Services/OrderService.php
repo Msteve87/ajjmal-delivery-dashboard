@@ -172,8 +172,8 @@ class OrderService
                         'address' => $group->first()['customer']['address'],
                         'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
                         'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                        'latitude' => $group->first()['location']['latitude'],
-                        'longitude' => $group->first()['location']['longitude'],
+                        'latitude' => $group->first()['location']['latitude'] ?? null,
+                        'longitude' => $group->first()['location']['longitude'] ?? null,
                         'products' => $group->map(function ($item) {
                             return array_map(function ($product) use ($item) {
                                 $product['details']['description'] = sanitize_html_string($product['details']['description']);
@@ -198,10 +198,12 @@ class OrderService
                         continue;
                     }
 
-                    $location = \App\Models\Location::create([
-                        'latitude' => $item['latitude'],
-                        'longitude' => $item['longitude'],
-                    ]);
+                    if (!empty($item['latitude']) && !empty($item['longitude'])) {
+                        $location = \App\Models\Location::create([
+                            'latitude' => $item['latitude'],
+                            'longitude' => $item['longitude'],
+                        ]);
+                    }
 
                     $order = Order::create([
                         'reference' => $item['reference'],
@@ -218,7 +220,7 @@ class OrderService
                         'products' => $item['products'],
                         'start_time' => empty($item['start_time']) ? null : $item['start_time'],
                         'end_time' => empty($item['end_time']) ? null : $item['end_time'],
-                        'location_id' => $location->id,
+                        'location_id' => $location->id ?? null,
                     ]);
 
                     $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);

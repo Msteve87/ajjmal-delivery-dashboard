@@ -230,27 +230,6 @@ class DriverResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\ViewAction::make(),
-                    Tables\Actions\Action::make('Delivery Task')
-                        ->label('مهمة توصيل')
-                        ->icon('heroicon-o-truck')
-                        ->modalHeading('Assign Delivery Task')
-                        ->modalContent(fn(Model $record) => view(
-                            'filament.drivers.assign-delivery-task',
-                            [
-                                'orders' => \App\Models\Order::all(),
-                                'driver' => $record
-                            ]
-                        ))
-                        ->modalButton('Assign')
-                        ->requiresConfirmation()
-                        ->accessSelectedRecords()
-                        ->action(function (Model $record, Collection $selectedRecords) {
-                            $selectedRecords->each(
-                                fn(Model $selectedRecord) =>
-                                // $selectedRecord->notify(new DeliveryTaskNotification($record)),
-                                $selectedRecords->update(['is_active' => false])
-                            );
-                        }),
                 ])
             ])
             ->bulkActions([

@@ -24,6 +24,13 @@ class SubOrderController extends Controller
     {
         $subOrder = SubOrder::where('tracking_id', $trackingId)->firstOrFail();
 
+        if ($subOrder->driver_id !== Auth::id()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You are not assigned to this sub-order',
+            ], 403);
+        }
+
         $subOrder->update([
             'picked_up_by' => Auth::id()
         ]);

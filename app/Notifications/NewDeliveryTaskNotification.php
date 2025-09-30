@@ -48,7 +48,7 @@ class NewDeliveryTaskNotification extends Notification
                 'You have a new delivery task',
             ))
             ->withData([
-                'sub_order_id' => $this->subOrder->id,
+                'tracking_id' => $this->subOrder->tracking_id,
             ]);
     }
 

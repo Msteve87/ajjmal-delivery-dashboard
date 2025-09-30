@@ -12,11 +12,9 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::call(function (OrderService $orderService) {
-    $orderService->storeNewJmOrders();
-})->everyTenSeconds();
+Schedule::call(fn(OrderService $s) => $s->storeNewJmOrders())
+    ->everyMinute();
 
+Schedule::call(fn(OrderService $s) => $s->updateJmOrders())
+    ->everyMinute()->at('30');
 
-Schedule::call(function (OrderService $orderService) {
-    $orderService->updateJmOrders();
-})->everyTenSeconds();

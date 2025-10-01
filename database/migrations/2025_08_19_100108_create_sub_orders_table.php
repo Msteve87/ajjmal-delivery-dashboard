@@ -28,6 +28,7 @@ return new class extends Migration {
                 ->references('id')
                 ->on('drivers');
             $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('set null');
+            $table->timestamp('delivered_at')->nullable();
             $table->timestamps();
         });
     }

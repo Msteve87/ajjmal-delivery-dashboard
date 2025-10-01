@@ -13,6 +13,15 @@ class SubOrder extends Model
         'products' => 'array',
     ];
 
+    protected static function booted()
+    {
+        static::updating(function ($subOrder) {
+            if ($subOrder->isDirty('sub_order_status_id') && $subOrder->sub_order_status_id == 5) {
+                $subOrder->delivered_at = now();
+            }
+        });
+    }
+
     protected function isPickedUp(): Attribute
     {
         return Attribute::make(
@@ -23,6 +32,11 @@ class SubOrder extends Model
     public function scopeIsPickedUp($query)
     {
         return $query->whereNotNull('picked_up_by');
+    }
+
+    public function scopeDeliveredToday($query)
+    {
+        return $query->whereDate('delivered_at', today());
     }
 
     public function order()

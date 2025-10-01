@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')
 
         Route::controller(SubOrderController::class)
             ->group(function () {
+
+                Route::get('/sub-orders/{trackingId}/show', 'showByTrackingId');
                 Route::get('/sub-orders/{trackingId}/accept-sub-order', 'acceptSubOrder');
                 Route::post('/sub-orders/update/{trackingId}', 'updateSubOrderStatus');
                 Route::post('/sub-orders/{trackingId}/pickup', 'pickup');

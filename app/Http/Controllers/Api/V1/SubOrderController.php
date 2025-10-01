@@ -140,4 +140,16 @@ class SubOrderController extends Controller
             ]
         );
     }
+
+    public function showByTrackingId(string $trackingId)
+    {
+        $subOrder = SubOrder::where('tracking_id', $trackingId)->firstOrFail();
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => new SubOrderResource($subOrder),
+            ]
+        );
+    }
 }

@@ -1,5 +1,5 @@
 <div class="p-4 space-y-4">
-    <p><strong>Reference #:</strong> {{ $record->reference }}</p>
+    <p><strong>Reference #:</strong> {{ $record->order->reference }}</p>
 
     @php
         // Group products by seller name

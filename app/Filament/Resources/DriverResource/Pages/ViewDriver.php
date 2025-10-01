@@ -9,7 +9,6 @@ use Filament\Resources\Pages\Page;
 use Filament\Tables\Contracts\HasTable;
 use App\Filament\Resources\DriverResource;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Resources\Components\Tab;
 
 class ViewDriver extends Page implements HasTable
 {
@@ -29,6 +28,13 @@ class ViewDriver extends Page implements HasTable
     public function getTitle(): string
     {
         return __('filament/resources.driver.view-page.label');
+    }
+
+    public function getHeaderWidgets(): array
+    {
+        return [
+            DriverResource\Widgets\DeliveryStatsOverview::class,
+        ];
     }
 
     public function mount($record): void

@@ -41,7 +41,13 @@ return [
             'passport_attachment' => 'Passport Image',
             'criminal_case_attachment' => 'Criminal Case Image',
             'documents' => 'Driver Documents'
-        ]
+        ],
+        'view-page' => [
+            'label' => 'View Driver',
+            'tables' => [
+                'delivered_sub_orders' => 'Delivered Orders',
+            ]
+        ],
     ],
     'order' => [
         'label' => 'Main Order',

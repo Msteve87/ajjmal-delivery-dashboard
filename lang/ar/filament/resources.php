@@ -42,6 +42,12 @@ return [
             'passport_attachment' => 'صورة من جواز السفر',
             'criminal_case_attachment' => 'صورة من الحالة الجنائية',
             'documents' => 'مستندات السائق'
+        ],
+        'view-page' => [
+            'label' => 'عرض السائق',
+            'tables' => [
+                'delivered_sub_orders' => 'الطلبات التي تم توصيلها',
+            ]
         ]
     ],
     'order' => [

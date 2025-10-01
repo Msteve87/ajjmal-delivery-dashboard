@@ -191,7 +191,7 @@ class DriverResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('Id'),
+                    ->label(__('filament/resources.driver.schema.id')),
 
                 TextColumn::make('national_no')
                     ->label(__('filament/resources.driver.schema.national_number')),
@@ -252,7 +252,7 @@ class DriverResource extends Resource
             'index' => Pages\ListDrivers::route('/'),
             'create' => Pages\CreateDriver::route('/create'),
             'edit' => Pages\EditDriver::route('/{record}/edit'),
-            // 'view' => Pages\ViewDriver::route('/{record}/view')
+            'view' => Pages\ViewDriver::route('/{record}/view')
         ];
     }
 }

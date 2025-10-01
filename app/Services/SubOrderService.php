@@ -89,7 +89,6 @@ class SubOrderService
                     'order_id' => $order->id,
                     'date_add' => $subOrder['date_add'],
                     'date_upd' => $subOrder['date_upd'],
-                    'driver_id' => $order->driver_id
                 ]);
         }
     }

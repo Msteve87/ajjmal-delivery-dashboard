@@ -33,6 +33,7 @@ class DriverService
         return SubOrder::where('driver_id', $driverId)
             ->whereHas('order', function ($q) {
                 $q->whereIn('payment_method', [
+                    'Module Wallet',
                     'Module Moamalat',
                     'Payment on delivery (POD)',
                 ]);

@@ -15,10 +15,29 @@ class DriverService
         //
     }
 
-    public function getTodaysDeliveries(string $driverId)
+    public function getTodaysDeliveriesTotalCashOnHand(string $driverId): float
     {
         return SubOrder::where('driver_id', $driverId)
+            ->whereHas('order', function ($q) {
+                $q->whereIn('payment_method', [
+                    'الدفع عند الاستلام',
+                    'Cash on delivery (COD)',
+                ]);
+            })
             ->deliveredToday()
-            ->get();
+            ->sum('total');
+    }
+
+    public function getTodaysDeliveriesTotalOnline(string $driverId): float
+    {
+        return SubOrder::where('driver_id', $driverId)
+            ->whereHas('order', function ($q) {
+                $q->whereIn('payment_method', [
+                    'Module Moamalat',
+                    'Payment on delivery (POD)',
+                ]);
+            })
+            ->deliveredToday()
+            ->sum('total');
     }
 }

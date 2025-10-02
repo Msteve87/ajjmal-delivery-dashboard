@@ -33,9 +33,12 @@ class ViewDriver extends Page implements HasTable
     public function getHeaderWidgets(): array
     {
         return [
-            DriverResource\Widgets\DeliveryStatsOverview::class,
+            DriverResource\Widgets\DeliveryStatsOverview::make([
+                'record' => $this->record,
+            ]),
         ];
     }
+
 
     public function mount($record): void
     {

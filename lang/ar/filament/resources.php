@@ -97,6 +97,8 @@ return [
             'address' => 'العنوان',
             'customer_phone' => 'هاتف العميل',
             'products' => 'المنتجات',
+            'seller_name' => 'البائع',
+            'seller_logo' => 'شعار البائع',
             'date_add' => 'تاريخ الإضافة',
             'created_at' => 'تاريخ الإنشاء',
             'updated_at' => 'تاريخ التحديث',

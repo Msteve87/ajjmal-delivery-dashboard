@@ -96,6 +96,8 @@ return [
             'address' => 'Address',
             'customer_phone' => 'Customer Phone',
             'products' => 'Products',
+            'seller_name' => 'Seller',
+            'seller_logo' => 'Seller Logo',
             'date_add' => 'Date',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

@@ -66,6 +66,16 @@ class SubOrderResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\ImageColumn::make('products.seller_logo')
+                    ->label(__('filament/resources.sub_order.schema.seller_logo'))
+                    ->getStateUsing(fn($record) => $record->products[0]['details']['seller']['logo'] ?? '-')
+                    ->circular(),
+
+                Tables\Columns\TextColumn::make('products.seller_name')
+                    ->label(__('filament/resources.sub_order.schema.seller_name'))
+                    ->getStateUsing(fn($record) => $record->products[0]['details']['seller']['name'] ?? '-')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('base_price')
                     ->label(__('filament/resources.sub_order.schema.base_price'))
                     ->money('lyd', locale: 'en')

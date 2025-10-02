@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\SubOrder;
+use Illuminate\Support\Facades\Auth;
+
 class DriverService
 {
     /**
@@ -12,4 +15,10 @@ class DriverService
         //
     }
 
+    public function getTodaysDeliveries(string $driverId)
+    {
+        return SubOrder::where('driver_id', $driverId)
+            ->deliveredToday()
+            ->get();
+    }
 }

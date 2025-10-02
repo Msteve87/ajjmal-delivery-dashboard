@@ -50,11 +50,22 @@ class ViewDriver extends Page implements HasTable
             ->query(
                 SubOrder::query()
                     ->where('driver_id', $this->record->id)
-                    ->where('sub_order_status_id', 5)
+                    ->deliveredToday()
             )
             ->columns([
                 Tables\Columns\TextColumn::make('tracking_id')
                     ->label(__('filament/resources.sub_order.schema.tracking_id'))
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\ImageColumn::make('products.seller_logo')
+                    ->label(__('filament/resources.sub_order.schema.seller_logo'))
+                    ->getStateUsing(fn($record) => $record->products[0]['details']['seller']['logo'] ?? '-')
+                    ->circular(),
+
+                Tables\Columns\TextColumn::make('products.seller_name')
+                    ->label(__('filament/resources.sub_order.schema.seller_name'))
+                    ->getStateUsing(fn($record) => $record->products[0]['details']['seller']['name'] ?? '-')
                     ->sortable()
                     ->searchable(),
 

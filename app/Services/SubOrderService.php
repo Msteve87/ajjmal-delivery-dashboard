@@ -107,6 +107,7 @@ class SubOrderService
             ])
             ->whereNull('driver_id')
             ->with('order')
+            ->orderByDesc('date_add')
             ->get();
     }
 

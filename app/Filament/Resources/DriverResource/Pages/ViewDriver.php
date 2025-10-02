@@ -6,6 +6,8 @@ use Filament\Tables;
 use App\Models\Driver;
 use App\Models\SubOrder;
 use Filament\Resources\Pages\Page;
+use Illuminate\Support\Collection;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\DatePicker;
@@ -131,7 +133,17 @@ class ViewDriver extends Page implements HasTable
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('settle')
+                        ->label(__('filament/resources.sub_order.actions.settle_orders.label'))
+                        ->icon('heroicon-o-banknotes')
+                        ->requiresConfirmation()
+                        ->modalHeading(__('filament/resources.sub_order.actions.settle_orders.label'))
+                        ->modalSubheading(__('filament/resources.sub_order.actions.settle_orders.body'))
+                        ->action(function (Collection $records) {
+                            //
+                        })
+                        ->deselectRecordsAfterCompletion()
+                        ->color('success'),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

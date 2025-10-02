@@ -104,6 +104,10 @@ return [
         ],
         'actions' => [
             'assign_driver' => 'Assign Driver',
+            'settle_orders' => [
+                'label' => 'Settle Orders',
+                'body' => 'This will mark the selected orders as settled and record the settlement date.',
+            ]
         ],
     ],
 

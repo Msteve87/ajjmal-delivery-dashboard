@@ -101,26 +101,34 @@ class SubOrderController extends Controller
 
     public function updateSubOrderStatus(string $trackingId, Request $request)
     {
-        $request->validate([
-            'statusId' => 'required|string|exists:sub_order_statuses,id',
-        ]);
+        try {
 
-        $this->orderService->updateJmStatusOrder(
-            $trackingId,
-            $request->statusId
-        );
-
-        SubOrder::where('tracking_id', $trackingId)
-            ->update([
-                'sub_order_status_id' => $request->statusId,
+            $request->validate([
+                'statusId' => 'required|string|exists:sub_order_statuses,id',
             ]);
 
-        // event(new JmOrderStatusUpdated($trackingId));
+            $this->orderService->updateJmStatusOrder(
+                $trackingId,
+                $request->statusId
+            );
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Ajjmal Order status updated successfully'
-        ]);
+            SubOrder::where('tracking_id', $trackingId)
+                ->update([
+                    'sub_order_status_id' => $request->statusId,
+                ]);
+
+            // event(new JmOrderStatusUpdated($trackingId));
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ajjmal Order status updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function addSubOrderDiscount(string $trackingId, Request $request)

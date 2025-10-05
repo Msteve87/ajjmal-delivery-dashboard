@@ -110,6 +110,11 @@ class SubOrderController extends Controller
             $request->statusId
         );
 
+        SubOrder::where('tracking_id', $trackingId)
+            ->update([
+                'sub_order_status_id' => $request->statusId,
+            ]);
+
         // event(new JmOrderStatusUpdated($trackingId));
 
         return response()->json([

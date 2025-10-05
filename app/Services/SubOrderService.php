@@ -85,6 +85,7 @@ class SubOrderService
                     'products' => $subOrder['products'],
                     'sub_order_status_id' => SubOrderStatus::where('name', $subOrder['current_state_name'])->first()->id,
                     'order_id' => $order->id,
+                    'driver_id' => $order->driver_id,
                     'date_add' => $subOrder['date_add'],
                     'date_upd' => $subOrder['date_upd'],
                 ]);

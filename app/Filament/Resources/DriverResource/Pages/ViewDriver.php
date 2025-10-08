@@ -6,7 +6,9 @@ use Filament\Tables;
 use App\Models\Driver;
 use App\Models\SubOrder;
 use Filament\Resources\Pages\Page;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\DriverResource;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -18,7 +20,6 @@ class ViewDriver extends Page implements HasTable
     protected static string $view = 'filament.resources.driver-resource.pages.view-driver';
 
     public Driver $record;
-
 
     public function getBreadcrumb(): ?string
     {
@@ -38,7 +39,6 @@ class ViewDriver extends Page implements HasTable
             ]),
         ];
     }
-
 
     public function mount($record): void
     {
@@ -91,6 +91,10 @@ class ViewDriver extends Page implements HasTable
                     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
                     ->boolean(),
 
+                Tables\Columns\TextColumn::make('delivered_at')
+                    ->label(__('filament/resources.sub_order.schema.delivered_at'))
+                    ->dateTime(),
+
                 Tables\Columns\TextColumn::make('order.payment_method')
                     ->label(__('filament/resources.sub_order.schema.payment_method'))
                     ->money('lyd', locale: 'en')
@@ -112,6 +116,18 @@ class ViewDriver extends Page implements HasTable
                             . '; color: white; padding: 0.25rem 0.5rem; border-radius: 0.375rem;',
                     ])
                     ->searchable()
+            ])
+            ->filters([
+                Filter::make('delivered_at')
+                    ->form([
+                        DatePicker::make('from')->label('From'),
+                        DatePicker::make('until')->label('Until'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'], fn($q, $date) => $q->whereDate('delivered_at', '>=', $date))
+                            ->when($data['until'], fn($q, $date) => $q->whereDate('delivered_at', '<=', $date));
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

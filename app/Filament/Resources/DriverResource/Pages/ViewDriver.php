@@ -55,7 +55,8 @@ class ViewDriver extends Page implements HasTable
             ->query(
                 SubOrder::query()
                     ->where('driver_id', $this->record->id)
-                    ->deliveredToday()
+                    ->delivered()
+                    ->unsettled()
             )
             ->columns([
                 Tables\Columns\TextColumn::make('tracking_id')

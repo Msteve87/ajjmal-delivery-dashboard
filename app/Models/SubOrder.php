@@ -34,9 +34,19 @@ class SubOrder extends Model
         return $query->whereNotNull('picked_up_by');
     }
 
+    public function scopeDelivered($query)
+    {
+        return $query->whereNotNull('delivered_at');
+    }
+
     public function scopeDeliveredToday($query)
     {
         return $query->whereDate('delivered_at', today());
+    }
+
+    public function scopeUnsettled($query)
+    {
+        return $query->whereNull('settlement_id');
     }
 
     public function order()
@@ -48,7 +58,6 @@ class SubOrder extends Model
     {
         return $this->belongsTo(Driver::class);
     }
-
 
     public function pickedUpBy()
     {

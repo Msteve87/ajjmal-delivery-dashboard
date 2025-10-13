@@ -5,10 +5,11 @@ namespace App\Filament\Resources\DriverResource\Pages;
 use Filament\Tables;
 use App\Models\Driver;
 use App\Models\SubOrder;
+use App\Models\Settlement;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Collection;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\DriverResource;
@@ -133,7 +134,11 @@ class ViewDriver extends Page implements HasTable
                         ->modalHeading(__('filament/resources.sub_order.actions.settle_orders.label'))
                         ->modalSubheading(__('filament/resources.sub_order.actions.settle_orders.body'))
                         ->action(function (Collection $records) {
-                            //
+                            $settelment = Settlement::create(['driver_id' => $this->record->id]);
+                            foreach ($records as $record) {
+                                $record->settlement_id = $settelment->id;
+                                $record->save();
+                            }
                         })
                         ->deselectRecordsAfterCompletion()
                         ->color('success'),

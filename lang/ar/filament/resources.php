@@ -102,6 +102,7 @@ return [
             'date_add' => 'تاريخ الإضافة',
             'created_at' => 'تاريخ الإنشاء',
             'updated_at' => 'تاريخ التحديث',
+            'delivered_at' => 'تاريخ التوصيل'
         ],
         'actions' => [
             'assign_driver' => 'تعيين سائق',

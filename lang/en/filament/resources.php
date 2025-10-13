@@ -101,6 +101,7 @@ return [
             'date_add' => 'Date',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'delivered_at' => 'Delivered At'
         ],
         'actions' => [
             'assign_driver' => 'Assign Driver',

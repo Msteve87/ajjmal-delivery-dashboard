@@ -94,9 +94,6 @@ class ViewDriver extends Page implements HasTable
                     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
                     ->boolean(),
 
-                Tables\Columns\TextColumn::make('delivered_at')
-                    ->label(__('filament/resources.sub_order.schema.delivered_at'))
-                    ->dateTime(),
 
                 Tables\Columns\TextColumn::make('order.payment_method')
                     ->label(__('filament/resources.sub_order.schema.payment_method'))
@@ -118,7 +115,11 @@ class ViewDriver extends Page implements HasTable
                             . ($record->subOrderStatus?->color ?? '#6B7280')
                             . '; color: white; padding: 0.25rem 0.5rem; border-radius: 0.375rem;',
                     ])
-                    ->searchable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('delivered_at')
+                    ->label(__('filament/resources.sub_order.schema.delivered_at'))
+                    ->dateTime(),
             ])
             ->filters([
                 Filter::make('delivered_at')

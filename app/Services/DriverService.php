@@ -24,7 +24,7 @@ class DriverService
                     'Cash on delivery (COD)',
                 ]);
             })
-            ->deliveredToday()
+            ->unsettled()
             ->sum('total');
     }
 

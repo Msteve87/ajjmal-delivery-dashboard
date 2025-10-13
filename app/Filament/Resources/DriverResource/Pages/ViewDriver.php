@@ -122,16 +122,7 @@ class ViewDriver extends Page implements HasTable
                     ->dateTime(),
             ])
             ->filters([
-                Filter::make('delivered_at')
-                    ->form([
-                        DatePicker::make('from')->label('From'),
-                        DatePicker::make('until')->label('Until'),
-                    ])
-                    ->query(function ($query, array $data) {
-                        return $query
-                            ->when($data['from'], fn($q, $date) => $q->whereDate('delivered_at', '>=', $date))
-                            ->when($data['until'], fn($q, $date) => $q->whereDate('delivered_at', '<=', $date));
-                    })
+                //
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

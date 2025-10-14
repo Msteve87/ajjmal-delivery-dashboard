@@ -35,7 +35,11 @@ class EditUser extends EditRecord
                             ])
                     )
                     ->visible(fn() => auth()->user()->hasPermissionTo('assign.permission'))
-                    ->default(fn($record) => $record?->getPermissionNames() ?? [])
+                    ->afterStateHydrated(function ($component, $record) {
+                        if ($record) {
+                            $component->state($record->getPermissionNames()->toArray());
+                        }
+                    })
                     ->saveRelationshipsUsing(function ($record, $state) {
                         $record->syncPermissions($state);
                     }),

@@ -37,6 +37,8 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('120px')
             ->brandName('Ajjmal')
             ->login()
+            ->passwordReset()
+            ->revealablePasswords(true)
             ->colors([
                 'primary' => Color::Amber,
                 'accent' => Color::Blue,

@@ -124,11 +124,11 @@ class SubOrderResource extends Resource
                     ->searchable()
                     ->action(
                         Tables\Actions\Action::make('updateStatus')
-                            ->label('Change Status')
+                            ->label(__('filament/resources.sub_order.actions.change_status'))
                             ->icon('heroicon-m-pencil-square')
                             ->form([
                                 Forms\Components\Select::make('sub_order_status_id')
-                                    ->label('New Status')
+                                    ->label(__('filament/resources.sub_order.form.new_status'))
                                     ->options(
                                         function () {
                                             $locale = app()->getLocale();
@@ -148,7 +148,8 @@ class SubOrderResource extends Resource
                                     'sub_order_status_id' => $data['sub_order_status_id'],
                                 ]);
 
-                            })->visible(fn() => auth()->user()->hasPermissionTo('update.order.status'))
+                            })
+                            ->visible(fn() => auth()->user()->hasPermissionTo('update.order.status'))
                     ),
 
                 Tables\Columns\TextColumn::make('driver.first_name')
@@ -184,7 +185,7 @@ class SubOrderResource extends Resource
             ->actions([
                 // Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading('Order Details')
+                    ->modalHeading('filament/resources.sub_order.actions.order_details')
                     ->modalContent(fn($record) => view('filament.orders.sub-orders', ['record' => $record])),
 
                 Tables\Actions\Action::make('Delivery Task')

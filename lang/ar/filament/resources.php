@@ -105,6 +105,7 @@ return [
             'delivered_at' => 'تاريخ التوصيل'
         ],
         'form' => [
+            'new_status' => 'الحالة الجديدة',
             'select_drivers' => 'إختيار السائقين'
         ],
         'actions' => [
@@ -114,7 +115,9 @@ return [
             'settle_orders' => [
                 'label' => 'تسوية الطلبات',
                 'body' => 'هل تريد حقًا تسوية الطلبات المحددة؟ هذا سيؤدي إلى وضع علامة على الطلبات المحددة على أنها مسوية وتسجيل تاريخ التسوية.',
-            ]
+            ],
+            'change_status' => 'تغير حالة الطلبية',
+            'order_details' => 'تفاصيل الطلبية'
         ],
         'notification' => [
             'delivery_task_assigned' => 'Delivery Task Assigned'

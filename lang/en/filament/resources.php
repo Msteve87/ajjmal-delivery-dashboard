@@ -104,6 +104,7 @@ return [
             'delivered_at' => 'Delivered At'
         ],
         'form' => [
+            'new_status' => 'New Status',
             'select_drivers' => 'Select Drivers'
         ],
         'actions' => [
@@ -113,7 +114,9 @@ return [
             'settle_orders' => [
                 'label' => 'Settle Orders',
                 'body' => 'This will mark the selected orders as settled and record the settlement date.',
-            ]
+            ],
+            'change_status' => 'Change Status',
+            'order_details' => 'Order Details'
         ],
         'notification' => [
             'delivery_task_assigned' => 'Delivery Task Assigned'

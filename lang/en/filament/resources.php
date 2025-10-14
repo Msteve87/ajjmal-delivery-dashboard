@@ -103,13 +103,21 @@ return [
             'updated_at' => 'Updated At',
             'delivered_at' => 'Delivered At'
         ],
+        'form' => [
+            'select_drivers' => 'Select Drivers'
+        ],
         'actions' => [
             'assign_driver' => 'Assign Driver',
+            'assign' => 'Assign',
+            'assign_delivery_task' => 'Assign Delivery Task',
             'settle_orders' => [
                 'label' => 'Settle Orders',
                 'body' => 'This will mark the selected orders as settled and record the settlement date.',
             ]
         ],
+        'notification' => [
+            'delivery_task_assigned' => 'Delivery Task Assigned'
+        ]
     ],
 
     'users' => [

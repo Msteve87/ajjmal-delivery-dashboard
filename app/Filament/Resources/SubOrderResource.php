@@ -148,7 +148,7 @@ class SubOrderResource extends Resource
                                     'sub_order_status_id' => $data['sub_order_status_id'],
                                 ]);
 
-                            })
+                            })->visible(fn() => auth()->user()->hasPermissionTo('update.order.status'))
                     ),
 
                 Tables\Columns\TextColumn::make('driver.first_name')
@@ -188,14 +188,14 @@ class SubOrderResource extends Resource
                     ->modalContent(fn($record) => view('filament.orders.sub-orders', ['record' => $record])),
 
                 Tables\Actions\Action::make('Delivery Task')
-                    ->label(__('filament/resources.order.actions.assign_driver'))
+                    ->label(__('filament/resources.sub_order.actions.assign_driver'))
                     ->icon('heroicon-o-truck')
-                    ->modalHeading('Assign Delivery Task')
-                    ->modalButton('Assign')
+                    ->modalHeading(__('filament/resources.sub_order.actions.assign_delivery_task'))
+                    ->modalButton(__('filament/resources.order.actions.assign'))
                     ->requiresConfirmation()
                     ->form([
                         \Filament\Forms\Components\Select::make('drivers')
-                            ->label('Select Drivers')
+                            ->label(__('filament/resources.sub_order.form.select_drivers'))
                             ->multiple()
                             ->options(
                                 \App\Models\Driver::where('is_active', true)->get()
@@ -212,10 +212,12 @@ class SubOrderResource extends Resource
                         });
 
                         Notification::make()
-                            ->title('Delivery Task Assigned')
+                            ->title(__('filament/resources.order.notifications.delivery_task_assigned'))
                             ->success()
                             ->send();
                     })
+                    ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks'))
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

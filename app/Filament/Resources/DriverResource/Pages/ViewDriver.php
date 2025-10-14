@@ -140,6 +140,7 @@ class ViewDriver extends Page implements HasTable
                                 $record->save();
                             }
                         })
+                        ->visible(fn() => auth()->user()->hasPermissionTo('add.settlement'))
                         ->deselectRecordsAfterCompletion()
                         ->color('success'),
                 ]),

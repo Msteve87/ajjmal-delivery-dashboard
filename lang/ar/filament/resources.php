@@ -104,13 +104,21 @@ return [
             'updated_at' => 'تاريخ التحديث',
             'delivered_at' => 'تاريخ التوصيل'
         ],
+        'form' => [
+            'select_drivers' => 'إختيار السائقين'
+        ],
         'actions' => [
             'assign_driver' => 'تعيين سائق',
+            'assign' => 'تعيين',
+            'assign_delivery_task' => 'تعيين مهمة توصيل',
             'settle_orders' => [
                 'label' => 'تسوية الطلبات',
                 'body' => 'هل تريد حقًا تسوية الطلبات المحددة؟ هذا سيؤدي إلى وضع علامة على الطلبات المحددة على أنها مسوية وتسجيل تاريخ التسوية.',
             ]
         ],
+        'notification' => [
+            'delivery_task_assigned' => 'Delivery Task Assigned'
+        ]
     ],
 
     'users' => [

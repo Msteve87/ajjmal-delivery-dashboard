@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
 {
@@ -41,15 +42,31 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255),
+
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required(fn($record) => !$record)
                     ->minLength(8)
                     ->dehydrateStateUsing(fn($state) => $state ? bcrypt($state) : null),
+
+                Forms\Components\MultiSelect::make('permissions')
+                    ->label('Permissions')
+                    ->options(
+                        Permission::all()
+                            ->mapWithKeys(fn($p) => [
+                                $p->name => __('permissions.' . $p->name)
+                            ])
+                    )
+                    ->visible(fn() => auth()->user()->hasPermissionTo('assign.permission'))
+                    ->default(fn($record) => $record?->getPermissionNames() ?? [])
+                    ->saveRelationshipsUsing(function ($record, $state) {
+                        $record->syncPermissions($state);
+                    }),
             ]);
     }
 

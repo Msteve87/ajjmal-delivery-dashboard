@@ -228,13 +228,17 @@ class DriverResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make()
+                        ->visible(fn() => auth()->user()->hasPermissionTo('edit.driver')),
+
+                    Tables\Actions\ViewAction::make()
+                        ->visible(fn() => auth()->user()->hasPermissionTo('view.driver')),
+
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -102,7 +102,10 @@ return [
             'date_add' => 'تاريخ الإضافة',
             'created_at' => 'تاريخ الإنشاء',
             'updated_at' => 'تاريخ التحديث',
-            'delivered_at' => 'تاريخ التوصيل'
+            'delivered_at' => 'تاريخ التوصيل',
+            'total_price_of_orders' => 'إجمالي سعر الطلبيات',
+            'total_amount' => 'الإجمالي الكلي',
+            'total_shipping' => 'إجمالي التوصيل'
         ],
         'form' => [
             'new_status' => 'الحالة الجديدة',

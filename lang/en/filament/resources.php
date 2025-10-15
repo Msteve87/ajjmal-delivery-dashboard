@@ -101,7 +101,10 @@ return [
             'date_add' => 'Date',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
-            'delivered_at' => 'Delivered At'
+            'delivered_at' => 'Delivered At',
+            'total_price_of_orders' => 'Total Price Of Orders',
+            'total_amount' => 'Total Amount',
+            'total_shipping' => 'Total Shipping'
         ],
         'form' => [
             'new_status' => 'New Status',

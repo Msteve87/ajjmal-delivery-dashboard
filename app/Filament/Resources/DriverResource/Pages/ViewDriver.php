@@ -13,6 +13,7 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\DriverResource;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Concerns\InteractsWithTable;
 
 class ViewDriver extends Page implements HasTable
@@ -84,11 +85,31 @@ class ViewDriver extends Page implements HasTable
                 Tables\Columns\TextColumn::make('shipping_price')
                     ->label(__('filament/resources.sub_order.schema.shipping_price'))
                     ->money('lyd', locale: 'en')
+                    ->summarize(
+                        Sum::make()
+                            ->label(__('filament/resources.sub_order.schema.total_shipping'))
+                            ->numeric(locale: 'en')
+                    )
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('base_price')
+                    ->label(__('filament/resources.sub_order.schema.base_price'))
+                    ->money('lyd', locale: 'en')
+                    ->summarize(
+                        Sum::make()
+                            ->label(__('filament/resources.sub_order.schema.total_price_of_orders'))
+                            ->numeric(locale: 'en')
+                    )
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('total')
                     ->label(__('filament/resources.sub_order.schema.total'))
                     ->money('lyd', locale: 'en')
+                    ->summarize(
+                        Sum::make()
+                            ->label(__('filament/resources.sub_order.schema.total_amount'))
+                            ->numeric(locale: 'en')
+                    )
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_picked_up')

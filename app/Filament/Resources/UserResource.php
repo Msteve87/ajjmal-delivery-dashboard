@@ -50,6 +50,7 @@ class UserResource extends Resource
 
                 Forms\Components\TextInput::make('password')
                     ->password()
+                    ->revealable()
                     ->required(fn($record) => !$record)
                     ->minLength(8)
                     ->dehydrateStateUsing(fn($state) => $state ? bcrypt($state) : null),

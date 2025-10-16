@@ -3,13 +3,15 @@ namespace App\Models;
 
 use App\Models\DeviceToken;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
 class Driver extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, LogsActivity;
 
     protected $guarded = [];
 
@@ -17,6 +19,16 @@ class Driver extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('user')
+            ->logOnly(['id', 'sub_order_status_id'])
+            ->setDescriptionForEvent(fn(string $eventName) => match ($eventName) {
+                default => "Driver {$eventName}",
+            });
+    }
 
     public function orders()
     {

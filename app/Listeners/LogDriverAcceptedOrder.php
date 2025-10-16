@@ -29,6 +29,6 @@ class LogDriverAcceptedOrder
                 'driver_id' => $event->driver->id,
                 'order_id' => $event->subOrder->id,
             ])
-            ->log("قام السائق {$event->driver->first_name} {$event->driver->last_name} بقبول الطلبية #{$event->subOrder->id}");
+            ->log("قام السائق {$event->driver->first_name} {$event->driver->last_name} بقبول الطلبية #{$event->subOrder->tracking_id}");
     }
 }

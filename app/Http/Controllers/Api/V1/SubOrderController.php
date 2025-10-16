@@ -120,7 +120,7 @@ class SubOrderController extends Controller
                     'sub_order_status_id' => $request->statusId,
                 ]);
 
-            // event(new JmOrderStatusUpdated($trackingId));
+            event(new \App\Events\DriverActionOnOrder($trackingId, Driver::find(auth()->id()), 'status_updated'));
 
             return response()->json([
                 'status' => 'success',

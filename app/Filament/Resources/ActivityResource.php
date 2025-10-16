@@ -43,26 +43,32 @@ class ActivityResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('description')
+                    ->label(__(''))
                     ->limit(50)
                     ->searchable(),
 
-                TextColumn::make('subject_type')
-                    ->label('Subject Type')
-                    ->sortable(),
+                // TextColumn::make('subject_type')
+                //     ->label('Subject Type')
+                //     ->sortable(),
 
-                TextColumn::make('subject_id')
-                    ->label('Subject ID'),
+                // TextColumn::make('subject_id')
+                //     ->label('Subject ID'),
 
                 TextColumn::make('causer_type')
-                    ->label('Causer Type'),
+                    ->label('Causer Type')
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'App\Models\Driver' => 'السائق',
+                        'App\Models\User' => 'المستخدم',
+                        default => $state,
+                    }),
 
                 TextColumn::make('causer_id')
                     ->label('Causer ID'),
 
-                TextColumn::make('properties')
-                    ->label('Properties')
-                    ->limit(50)
-                    ->toggleable(),
+                // TextColumn::make('properties')
+                //     ->label('Properties')
+                //     ->limit(50)
+                //     ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->label('Created')

@@ -25,13 +25,15 @@ class LogDriverOrderAction
         $subOrder = SubOrder::where('tracking_id', $event->trackingId)->first();
 
         $messages = [
-            'accepted' => "قام السائق {$event->driver->first_name} بقبول الطلبية #{$subOrder->tracking_id}",
-            'status_updated' => "قام السائق {$event->driver->first_name} بتحديث حالة الطلبية #{$subOrder->tracking_id} إلى {$subOrder->sub_order_status_id}",
+            'order_accepted' => "قام السائق {$event->driver->first_name} {$event->driver->last_name} بقبول الطلبية #{$subOrder->tracking_id}",
+            'status_updated' => "قام السائق {$event->driver->first_name} {$event->driver->last_name} بتحديث حالة الطلبية #{$subOrder->tracking_id} إلى {$subOrder->sub_order_status_id}",
         ];
 
         $description = $messages[$event->action] ?? "قام السائق {$event->driver->first_name} {$event->driver->last_name}بتنفيذ إجراء على الطلبية #{$subOrder->tracking_id}";
 
-        activity()
+        $actionName = __("activitylogs.names.{$event->action}", [], 'ar');
+
+        activity($actionName)
             ->performedOn($subOrder)
             ->causedBy($event->driver)
             ->event($event->action)

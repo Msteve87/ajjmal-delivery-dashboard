@@ -79,7 +79,11 @@ class SubOrderController extends Controller
                 'driver_id' => Auth::id(),
             ]);
 
-            event(new \App\Events\DriverAcceptedOrder($subOrder, Driver::find(auth()->id())));
+            event(new \App\Events\DriverActionOnOrder(
+                $trackingId,
+                Driver::find(auth()->id()),
+                'order_accepted'
+            ));
 
             return response()->json(
                 [
@@ -120,7 +124,11 @@ class SubOrderController extends Controller
                     'sub_order_status_id' => $request->statusId,
                 ]);
 
-            event(new \App\Events\DriverActionOnOrder($trackingId, Driver::find(auth()->id()), 'status_updated'));
+            event(new \App\Events\DriverActionOnOrder(
+                $trackingId,
+                Driver::find(auth()->id()),
+                'status_updated'
+            ));
 
             return response()->json([
                 'status' => 'success',

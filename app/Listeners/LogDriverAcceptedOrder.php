@@ -21,13 +21,13 @@ class LogDriverAcceptedOrder
      */
     public function handle(DriverAcceptedOrder $event): void
     {
-        activity()
+        activity('قبول الطلبية')
             ->performedOn($event->subOrder)
             ->causedBy($event->driver)
-            ->event('accepted_order')
+            ->event('order_accepted')
             ->withProperties([
                 'driver_id' => $event->driver->id,
-                'order_id' => $event->subOrder->id,
+                'tracking_id' => $event->subOrder->tracking_id,
             ])
             ->log("قام السائق {$event->driver->first_name} {$event->driver->last_name} بقبول الطلبية #{$event->subOrder->tracking_id}");
     }

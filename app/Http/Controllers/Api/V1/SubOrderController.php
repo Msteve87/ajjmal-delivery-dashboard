@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Driver;
 use App\Models\SubOrder;
 use Illuminate\Http\Request;
 use App\Events\JmOrderStatusUpdated;
@@ -77,6 +78,8 @@ class SubOrderController extends Controller
             $subOrder->update([
                 'driver_id' => Auth::id(),
             ]);
+
+            event(new \App\Events\DriverAcceptedOrder($subOrder, Driver::find(auth()->id())));
 
             return response()->json(
                 [

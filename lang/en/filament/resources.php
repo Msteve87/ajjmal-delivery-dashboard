@@ -138,4 +138,18 @@ return [
             'updated_at' => 'Updated At',
         ]
     ],
+    'activitylogs' => [
+        'label' => 'Activity Log',
+        'plural_label' => 'Activity Logs',
+        'schema' => [
+            'id' => 'ID',
+            'logName' => 'Log Type',
+            'description' => 'Description',
+            'causer_type' => 'Causer Type',
+            'causer_name' => 'Causer Name',
+            'causer_id' => 'Causer ID',
+            'subject_type' => 'Subject Type',
+            'created_at' => 'Created At',
+        ],
+    ],
 ];

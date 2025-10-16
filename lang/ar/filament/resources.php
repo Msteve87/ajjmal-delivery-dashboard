@@ -140,4 +140,18 @@ return [
             'updated_at' => 'تاريخ التحديث',
         ],
     ],
+    'activitylogs' => [
+        'label' => 'سجل النشاط',
+        'plural_label' => 'سجلات النشاط',
+        'schema' => [
+            'id' => 'الرقم',
+            'log_name' => 'نوع السجل',
+            'description' => 'الوصف',
+            'causer_type' => 'المنفذ',
+            'causer_name' => 'إسم المنفذ',
+            'causer_id' => 'رقم المنفذ',
+            'subject_type' => 'العنصر المستهدف',
+            'created_at' => 'تاريخ الإنشاء',
+        ]
+    ]
 ];

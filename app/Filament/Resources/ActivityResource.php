@@ -20,6 +20,21 @@ class ActivityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
+    public static function getModelLabel(): string
+    {
+        return __('filament/resources.activitylogs.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament/resources.activitylogs.plural_label');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('filament/resources.activitylogs.plural_label');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -33,17 +48,17 @@ class ActivityResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('ID')
+                    ->label(__('filament/resources.activitylogs.schema.id'))
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('log_name')
-                    ->label('Log Name')
+                    ->label(__('filament/resources.activitylogs.schema.log_name'))
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('description')
-                    ->label(__(''))
+                    ->label(__('filament/resources.activitylogs.schema.description'))
                     ->limit(50)
                     ->searchable(),
 
@@ -55,7 +70,7 @@ class ActivityResource extends Resource
                 //     ->label('Subject ID'),
 
                 TextColumn::make('causer_type')
-                    ->label('Causer Type')
+                    ->label(__('filament/resources.activitylogs.schema.causer_type'))
                     ->formatStateUsing(fn($state) => match ($state) {
                         'App\Models\Driver' => 'السائق',
                         'App\Models\User' => 'المستخدم',
@@ -63,7 +78,7 @@ class ActivityResource extends Resource
                     }),
 
                 TextColumn::make('causer_id')
-                    ->label('Causer ID'),
+                    ->label(__('filament/resources.activitylogs.schema.causer_id')),
 
                 // TextColumn::make('properties')
                 //     ->label('Properties')
@@ -71,7 +86,7 @@ class ActivityResource extends Resource
                 //     ->toggleable(),
 
                 TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label(__('filament/resources.activitylogs.schema.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])
@@ -79,11 +94,11 @@ class ActivityResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                //
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    //
                 ]),
             ]);
     }
@@ -102,5 +117,10 @@ class ActivityResource extends Resource
             'create' => Pages\CreateActivity::route('/create'),
             'edit' => Pages\EditActivity::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('browse.activity_log');
     }
 }

@@ -23,6 +23,7 @@ class EditUser extends EditRecord
 
                 Forms\Components\TextInput::make('email')
                     ->email()
+                    ->unique()
                     ->required()
                     ->maxLength(255),
 

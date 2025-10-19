@@ -27,7 +27,6 @@ class OrderStatusController extends Controller
                 JmOrderStatus::cancellationByCustomer->value,
                 JmOrderStatus::cancellationByMerchant->value,
                 JmOrderStatus::refunded->value,
-                JmOrderStatus::canceled->value,
             ]
         )->get();
 

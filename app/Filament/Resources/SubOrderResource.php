@@ -234,6 +234,7 @@ class SubOrderResource extends Resource
                             ->success()
                             ->send();
                     })
+                    ->disabled(fn(Model $record) => is_null($record->driver_id))
                     ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks'))
 
             ])

@@ -7,6 +7,7 @@ use Filament\Tables;
 use App\Models\SubOrder;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Enums\JmOrderStatus;
 use Filament\Resources\Resource;
 use Filament\Tables\Grouping\Group;
 use Illuminate\Database\Eloquent\Model;
@@ -183,60 +184,61 @@ class SubOrderResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make()
-                    ->modalHeading('filament/resources.sub_order.actions.order_details')
-                    ->modalContent(fn($record) => view('filament.orders.sub-orders', ['record' => $record])),
+                Tables\Actions\ActionGroup::make([
+                    // Tables\Actions\EditAction::make(),
+                    Tables\Actions\ViewAction::make()
+                        ->modalHeading('filament/resources.sub_order.actions.order_details')
+                        ->modalContent(fn($record) => view('filament.orders.sub-orders', ['record' => $record])),
 
-                Tables\Actions\Action::make('Delivery Task')
-                    ->label(__('filament/resources.sub_order.actions.assign_driver'))
-                    ->icon('heroicon-o-truck')
-                    ->modalHeading(__('filament/resources.sub_order.actions.assign_delivery_task'))
-                    ->modalButton(__('filament/resources.order.actions.assign'))
-                    ->requiresConfirmation()
-                    ->form([
-                        \Filament\Forms\Components\Select::make('drivers')
-                            ->label(__('filament/resources.sub_order.form.select_drivers'))
-                            ->multiple()
-                            ->options(
-                                \App\Models\Driver::where('is_active', true)->get()
-                                    ->mapWithKeys(fn($driver) => [
-                                        $driver->id => $driver->first_name . ' ' . $driver->last_name
-                                    ])
-                            )
-                            ->searchable(),
-                    ])
-                    ->action(function (Model $record, array $data) {
-                        collect($data['drivers'])->each(function ($driverId) use ($record) {
-                            $driver = \App\Models\Driver::find($driverId);
-                            $driver->notify(new NewDeliveryTaskNotification($record));
-                        });
+                    Tables\Actions\Action::make('Delivery Task')
+                        ->label(__('filament/resources.sub_order.actions.assign_driver'))
+                        ->icon('heroicon-o-truck')
+                        ->modalHeading(__('filament/resources.sub_order.actions.assign_delivery_task'))
+                        ->modalButton(__('filament/resources.order.actions.assign'))
+                        ->requiresConfirmation()
+                        ->form([
+                            \Filament\Forms\Components\Select::make('drivers')
+                                ->label(__('filament/resources.sub_order.form.select_drivers'))
+                                ->multiple()
+                                ->options(
+                                    \App\Models\Driver::where('is_active', true)->get()
+                                        ->mapWithKeys(fn($driver) => [
+                                            $driver->id => $driver->first_name . ' ' . $driver->last_name
+                                        ])
+                                )
+                                ->searchable(),
+                        ])
+                        ->action(function (Model $record, array $data) {
+                            collect($data['drivers'])->each(function ($driverId) use ($record) {
+                                $driver = \App\Models\Driver::find($driverId);
+                                $driver->notify(new NewDeliveryTaskNotification($record));
+                            });
 
-                        Notification::make()
-                            ->title(__('filament/resources.order.notifications.delivery_task_assigned'))
-                            ->success()
-                            ->send();
-                    })
-                    ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks')),
+                            Notification::make()
+                                ->title(__('filament/resources.order.notifications.delivery_task_assigned'))
+                                ->success()
+                                ->send();
+                        })
+                        ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks')),
 
-                Tables\Actions\Action::make('Withdraw order')
-                    ->label(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
-                    ->icon('heroicon-o-exclamation-circle')
-                    ->modalHeading(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
-                    ->modalButton(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
-                    ->requiresConfirmation()
-                    ->action(function (Model $record, array $data) {
-                        $record->driver_id = null;
-                        $record->save();
+                    Tables\Actions\Action::make('Withdraw order')
+                        ->label(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
+                        ->icon('heroicon-o-exclamation-circle')
+                        ->modalHeading(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
+                        ->modalButton(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
+                        ->requiresConfirmation()
+                        ->action(function (Model $record, array $data) {
+                            $record->driver_id = null;
+                            $record->save();
 
-                        Notification::make()
-                            ->title('تم إلغاء تعيين السائق بنجاح')
-                            ->success()
-                            ->send();
-                    })
-                    ->disabled(fn(Model $record) => is_null($record->driver_id))
-                    ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks'))
-
+                            Notification::make()
+                                ->title('تم إلغاء تعيين السائق بنجاح')
+                                ->success()
+                                ->send();
+                        })
+                        ->disabled(fn(Model $record) => is_null($record->driver_id) || $record->sub_order_status_id !== JmOrderStatus::processingInProgress->value)
+                        ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks'))
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

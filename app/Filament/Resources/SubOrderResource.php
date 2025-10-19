@@ -149,6 +149,8 @@ class SubOrderResource extends Resource
                                     'sub_order_status_id' => $data['sub_order_status_id'],
                                 ]);
 
+                                event(new \App\Events\OrderUpdated($record, auth()->user()));
+
                             })
                             ->visible(fn() => auth()->user()->hasPermissionTo('update.order.status'))
                     ),

@@ -21,7 +21,8 @@ class OrderUpdated
      */
     public function __construct(
         public SubOrder $subOrder,
-        public User $user
+        public User $user,
+        public string $action
     ) {
         //
     }

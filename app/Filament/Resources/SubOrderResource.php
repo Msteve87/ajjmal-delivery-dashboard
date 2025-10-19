@@ -149,7 +149,7 @@ class SubOrderResource extends Resource
                                     'sub_order_status_id' => $data['sub_order_status_id'],
                                 ]);
 
-                                event(new \App\Events\OrderUpdated($record, auth()->user()));
+                                event(new \App\Events\OrderUpdated($record, auth()->user(), 'order_update'));
 
                             })
                             ->visible(fn() => auth()->user()->hasPermissionTo('update.order.status'))
@@ -232,6 +232,8 @@ class SubOrderResource extends Resource
                         ->action(function (Model $record, array $data) {
                             $record->driver_id = null;
                             $record->save();
+
+                            event(new \App\Events\OrderUpdated($record, auth()->user(), 'withdraw_order'));
 
                             Notification::make()
                                 ->title('تم إلغاء تعيين السائق بنجاح')

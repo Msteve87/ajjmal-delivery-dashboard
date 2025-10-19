@@ -119,7 +119,8 @@ return [
                 'body' => 'This will mark the selected orders as settled and record the settlement date.',
             ],
             'change_status' => 'Change Status',
-            'order_details' => 'Order Details'
+            'order_details' => 'Order Details',
+            'withdraw_order_from_driver' => 'Withdraw Order'
         ],
         'notification' => [
             'delivery_task_assigned' => 'Delivery Task Assigned'

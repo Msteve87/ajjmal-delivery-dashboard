@@ -217,6 +217,23 @@ class SubOrderResource extends Resource
                             ->success()
                             ->send();
                     })
+                    ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks')),
+
+                Tables\Actions\Action::make('Withdraw order')
+                    ->label(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
+                    ->icon('heroicon-o-exclamation-circle')
+                    ->modalHeading(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
+                    ->modalButton(__('filament/resources.sub_order.actions.withdraw_order_from_driver'))
+                    ->requiresConfirmation()
+                    ->action(function (Model $record, array $data) {
+                        $record->driver_id = null;
+                        $record->save();
+
+                        Notification::make()
+                            ->title('تم إلغاء تعيين السائق بنجاح')
+                            ->success()
+                            ->send();
+                    })
                     ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks'))
 
             ])

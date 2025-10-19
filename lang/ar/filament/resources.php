@@ -120,7 +120,8 @@ return [
                 'body' => 'هل تريد حقًا تسوية الطلبات المحددة؟ هذا سيؤدي إلى وضع علامة على الطلبات المحددة على أنها مسوية وتسجيل تاريخ التسوية.',
             ],
             'change_status' => 'تغير حالة الطلبية',
-            'order_details' => 'تفاصيل الطلبية'
+            'order_details' => 'تفاصيل الطلبية',
+            'withdraw_order_from_driver' => 'سحب الطلبية من السائق'
         ],
         'notification' => [
             'delivery_task_assigned' => 'Delivery Task Assigned'

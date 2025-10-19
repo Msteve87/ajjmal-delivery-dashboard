@@ -15,6 +15,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -233,6 +234,23 @@ class DriverResource extends Resource
 
                     Tables\Actions\ViewAction::make()
                         ->visible(fn() => auth()->user()->hasPermissionTo('view.driver')),
+
+                    Tables\Actions\Action::make('toggleDriverStatus')
+                        ->label(fn(Model $record) => $record->is_active ? 'تعطيل السائق' : 'تفعيل السائق')
+                        ->icon(fn(Model $record) => $record->is_active ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                        ->color(fn(Model $record) => $record->is_active ? 'danger' : 'success')
+                        ->requiresConfirmation()
+                        ->visible(fn() => auth()->user()->hasPermissionTo('edit.driver'))
+                        ->action(function (Model $record) {
+                            $record->is_active = !$record->is_active;
+                            $record->save();
+
+                            Notification::make()
+                                ->title($record->is_active ? 'تم تفعيل السائق بنجاح' : 'تم تعطيل السائق بنجاح')
+                                ->success()
+                                ->send();
+                        }),
+
 
                 ])
             ])

@@ -42,7 +42,27 @@ class EditUser extends EditRecord
                         }
                     })
                     ->saveRelationshipsUsing(function ($record, $state) {
+                        $oldPermissions = $record->getPermissionNames()->toArray();
                         $record->syncPermissions($state);
+                        $newPermissions = $record->getPermissionNames()->toArray();
+                        $added = array_diff($newPermissions, $oldPermissions);
+                        $removed = array_diff($oldPermissions, $newPermissions);
+                        if (!empty($added) || !empty($removed)) {
+                            $description = "قام المستخدم " . auth()->user()->name . " بتحديث صلاحيات المستخدم {$record->name}";
+                            if ($added) {
+                                $description .= " (تمت إضافة: " . implode(', ', $added) . ")";
+                            }
+                            if ($removed) {
+                                $description .= " (تمت إزالة: " . implode(', ', $removed) . ")";
+                            }
+
+                            $activity = __('activitylogs.names.permissions_updated', [], 'ar');
+
+                            activity($activity)
+                                ->performedOn($record)
+                                ->causedBy(auth()->user())
+                                ->log($description);
+                        }
                     }),
             ]);
     }

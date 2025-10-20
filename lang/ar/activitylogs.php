@@ -14,5 +14,6 @@ return [
         'driver_profile_updated' => 'تحديث ملف السائق',
         'driver_password_updated' => 'تحديث كلمة مرور السائق',
         'driver_deleted' => 'حذف سائق',
+        'permissions_updated' => 'تحديث الصلاحيات',
     ]
 ];

@@ -143,7 +143,7 @@ return [
         'plural_label' => 'Activity Logs',
         'schema' => [
             'id' => 'ID',
-            'logName' => 'Log Type',
+            'log_name' => 'Log Type',
             'description' => 'Description',
             'causer_type' => 'Causer Type',
             'causer_name' => 'Causer Name',

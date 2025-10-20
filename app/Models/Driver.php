@@ -24,7 +24,6 @@ class Driver extends Authenticatable
     {
         return LogOptions::defaults()
             ->useLogName('user')
-            ->logOnly(['id', 'sub_order_status_id'])
             ->setDescriptionForEvent(fn(string $eventName) => match ($eventName) {
                 default => "Driver {$eventName}",
             });

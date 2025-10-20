@@ -10,5 +10,9 @@ return [
         'password_updated' => 'تحديث كلمة المرور',
         'user_created' => 'إضافة مستخدم جديد',
         'user_deleted' => 'حذف مستخدم',
+        'driver_created' => 'إضافة سائق جديد',
+        'driver_profile_updated' => 'تحديث ملف السائق',
+        'driver_password_updated' => 'تحديث كلمة مرور السائق',
+        'driver_deleted' => 'حذف سائق',
     ]
 ];

@@ -177,10 +177,10 @@ class SubOrderResource extends Resource
                 //     ->dateTime('d M Y H:i')
                 //     ->sortable(),
 
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('filament/resources.sub_order.schema.updated_at'))
-                    ->dateTime('d M Y H:i')
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('updated_at')
+                //     ->label(__('filament/resources.sub_order.schema.updated_at'))
+                //     ->dateTime('d M Y H:i')
+                //     ->sortable(),
             ])
             ->filters([
                 //

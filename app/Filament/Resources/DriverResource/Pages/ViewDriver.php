@@ -8,12 +8,17 @@ use App\Models\SubOrder;
 use App\Models\Settlement;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Collection;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DriverSubOrdersExport;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\DriverResource;
 use Filament\Tables\Columns\Summarizers\Sum;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Filament\Tables\Concerns\InteractsWithTable;
 
 class ViewDriver extends Page implements HasTable
@@ -160,11 +165,25 @@ class ViewDriver extends Page implements HasTable
                                 $record->settlement_id = $settelment->id;
                                 $record->save();
                             }
+                            $fileName = 'driver_' . $this->record->id . '_suborders_' . now()->format('Ymd_His') . '.pdf';
+                            return Excel::download(new DriverSubOrdersExport($records), $fileName, \Maatwebsite\Excel\Excel::MPDF);
                         })
                         ->visible(fn() => auth()->user()->hasPermissionTo('add.settlement'))
                         ->deselectRecordsAfterCompletion()
                         ->color('success'),
-                ]),
+
+
+                    // BulkAction::make('export_excel')
+                    //     ->label('Export to Excel')
+                    //     ->icon('heroicon-o-arrow-down-tray')
+                    //     ->action(function (Collection $records) {
+                    //         $fileName = 'driver_' . $this->record->id . '_suborders_' . now()->format('Ymd_His') . '.pdf';
+                    //         return Excel::download(new DriverSubOrdersExport($records), $fileName, \Maatwebsite\Excel\Excel::MPDF);
+
+                    //     })
+                    //     ->color('secondary')
+                    //     ->deselectRecordsAfterCompletion(),
+                ])
             ])
             ->defaultSort('created_at', 'desc');
     }

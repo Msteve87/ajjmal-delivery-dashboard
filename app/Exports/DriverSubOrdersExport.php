@@ -21,11 +21,9 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
 
     public function collection()
     {
-        // Data is added manually in AfterSheet
-        return collect();
+        return collect(); // handled manually in AfterSheet
     }
 
-    // Return empty headings to avoid duplicate header row
     public function headings(): array
     {
         return [];
@@ -42,16 +40,28 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
+                // Get settlement ID from first record
+                $settlementId = $this->records->first()->settlement_id ?? '-';
+
+                // Settlement ID top-left
+                $sheet->setCellValue('A1', "Settlement ID: {$settlementId}");
+                $sheet->getStyle('A1')->applyFromArray([
+                    'font' => ['bold' => true, 'size' => 13, 'color' => ['argb' => '000000']],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                ]);
+
+                $row = 3; // leave space after settlement ID
+    
                 $grouped = $this->records->groupBy(fn($record) => $record->order->reference);
-                $row = 1;
 
                 foreach ($grouped as $ref => $records) {
-                    // Add space between groups
-                    if ($row !== 1) {
+                    if ($row !== 3)
                         $row += 2;
-                    }
 
-                    // Reference label (far left)
+                    // Reference label
                     $sheet->setCellValue("A{$row}", "#{$ref}");
                     $sheet->getStyle("A{$row}")
                         ->getFont()->setBold(true)->setSize(12)->getColor()->setARGB('FF000000');
@@ -60,7 +70,7 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
 
                     $row++;
 
-                    // Table headers
+                    // Headers
                     $headers = [
                         'Tracking ID',
                         'Seller Name',
@@ -78,16 +88,12 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
                         $col++;
                     }
 
-                    // Style headers (grey, centered)
+                    // Header style (simple, no colors)
                     $sheet->getStyle("A{$row}:H{$row}")->applyFromArray([
                         'font' => ['bold' => true],
                         'alignment' => [
                             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                        ],
-                        'fill' => [
-                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                            'startColor' => ['argb' => 'FFEFEFEF'],
                         ],
                     ]);
 
@@ -123,7 +129,7 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
                         ->setVertical('center');
                 }
 
-                // Auto-size columns
+                // Auto-size all columns
                 foreach (range('A', 'H') as $col) {
                     $sheet->getColumnDimension($col)->setAutoSize(true);
                 }

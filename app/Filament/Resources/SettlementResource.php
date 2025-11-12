@@ -49,6 +49,9 @@ class SettlementResource extends Resource
                 //
             ])
             ->actions([
+
+                Tables\Actions\ViewAction::make(),
+
                 Action::make('export_excel')
                     ->label('Export to Excel')
                     ->button()
@@ -69,7 +72,9 @@ class SettlementResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])->defaultSort('created_at', 'desc');
+            ])
+            ->recordUrl(false)
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array
@@ -84,7 +89,12 @@ class SettlementResource extends Resource
         return [
             'index' => Pages\ListSettlements::route('/'),
             'create' => Pages\CreateSettlement::route('/create'),
-            'edit' => Pages\EditSettlement::route('/{record}/edit'),
+            'view' => Pages\ViewSettlement::route('/{record}/view')
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('add.settlement');
     }
 }

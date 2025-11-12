@@ -171,18 +171,6 @@ class ViewDriver extends Page implements HasTable
                         ->visible(fn() => auth()->user()->hasPermissionTo('add.settlement'))
                         ->deselectRecordsAfterCompletion()
                         ->color('success'),
-
-
-                    // BulkAction::make('export_excel')
-                    //     ->label('Export to Excel')
-                    //     ->icon('heroicon-o-arrow-down-tray')
-                    //     ->action(function (Collection $records) {
-                    //         $fileName = 'driver_' . $this->record->id . '_suborders_' . now()->format('Ymd_His') . '.pdf';
-                    //         return Excel::download(new DriverSubOrdersExport($records), $fileName, \Maatwebsite\Excel\Excel::MPDF);
-
-                    //     })
-                    //     ->color('secondary')
-                    //     ->deselectRecordsAfterCompletion(),
                 ])
             ])
             ->defaultSort('created_at', 'desc');

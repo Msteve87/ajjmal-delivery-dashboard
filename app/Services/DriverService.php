@@ -15,7 +15,7 @@ class DriverService
         //
     }
 
-    public function getTodaysDeliveriesTotalCashOnHand(string $driverId): float
+    public function getDeliveriesTotalCashOnHand(string $driverId): float
     {
         return SubOrder::where('driver_id', $driverId)
             ->whereHas('order', function ($q) {
@@ -29,7 +29,7 @@ class DriverService
             ->sum('total');
     }
 
-    public function getTodaysDeliveriesTotalOnline(string $driverId): float
+    public function getDeliveriesTotalOnline(string $driverId): float
     {
         return SubOrder::where('driver_id', $driverId)
             ->whereHas('order', function ($q) {
@@ -42,5 +42,13 @@ class DriverService
             ->delivered()
             ->unsettled()
             ->sum('total');
+    }
+
+    public function getDeliveriesFeesDue(string $driverId): float
+    {
+        return SubOrder::where('driver_id', $driverId)
+            ->delivered()
+            ->unsettled()
+            ->sum('shipping_price') * 0.5;
     }
 }

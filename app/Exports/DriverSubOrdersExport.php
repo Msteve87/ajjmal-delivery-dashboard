@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles, WithEvents
 {
@@ -40,37 +41,45 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                // Get settlement ID from first record
-                $settlementId = $this->records->first()->settlement_id ?? '-';
+                // === Logo at top-center ===
+                $logo = new Drawing();
+                $logo->setName('Logo');
+                $logo->setDescription('Company Logo');
+                $logo->setPath(public_path('../public/images/logo.jpg'));
 
-                // Settlement ID top-left
-                $sheet->setCellValue('A1', "Settlement ID: {$settlementId}");
-                $sheet->getStyle('A1')->applyFromArray([
-                    'font' => ['bold' => true, 'size' => 13, 'color' => ['argb' => '000000']],
+                $logo->setHeight(560);
+                $logo->setCoordinates('E1');
+                $logo->setWorksheet($sheet);
+                $sheet->getRowDimension(1)->setRowHeight(70);
+
+                // Settlement ID top-left (row 2, after logo)
+                $settlementId = $this->records->first()->settlement_id ?? '-';
+                $sheet->setCellValue('E2', "Settlement ID: {$settlementId}");
+                $sheet->getStyle('E2')->applyFromArray([
+                    'font' => ['bold' => true, 'size' => 32, 'color' => ['argb' => '000000']],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                     ],
                 ]);
 
-                $row = 3; // leave space after settlement ID
-    
+                $row = 4; // leave space after settlement ID
                 $grouped = $this->records->groupBy(fn($record) => $record->order->reference);
 
                 foreach ($grouped as $ref => $records) {
-                    if ($row !== 3)
+                    if ($row !== 4)
                         $row += 2;
 
                     // Reference label
                     $sheet->setCellValue("A{$row}", "#{$ref}");
                     $sheet->getStyle("A{$row}")
-                        ->getFont()->setBold(true)->setSize(12)->getColor()->setARGB('FF000000');
+                        ->getFont()->setBold(true)->setSize(34)->getColor()->setARGB('FF000000');
                     $sheet->getStyle("A{$row}")
                         ->getAlignment()->setHorizontal('left');
 
                     $row++;
 
-                    // Headers
+                    // Table headers
                     $headers = [
                         'Tracking ID',
                         'Seller Name',
@@ -88,15 +97,20 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
                         $col++;
                     }
 
-                    // Header style (simple, no colors)
+                    // Header style (gray, bold, bigger font, centered)
                     $sheet->getStyle("A{$row}:H{$row}")->applyFromArray([
-                        'font' => ['bold' => true],
+                        'font' => ['bold' => true, 'size' => 30],
                         'alignment' => [
                             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                            'wrapText' => true,
+                        ],
+                        'fill' => [
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                            'startColor' => ['argb' => 'FFD9D9D9'],
                         ],
                     ]);
-
+                    $sheet->getRowDimension($row)->setRowHeight(40);
                     $row++;
 
                     // Sub-order rows
@@ -115,10 +129,13 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
                                 : '-',
                             ]
                         ], null, "A{$row}");
+
+                        $sheet->getRowDimension($row)->setRowHeight(30);
+                        $sheet->getStyle("A{$row}:H{$row}")->getFont()->setSize(18);
                         $row++;
                     }
 
-                    // Borders + alignment
+                    // Borders + alignment for the table
                     $start = $row - count($records) - 1;
                     $end = $row - 1;
                     $sheet->getStyle("A{$start}:H{$end}")
@@ -129,7 +146,26 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
                         ->setVertical('center');
                 }
 
-                // Auto-size all columns
+                // Grand total
+                $grandTotal = $this->records->sum(fn($record) => $record->total);
+                $row += 1;
+                $sheet->setCellValue("E{$row}", 'Grand Total:');
+                $sheet->setCellValue("F{$row}", $grandTotal);
+                $sheet->getStyle("E{$row}:F{$row}")->applyFromArray([
+                    'font' => ['bold' => true, 'size' => 40],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                    ],
+                ]);
+                $sheet->getRowDimension($row)->setRowHeight(40);
+
+                // Auto-size columns
                 foreach (range('A', 'H') as $col) {
                     $sheet->getColumnDimension($col)->setAutoSize(true);
                 }

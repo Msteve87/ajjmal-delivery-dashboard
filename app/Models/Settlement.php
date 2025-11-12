@@ -8,4 +8,9 @@ class Settlement extends Model
 {
     protected $guarded = [];
 
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class);
+    }
+
 }

@@ -25,6 +25,21 @@ class SettlementResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
+    public static function getModelLabel(): string
+    {
+        return __('filament/resources.settlement.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament/resources.settlement.plural_label');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('filament/resources.settlement.plural_label');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -39,9 +54,12 @@ class SettlementResource extends Resource
             ->columns([
                 TextColumn::make('id'),
 
-                TextColumn::make('driver')
-                    ->getStateUsing(fn($record) => $record->driver ? $record->driver->first_name . ' ' . $record->driver->last_name : '-')
-                    ->searchable(),
+                TextColumn::make('driver.first_name')
+                    ->label('Driver')
+                    ->formatStateUsing(fn($state, $record) => $record->driver?->first_name && $record->driver?->last_name
+                        ? $record->driver->first_name . ' ' . $record->driver->last_name
+                        : ($record->driver?->first_name ?? ($record->driver?->last_name ?? '-')))
+                    ->searchable(['drivers.first_name', 'drivers.last_name']),
 
                 TextColumn::make('created_at'),
             ])

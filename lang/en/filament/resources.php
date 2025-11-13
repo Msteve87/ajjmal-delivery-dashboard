@@ -152,4 +152,13 @@ return [
             'created_at' => 'Created At',
         ],
     ],
+    'settlement' => [
+        'label' => 'Settlement',
+        'plural_label' => 'Settlements',
+        'schema' => [
+            'id' => 'Id',
+            'driver_name' => 'Driver Name',
+            'created_at' => 'Created At',
+        ]
+    ]
 ];

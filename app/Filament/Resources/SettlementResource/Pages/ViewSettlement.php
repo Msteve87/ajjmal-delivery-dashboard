@@ -7,8 +7,6 @@ use App\Models\Driver;
 use App\Models\SubOrder;
 use App\Models\Settlement;
 use Filament\Actions\Action;
-
-
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Collection;
 use Filament\Tables\Filters\Filter;
@@ -32,6 +30,16 @@ class ViewSettlement extends Page implements HasTable
     protected static string $view = 'filament.resources.settlement-resource.pages.view-settlement';
 
     public Settlement $record;
+
+    public function getBreadcrumb(): ?string
+    {
+        return __('filament/resources.settlement.plural_label');
+    }
+
+    public function getTitle(): string
+    {
+        return __('filament/resources.settlement.view-page');
+    }
 
     public function getHeaderActions(): array
     {

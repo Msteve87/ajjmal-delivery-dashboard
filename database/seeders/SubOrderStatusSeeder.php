@@ -25,12 +25,15 @@ class SubOrderStatusSeeder extends Seeder
                 continue;
             }
 
-            SubOrderStatus::create([
-                "id" => $item["id_order_state"],
-                "name" => $item["name"],
-                "name_ar" => $subOrderStatuesAr[$item["id_order_state"]]['name'] ?? null,
-                "color" => $item["color"],
-            ]);
+            SubOrderStatus::firstOrCreate(
+                ['name' => $item['name']],
+                [
+                    'name' => $item['name'],
+                    'name_ar' => $subOrderStatuesAr[$item['id_order_state']]['name'] ?? null,
+                    'color' => $item['color'],
+                ]
+            );
+
         }
     }
 }

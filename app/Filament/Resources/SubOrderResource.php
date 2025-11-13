@@ -15,6 +15,7 @@ use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Notifications\NewOrderNotification;
 use App\Filament\Resources\SubOrderResource\Pages;
@@ -186,6 +187,16 @@ class SubOrderResource extends Resource
                 //     ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('sub_order_status_id')
+                    ->label(__('filament/resources.sub_order.schema.status'))
+                    ->options(fn() => \App\Models\SubOrderStatus::pluck(
+                        app()->getLocale() === 'ar' ? 'name_ar' : 'name',
+                        'id'
+                    ))
+                    ->multiple()
+                    ->searchable()
+                    ->placeholder('Select status'),
+
                 Filter::make('date_add')
                     ->label(__('filament/resources.sub_order.schema.date_add'))
                     ->form([
@@ -219,7 +230,6 @@ class SubOrderResource extends Resource
                             ->when($data['from'], fn($q, $date) => $q->whereDate('delivered_at', '>=', $date))
                             ->when($data['until'], fn($q, $date) => $q->whereDate('delivered_at', '<=', $date));
                     }),
-
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

@@ -9,9 +9,12 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Enums\JmOrderStatus;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Grouping\Group;
+use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use App\Notifications\NewOrderNotification;
 use App\Filament\Resources\SubOrderResource\Pages;
@@ -183,7 +186,40 @@ class SubOrderResource extends Resource
                 //     ->sortable(),
             ])
             ->filters([
-                //
+                Filter::make('date_add')
+                    ->label(__('filament/resources.sub_order.schema.date_add'))
+                    ->form([
+                        Section::make(__('filament/resources.sub_order.schema.date_add'))
+                            ->schema([
+                                DatePicker::make('from')->label('من'),
+                                DatePicker::make('until')->label('إلى'),
+                            ])
+                            ->collapsible(false)
+                            ->columns(1),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'], fn($q, $date) => $q->whereDate('date_add', '>=', $date))
+                            ->when($data['until'], fn($q, $date) => $q->whereDate('date_add', '<=', $date));
+                    }),
+
+                Filter::make('delivered_at')
+                    ->label(__('filament/resources.sub_order.schema.delivered_at'))
+                    ->form([
+                        Section::make(__('filament/resources.sub_order.schema.delivered_at'))
+                            ->schema([
+                                DatePicker::make('from')->label('من'),
+                                DatePicker::make('until')->label('إلى'),
+                            ])
+                            ->collapsible(false)
+                            ->columns(1),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'], fn($q, $date) => $q->whereDate('delivered_at', '>=', $date))
+                            ->when($data['until'], fn($q, $date) => $q->whereDate('delivered_at', '<=', $date));
+                    }),
+
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

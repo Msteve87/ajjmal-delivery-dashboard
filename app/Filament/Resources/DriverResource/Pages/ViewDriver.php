@@ -12,6 +12,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DriverSubOrdersExport;
+use Filament\Forms\Components\Section;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\DatePicker;
@@ -149,7 +150,24 @@ class ViewDriver extends Page implements HasTable
                     ->dateTime(),
             ])
             ->filters([
-                //
+                Filter::make('delivered_at')
+                    ->label(__('filament/resources.sub_order.schema.delivered_at'))
+                    ->form([
+                        Section::make(__('filament/resources.sub_order.schema.delivered_at'))
+                            ->schema([
+                                DatePicker::make('from')->label('من'),
+                                DatePicker::make('until')->label('إلى'),
+                            ])
+                            ->collapsible(false)
+                            ->columns(1),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'], fn($q, $date) => $q->whereDate('delivered_at', '>=', $date))
+                            ->when($data['until'], fn($q, $date) => $q->whereDate('delivered_at', '<=', $date));
+                    }),
+
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

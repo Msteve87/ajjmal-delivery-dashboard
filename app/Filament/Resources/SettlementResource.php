@@ -11,9 +11,11 @@ use Filament\Tables\Table;
 use Doctrine\DBAL\Schema\Column;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DriverSubOrdersExport;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SettlementResource\Pages;
@@ -64,7 +66,16 @@ class SettlementResource extends Resource
                 TextColumn::make('created_at'),
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('from')->label('From date'),
+                        DatePicker::make('until')->label('To date'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'], fn($q, $date) => $q->whereDate('created_at', '>=', $date))
+                            ->when($data['until'], fn($q, $date) => $q->whereDate('created_at', '<=', $date));
+                    }),
             ])
             ->actions([
 

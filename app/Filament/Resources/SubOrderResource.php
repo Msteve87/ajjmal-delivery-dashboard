@@ -316,7 +316,7 @@ class SubOrderResource extends Resource
                                 ->send();
                         })
                         ->disabled(fn(Model $record) => is_null($record->driver_id)
-                            || $record->sub_order_status_id !== JmOrderStatus::delivered->value)
+                            || $record->sub_order_status_id !== JmOrderStatus::processingInProgress->value)
                         ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks'))
                 ]),
 

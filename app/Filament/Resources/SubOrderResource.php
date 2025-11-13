@@ -245,6 +245,35 @@ class SubOrderResource extends Resource
                         ->modalButton(__('filament/resources.order.actions.assign'))
                         ->requiresConfirmation()
                         ->form([
+                            \Filament\Forms\Components\Select::make('driver')
+                                ->label(__('filament/resources.sub_order.form.select_drivers'))
+                                ->options(
+                                    \App\Models\Driver::where('is_active', true)->get()
+                                        ->mapWithKeys(fn($driver) => [
+                                            $driver->id => $driver->first_name . ' ' . $driver->last_name
+                                        ])
+                                )
+                                ->searchable(),
+                        ])
+                        ->action(function (Model $record, array $data) {
+                            $record->driver_id = $data['driver'];
+
+                            $record->save();
+
+                            Notification::make()
+                                ->title(__('filament/resources.order.notifications.delivery_task_assigned'))
+                                ->success()
+                                ->send();
+                        })
+                        ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks')),
+
+                    Tables\Actions\Action::make('Notify Driver')
+                        ->label(__('filament/resources.sub_order.actions.notify_driver'))
+                        ->icon('heroicon-o-bell-alert')
+                        ->modalHeading(__('filament/resources.sub_order.actions.assign_delivery_task'))
+                        ->modalButton(__('filament/resources.order.actions.assign'))
+                        ->requiresConfirmation()
+                        ->form([
                             \Filament\Forms\Components\Select::make('drivers')
                                 ->label(__('filament/resources.sub_order.form.select_drivers'))
                                 ->multiple()
@@ -263,7 +292,7 @@ class SubOrderResource extends Resource
                             });
 
                             Notification::make()
-                                ->title(__('filament/resources.order.notifications.delivery_task_assigned'))
+                                ->title(__('filament/resources.sub_order.notifications.drivers_notified'))
                                 ->success()
                                 ->send();
                         })
@@ -286,9 +315,12 @@ class SubOrderResource extends Resource
                                 ->success()
                                 ->send();
                         })
-                        ->disabled(fn(Model $record) => is_null($record->driver_id) || $record->sub_order_status_id !== JmOrderStatus::processingInProgress->value)
+                        ->disabled(fn(Model $record) => is_null($record->driver_id)
+                            || $record->sub_order_status_id !== JmOrderStatus::delivered->value)
                         ->visible(fn() => auth()->user()->hasPermissionTo('assign.delivery.tasks'))
-                ])
+                ]),
+
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

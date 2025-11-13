@@ -112,6 +112,7 @@ return [
             'select_drivers' => 'إختيار السائقين'
         ],
         'actions' => [
+            'notify_driver' => 'إرسال تنبيه إلى السائقين',
             'assign_driver' => 'تعيين سائق',
             'assign' => 'تعيين',
             'assign_delivery_task' => 'تعيين مهمة توصيل',
@@ -124,6 +125,7 @@ return [
             'withdraw_order_from_driver' => 'سحب الطلبية من السائق'
         ],
         'notification' => [
+            'drivers_notified' => 'تم إرسال التنبيه',
             'delivery_task_assigned' => 'Delivery Task Assigned'
         ]
     ],

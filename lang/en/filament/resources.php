@@ -111,6 +111,7 @@ return [
             'select_drivers' => 'Select Drivers'
         ],
         'actions' => [
+            'notify_driver' => 'Notify Driver',
             'assign_driver' => 'Assign Driver',
             'assign' => 'Assign',
             'assign_delivery_task' => 'Assign Delivery Task',
@@ -123,6 +124,7 @@ return [
             'withdraw_order_from_driver' => 'Withdraw Order'
         ],
         'notification' => [
+            'drivers_notified' => 'Drivers Notified',
             'delivery_task_assigned' => 'Delivery Task Assigned'
         ]
     ],

@@ -17,7 +17,7 @@ class DeliveryStatsOverview extends BaseWidget
         return [
             Stat::make('Total Cash', value: $driverService->getDeliveriesTotalCashOnHand($this->record->id)),
             Stat::make('Total Online', $driverService->getDeliveriesTotalOnline($this->record->id)),
-            Stat::make('Delivery fees due', value: $driverService->getDeliveriesFeesDue($this->record->id)),
+            // Stat::make('Delivery fees due', value: $driverService->getDeliveriesFeesDue($this->record->id)),
         ];
     }
 }

@@ -40,6 +40,11 @@ class EditDriver extends EditRecord
                         Forms\Components\TextInput::make('phone')
                             ->label(__('filament/resources.driver.schema.phone'))
                             ->unique(ignoreRecord: true)
+                            ->prefix("218")
+                            ->afterStateUpdated(
+                                fn($state, callable $set) =>
+                                $set('phone', str_starts_with($state, '218') ? $state : '218' . $state)
+                            )
                             ->required(),
                     ]),
 

@@ -88,6 +88,12 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\RestoreAction::make()
+                    ->visible(
+                        fn($record) =>
+                        $record->trashed() &&
+                        auth()->user()->hasPermissionTo('delete.user')
+                    ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -84,7 +84,7 @@ class UserResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\TrashedFilter::make()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

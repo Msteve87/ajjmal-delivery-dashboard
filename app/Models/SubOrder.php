@@ -36,7 +36,8 @@ class SubOrder extends Model
 
     public function scopeDelivered($query)
     {
-        return $query->whereNotNull('delivered_at');
+        return $query->where('sub_order_status_id', 5)
+            ->whereNotNull('delivered_at');
     }
 
     public function scopeDeliveredToday($query)

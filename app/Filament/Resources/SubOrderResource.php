@@ -69,7 +69,12 @@ class SubOrderResource extends Resource
                 Tables\Columns\TextColumn::make('tracking_id')
                     ->label(__('filament/resources.sub_order.schema.tracking_id'))
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(['tracking_id']),
+
+                Tables\Columns\TextColumn::make('order.reference')
+                    ->label('Reference')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\ImageColumn::make('products.seller_logo')
                     ->label(__('filament/resources.sub_order.schema.seller_logo'))

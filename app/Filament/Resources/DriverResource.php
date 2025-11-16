@@ -63,7 +63,13 @@ class DriverResource extends Resource
                         Forms\Components\TextInput::make('phone')
                             ->label(__('filament/resources.driver.schema.phone'))
                             ->unique()
-                            ->required(),
+                            ->prefix("218")
+                            ->afterStateUpdated(
+                                fn($state, callable $set) =>
+                                $set('phone', str_starts_with($state, '218') ? $state : '218' . $state)
+                            )
+                            ->extraAttributes(['dir' => 'ltr', 'style' => 'text-align:left'])
+                            ->required()
                     ]),
 
                 Forms\Components\Grid::make(3)

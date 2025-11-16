@@ -168,7 +168,7 @@ class SubOrderResource extends Resource
                     )
                     ->label(__('filament/resources.sub_order.schema.driver_name'))
                     ->sortable()
-                    ->searchable()
+                    ->searchable(['drivers.first_name', 'drivers.last_name'])
                     ->default('-'),
 
                 Tables\Columns\TextColumn::make('date_add')

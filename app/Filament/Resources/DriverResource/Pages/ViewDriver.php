@@ -145,6 +145,10 @@ class ViewDriver extends Page implements HasTable
                     ])
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('date_add')
+                    ->label(__('filament/resources.sub_order.schema.date_add'))
+                    ->dateTime(),
+
                 Tables\Columns\TextColumn::make('delivered_at')
                     ->label(__('filament/resources.sub_order.schema.delivered_at'))
                     ->dateTime(),

@@ -303,16 +303,17 @@ class OrderService
         $driverId = Auth::id();
 
         $stats = [
-            'cancelled' => Order::where('driver_id', $driverId)
-                ->whereHas('orderStatus', fn($query) => $query->where('slug', 'cancelled'))
+            'cancelled' => SubOrder::where('driver_id', $driverId)
+                ->where('sub_order_status_id', '14')
+                ->where('sub_order_status_id', '15')
                 ->count(),
 
             'in_progress' => Order::where('driver_id', $driverId)
-                ->whereHas('orderStatus', fn($query) => $query->where('slug', 'in_progress'))
+                ->where('sub_order_status_id', '3')
                 ->count(),
 
             'delivered' => Order::where('driver_id', $driverId)
-                ->whereHas('orderStatus', fn($query) => $query->where('slug', 'delivered'))
+                ->where('sub_order_status_id', '5')
                 ->count(),
         ];
 

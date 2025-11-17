@@ -41,4 +41,10 @@ Route::middleware('auth:sanctum')
                 Route::get('/last-orders', 'lastOrders');
                 Route::get('/delivery-stats', 'stats');
             });
+
+        Route::controller(V1\Driver\DriverBalanceController::class)
+            ->group(function () {
+
+                Route::get('/stats/unsettled', 'unsettledTotals');
+            });
     });

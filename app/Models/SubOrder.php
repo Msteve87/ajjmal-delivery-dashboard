@@ -36,8 +36,7 @@ class SubOrder extends Model
 
     public function scopeDelivered($query)
     {
-        return $query->where('sub_order_status_id', 5)
-            ->where('sub_order_status_id', 4);
+        return $query->whereIn('sub_order_status_id', [4, 5]);
     }
 
     public function scopeDeliveredToday($query)

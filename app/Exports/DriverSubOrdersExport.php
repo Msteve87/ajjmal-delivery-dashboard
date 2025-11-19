@@ -42,16 +42,16 @@ class DriverSubOrdersExport implements FromCollection, WithHeadings, WithStyles,
                 $sheet = $event->sheet->getDelegate();
 
                 // === Logo at top-center ===
-                $logo = new Drawing();
-                $logo->setName('Logo');
-                $logo->setDescription('Company Logo');
-                $logo->setPath(public_path('../public/images/logo.jpg'));
-
-                $logo->setHeight(560);
-                $logo->setCoordinates('E1');
-                $logo->setWorksheet($sheet);
-                $sheet->getRowDimension(1)->setRowHeight(70);
-
+                // $logo = new Drawing();
+                // $logo->setName('Logo');
+                // $logo->setDescription('Company Logo');
+                // $logo->setPath(public_path('../public/images/logo.jpg'));
+    
+                // $logo->setHeight(560);
+                // $logo->setCoordinates('E1');
+                // $logo->setWorksheet($sheet);
+                // $sheet->getRowDimension(1)->setRowHeight(70);
+    
                 // Settlement ID top-left (row 2, after logo)
                 $settlementId = $this->records->first()->settlement_id ?? '-';
                 $sheet->setCellValue('E2', "Settlement ID: {$settlementId}");

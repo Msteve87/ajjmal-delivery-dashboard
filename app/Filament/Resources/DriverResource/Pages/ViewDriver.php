@@ -183,12 +183,15 @@ class ViewDriver extends Page implements HasTable
                         ->modalSubheading(__('filament/resources.sub_order.actions.settle_orders.body'))
                         ->action(function (Collection $records) {
                             $settelment = Settlement::create(['driver_id' => $this->record->id]);
+
                             foreach ($records as $record) {
                                 $record->settlement_id = $settelment->id;
                                 $record->save();
                             }
-                            $fileName = 'driver_' . $this->record->id . '_suborders_' . now()->format('Ymd_His') . '.pdf';
-                            return Excel::download(new DriverSubOrdersExport($records), $fileName, \Maatwebsite\Excel\Excel::MPDF);
+
+                            //$fileName = 'driver_' . $this->record->id . '_suborders_' . now()->format('Ymd_His') . '.pdf';
+                
+                            return Excel::download(new DriverSubOrdersExport($records), 'settelemnts.xlsx', \Maatwebsite\Excel\Excel::XLSX);
                         })
                         ->visible(fn() => auth()->user()->hasPermissionTo('add.settlement'))
                         ->deselectRecordsAfterCompletion()

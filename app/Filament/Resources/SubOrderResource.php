@@ -240,7 +240,7 @@ class SubOrderResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     // Tables\Actions\EditAction::make(),
                     Tables\Actions\ViewAction::make()
-                        ->modalHeading('filament/resources.sub_order.actions.order_details')
+                        ->modalHeading(__('filament/resources.sub_order.actions.order_details'))
                         ->modalContent(fn($record) => view('filament.orders.sub-orders', ['record' => $record])),
 
                     Tables\Actions\Action::make('Delivery Task')

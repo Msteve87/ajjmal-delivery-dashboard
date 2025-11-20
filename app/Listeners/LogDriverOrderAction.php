@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\JmOrderStatus;
 use App\Models\SubOrder;
 use App\Events\DriverActionOnOrder;
 use Illuminate\Queue\InteractsWithQueue;
@@ -26,7 +27,7 @@ class LogDriverOrderAction
 
         $messages = [
             'order_accepted' => "قام السائق {$event->driver->first_name} {$event->driver->last_name} بقبول الطلبية #{$subOrder->tracking_id}",
-            'status_updated' => "قام السائق {$event->driver->first_name} {$event->driver->last_name} بتحديث حالة الطلبية #{$subOrder->tracking_id} إلى {$subOrder->sub_order_status_id}",
+            'status_updated' => "قام السائق {$event->driver->first_name} {$event->driver->last_name} بتحديث حالة الطلبية #{$subOrder->tracking_id} إلى " . JmOrderStatus::from($subOrder->sub_order_status_id)->name,
         ];
 
         $description = $messages[$event->action] ?? "قام السائق {$event->driver->first_name} {$event->driver->last_name}بتنفيذ إجراء على الطلبية #{$subOrder->tracking_id}";

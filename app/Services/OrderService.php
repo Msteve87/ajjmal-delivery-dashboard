@@ -139,6 +139,52 @@ class OrderService
         return $mergedItem;
     }
 
+    public function storeNewJmOrderByRef($ref)
+    {
+        try {
+            $item = $this->getJmOrderByReference($ref);
+
+            $existingOrder = Order::where('reference', $item['reference'])->first();
+
+            if (!empty($item['latitude']) && !empty($item['longitude'])) {
+                $location = \App\Models\Location::create([
+                    'latitude' => $item['latitude'],
+                    'longitude' => $item['longitude'],
+                ]);
+            }
+
+            if (!$existingOrder) {
+                $order = Order::create([
+                    'reference' => $item['reference'],
+                    'price' => $item['total_paid'] - $item['total_shipping'],
+                    'total_paid' => $item['total_paid'],
+                    'total_shipping' => $item['total_shipping'],
+                    'total_discounts' => $item['total_discounts'],
+                    'payment_method' => $item['payment'],
+                    'order_status_id' => 1,
+                    'items' => $item['items'],
+                    'address' => $item['address'],
+                    'customer_name' => $item['customer_name'],
+                    'customer_phone' => $item['customer_phone'],
+                    'products' => $item['products'],
+                    'start_time' => empty($item['start_time']) ? null : $item['start_time'],
+                    'end_time' => empty($item['end_time']) ? null : $item['end_time'],
+                    'location_id' => $location->id ?? null,
+                ]);
+            } else {
+                $order = $existingOrder;
+            }
+
+            $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);
+
+            $this->subOrderService->storeSubOrders($order, $subOrders);
+
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function storeNewJmOrders()
     {
         try {

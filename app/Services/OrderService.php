@@ -28,7 +28,6 @@ class OrderService
     {
         $params = [
             'state' => $status,
-            'sort_by' => 'total_paid',
             'order' => 'desc',
         ];
 
@@ -251,6 +250,7 @@ class OrderService
 
                     if (!$existingOrder) {
                         $order = Order::create([
+                            'delivery_date' => $item['delivery_date'],
                             'reference' => $item['reference'],
                             'price' => $item['total_paid'] - $item['total_shipping'],
                             'total_paid' => $item['total_paid'],

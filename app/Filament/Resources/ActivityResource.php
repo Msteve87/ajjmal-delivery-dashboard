@@ -59,7 +59,7 @@ class ActivityResource extends Resource
 
                 TextColumn::make('description')
                     ->label(__('filament/resources.activitylogs.schema.description'))
-                    ->limit(50)
+                    ->wrap()
                     ->searchable(),
 
                 // TextColumn::make('subject_type')

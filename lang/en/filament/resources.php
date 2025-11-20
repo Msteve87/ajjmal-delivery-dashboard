@@ -161,6 +161,7 @@ return [
             'id' => 'Id',
             'driver_name' => 'Driver Name',
             'created_at' => 'Created At',
-        ]
+        ],
+        'view-page' => 'View settled orders'
     ]
 ];

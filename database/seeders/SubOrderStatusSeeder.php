@@ -28,6 +28,7 @@ class SubOrderStatusSeeder extends Seeder
             SubOrderStatus::firstOrCreate(
                 ['name' => $item['name']],
                 [
+                    'id' => 'id_order_state',
                     'name' => $item['name'],
                     'name_ar' => $subOrderStatuesAr[$item['id_order_state']]['name'] ?? null,
                     'color' => $item['color'],

@@ -41,36 +41,50 @@ class SubOrderService
     public function storeSubOrders($order, $subOrders)
     {
         foreach ($subOrders as $subOrder) {
-            SubOrder::upsert(
-                [
+
+            try {
+
+                $status = SubOrderStatus::where('name', $subOrder['current_state_name'])->first();
+
+                SubOrder::upsert(
                     [
-                        'total' => $subOrder['total_paid'],
-                        'tracking_id' => $subOrder['id_order'],
-                        'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
-                        'shipping_price' => $subOrder['total_shipping'],
-                        'total_discounts' => $subOrder['total_discounts'],
-                        'products' => json_encode($subOrder['products']),
-                        'sub_order_status_id' => SubOrderStatus::where('name', $subOrder['current_state_name'])->first()->id,
-                        'order_id' => $order->id,
-                        'date_add' => $subOrder['date_add'],
-                        'date_upd' => $subOrder['date_upd'],
+                        [
+                            'total' => $subOrder['total_paid'],
+                            'tracking_id' => $subOrder['id_order'],
+                            'base_price' => $subOrder['total_paid'] - $subOrder['total_shipping'],
+                            'shipping_price' => $subOrder['total_shipping'],
+                            'total_discounts' => $subOrder['total_discounts'],
+                            'products' => json_encode($subOrder['products']),
+                            'sub_order_status_id' => $status->id ?? null,
+                            'order_id' => $order->id,
+                            'date_add' => $subOrder['date_add'],
+                            'date_upd' => $subOrder['date_upd'],
+                        ]
+                    ],
+                    ['tracking_id'],
+                    [
+                        'total',
+                        'base_price',
+                        'shipping_price',
+                        'total_discounts',
+                        'products',
+                        'sub_order_status_id',
+                        'order_id',
+                        'date_add',
+                        'date_upd',
                     ]
-                ],
-                ['tracking_id'],
-                [
-                    'total',
-                    'base_price',
-                    'shipping_price',
-                    'total_discounts',
-                    'products',
-                    'sub_order_status_id',
-                    'order_id',
-                    'date_add',
-                    'date_upd',
-                ]
-            );
+                );
+
+            } catch (\Throwable $e) {
+                dd([
+                    'tracking_id' => $subOrder['id_order'],
+                    'error' => $e->getMessage(),
+                    'payload' => $subOrder,
+                ]);
+            }
         }
     }
+
 
     public function updateSubOrders($order, $subOrders)
     {
@@ -105,6 +119,7 @@ class SubOrderService
                 JmOrderStatus::awaitingCashOnDelivery->value
             ])
             ->whereNull('driver_id')
+            ->whereYear('date_add', '!=', 2023)
             ->with('order')
             ->orderByDesc('date_add')
             ->get();

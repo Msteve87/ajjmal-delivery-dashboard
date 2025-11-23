@@ -11,10 +11,19 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-
 Schedule::call(function (OrderService $orderService) {
-    $orderService->storeNewJmOrders();
+    $orders = $orderService->getJmOrders();
+
+    $refs = collect($orders)->pluck('reference')->filter()->values();
+
+    foreach ($refs as $ref) {
+        $orderService->storeNewJmOrderByRef($ref);
+    }
 })->everyThirtySeconds();
+
+// Schedule::call(function (OrderService $orderService) {
+//     $orderService->storeNewJmOrders();
+// })->everyThirtySeconds();
 
 
 Schedule::call(function (OrderService $orderService) {

@@ -29,6 +29,7 @@ class OrderService
         $params = [
             'state' => $status,
             'order' => 'desc',
+            'limit' => '1000'
         ];
 
         $response = Http::get(env('JM_API_URL_STANDALONE') . '/delivery', $params);

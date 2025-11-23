@@ -7,7 +7,7 @@ enum JmOrderStatus: string
     case awaitingCheckPayment = '1';
     case paymentAccepted = '2';
     case processingInProgress = '3';
-    case shipped = '4';
+    case deliveryIsInProgress = '4';
     case delivered = '5';
     case canceled = '6';
     case refunded = '7';
@@ -28,7 +28,7 @@ enum JmOrderStatus: string
             self::awaitingCheckPayment => 'Awaiting check payment',
             self::paymentAccepted => 'Payment accepted',
             self::processingInProgress => 'Processing in progress',
-            self::shipped => 'Shipped',
+            self::deliveryIsInProgress => 'Delivery Is In Progress',
             self::delivered => 'Delivered',
             self::canceled => 'Canceled',
             self::refunded => 'Refunded',

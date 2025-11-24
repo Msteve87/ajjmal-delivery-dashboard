@@ -41,8 +41,8 @@ class SubOrderResource extends JsonResource
             'driver_id' => $this->driver_id,
             'date_add' => $this->date_add,
             'date_upd' => $this->date_upd,
-            'latitude' => $this->order->location->latitude,
-            'longitude' => $this->order->location->longitude,
+            'latitude' => $this->order->location?->latitude ?? null,
+            'longitude' => $this->order->location?->longitude ?? null,
             'products_by_seller' => $productsBySeller->map(function ($products, $sellerName) {
                 $seller = $products[0]['details']['seller'] ?? [];
                 return [

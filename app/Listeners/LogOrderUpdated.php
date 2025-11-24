@@ -22,7 +22,7 @@ class LogOrderUpdated
     public function handle(OrderUpdated $event): void
     {
         $messages = [
-            'order_update' => "قام المستخدم {$event->user->name} بتحديث حالة الطلبية #{$event->subOrder}",
+            'order_update' => "قام المستخدم {$event->user->name} بتحديث حالة الطلبية #{$event->subOrder->tracking_id}",
             'withdraw_order' => "قام المستخدم {$event->user->name} بإلغاء تعين سائق لطلبية#{$event->subOrder->tracking_id}",
         ];
 

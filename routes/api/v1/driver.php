@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')
                 function () {
                     Route::get('/sub-orders', 'getSubOrders');
                     Route::get('/sub-orders/awaiting', 'getAwaitingSubOrders');
+                    Route::get('/sub-orders/canceled', 'getCanceledSubOrders');
                 }
             );
 

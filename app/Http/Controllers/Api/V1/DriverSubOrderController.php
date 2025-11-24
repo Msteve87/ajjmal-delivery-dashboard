@@ -48,4 +48,24 @@ class DriverSubOrderController extends Controller
             ]
         );
     }
+
+    public function getCanceledSubOrders()
+    {
+        $subOrders = SubOrder::where('driver_id', Auth::id())
+            ->with('order')
+            ->whereIn('sub_order_status_id', [
+                JmOrderStatus::cancellationByCustomer->value,
+                JmOrderStatus::cancellationByMerchant->value,
+            ])
+            ->get();
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => [
+                    'items' => Api\V1\SubOrderResource::collection($subOrders),
+                ],
+            ]
+        );
+    }
 }

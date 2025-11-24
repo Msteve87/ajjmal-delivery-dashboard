@@ -31,7 +31,9 @@ return new class extends Migration {
 
             $table->unsignedBigInteger('driver_id')->nullable();
             $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('set null');
-            $table->foreignId('location_id')->constrained();
+            $table->foreignId('location_id')
+                ->nullable()
+                ->constrained();
         });
     }
 

@@ -116,7 +116,8 @@ class SubOrderService
         return SubOrder::query()
             ->whereIn('sub_order_status_id', [
                 JmOrderStatus::processingInProgress->value,
-                JmOrderStatus::awaitingCashOnDelivery->value
+                JmOrderStatus::awaitingCashOnDelivery->value,
+                JmOrderStatus::awaitingPaymentOnDeliveryValidation->value,
             ])
             ->whereNull('driver_id')
             ->whereYear('date_add', '!=', 2023)

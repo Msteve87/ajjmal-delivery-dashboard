@@ -118,9 +118,9 @@ class ViewDriver extends Page implements HasTable
                     )
                     ->sortable(),
 
-                Tables\Columns\IconColumn::make('is_picked_up')
-                    ->label(__('filament/resources.sub_order.schema.is_picked_up'))
-                    ->boolean(),
+                // Tables\Columns\IconColumn::make('is_picked_up')
+                //     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
+                //     ->boolean(),
 
 
                 Tables\Columns\TextColumn::make('order.payment_method')
@@ -145,6 +145,11 @@ class ViewDriver extends Page implements HasTable
                     ])
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('order.address')
+                    ->label(__('filament/resources.sub_order.schema.address'))
+                    ->getStateUsing(fn($record) => $record->order->address ?? '-')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('date_add')
                     ->label(__('filament/resources.sub_order.schema.date_add'))
                     ->dateTime(),
@@ -154,6 +159,23 @@ class ViewDriver extends Page implements HasTable
                     ->dateTime(),
             ])
             ->filters([
+                Filter::make('date_add')
+                    ->label(__('filament/resources.sub_order.schema.date_add'))
+                    ->form([
+                        Section::make(__('filament/resources.sub_order.schema.date_add'))
+                            ->schema([
+                                DatePicker::make('from')->label('من'),
+                                DatePicker::make('until')->label('إلى'),
+                            ])
+                            ->collapsible(false)
+                            ->columns(1),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'], fn($q, $date) => $q->whereDate('date_add', '>=', $date))
+                            ->when($data['until'], fn($q, $date) => $q->whereDate('date_add', '<=', $date));
+                    }),
+
                 Filter::make('delivered_at')
                     ->label(__('filament/resources.sub_order.schema.delivered_at'))
                     ->form([

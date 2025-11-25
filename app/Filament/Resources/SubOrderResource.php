@@ -107,9 +107,9 @@ class SubOrderResource extends Resource
                     ->color(fn($state) => $state != 0 ? 'danger' : null)
                     ->sortable(),
 
-                Tables\Columns\IconColumn::make('is_picked_up')
-                    ->label(__('filament/resources.sub_order.schema.is_picked_up'))
-                    ->boolean(),
+                // Tables\Columns\IconColumn::make('is_picked_up')
+                //     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
+                //     ->boolean(),
 
                 Tables\Columns\TextColumn::make('order.payment_method')
                     ->label(__('filament/resources.sub_order.schema.payment_method'))
@@ -176,10 +176,16 @@ class SubOrderResource extends Resource
                     ->searchable(['drivers.first_name', 'drivers.last_name'])
                     ->default('-'),
 
+                Tables\Columns\TextColumn::make('order.address')
+                    ->label(__('filament/resources.sub_order.schema.address'))
+                    ->getStateUsing(fn($record) => $record->order->address ?? '-')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('date_add')
                     ->label(__('filament/resources.sub_order.schema.date_add'))
                     ->dateTime('d M Y H:i')
                     ->sortable(),
+
 
                 // Tables\Columns\TextColumn::make('created_at')
                 //     ->label(__('filament/resources.sub_order.schema.created_at'))

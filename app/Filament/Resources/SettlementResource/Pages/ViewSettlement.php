@@ -126,10 +126,14 @@ class ViewSettlement extends Page implements HasTable
                         )
                         ->sortable(),
 
-                    Tables\Columns\IconColumn::make('is_picked_up')
-                        ->label(__('filament/resources.sub_order.schema.is_picked_up'))
-                        ->boolean(),
+                    // Tables\Columns\IconColumn::make('is_picked_up')
+                    //     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
+                    //     ->boolean(),
 
+                    Tables\Columns\TextColumn::make('order.address')
+                        ->label(__('filament/resources.sub_order.schema.address'))
+                        ->getStateUsing(fn($record) => $record->order->address ?? '-')
+                        ->sortable(),
 
                     Tables\Columns\TextColumn::make('order.payment_method')
                         ->label(__('filament/resources.sub_order.schema.payment_method'))

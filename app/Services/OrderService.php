@@ -47,7 +47,11 @@ class OrderService
 
         $awaitingCashOnDeliveryValidation = $this->getJmOrdersByStatus('Awaiting Cash On Delivery validation');
 
-        $items = collect($processinginProgress)->merge($awaitingCashOnDeliveryValidation);
+        $awaitingPaymentOnDeliveryValidation = $this->getJmOrdersByStatus('Awaiting Payment On Delivery validation');
+
+        $items = collect($processinginProgress)
+            ->merge($awaitingCashOnDeliveryValidation)
+            ->merge($awaitingPaymentOnDeliveryValidation);
 
         $orderReferences = Order::whereHas('orderStatus', function ($query) {
             $query->where('name', '!=', 'pending');
@@ -196,7 +200,11 @@ class OrderService
 
             $awaitingCashOnDeliveryValidation = $this->getJmOrdersByStatus('Awaiting Cash On Delivery validation');
 
-            $items = collect($processinginProgress)->merge($awaitingCashOnDeliveryValidation);
+            $awaitingPaymentOnDeliveryValidation = $this->getJmOrdersByStatus('Awaiting Payment On Delivery validation');
+
+            $items = collect($processinginProgress)
+                ->merge($awaitingCashOnDeliveryValidation)
+                ->merge($awaitingPaymentOnDeliveryValidation);
 
             $orderReferences = Order::whereHas('orderStatus', function ($query) {
                 $query->where('name', '!=', 'pending');

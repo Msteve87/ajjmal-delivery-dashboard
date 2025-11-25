@@ -368,10 +368,11 @@ class OrderService
                 ->count(),
 
             'in_progress' => SubOrder::where('driver_id', $driverId)
-                ->where('sub_order_status_id', '3')
+                ->whereIn('sub_order_status_id', ['3', '4', '11', '13', '19'])
                 ->count(),
 
             'delivered' => SubOrder::where('driver_id', $driverId)
+                ->unsettled()
                 ->where('sub_order_status_id', '5')
                 ->count(),
         ];

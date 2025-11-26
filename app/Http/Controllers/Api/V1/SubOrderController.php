@@ -114,10 +114,10 @@ class SubOrderController extends Controller
                 'statusId' => 'required|string|exists:sub_order_statuses,id',
             ]);
 
-            // $this->orderService->updateJmStatusOrder(
-            //     $trackingId,
-            //     $request->statusId
-            // );
+            $this->orderService->updateJmStatusOrder(
+                $trackingId,
+                $request->statusId
+            );
 
             if ($request->statusId == 5) {
                 SubOrder::where('tracking_id', $trackingId)

@@ -7,6 +7,7 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\OrderResource;
 use Filament\Http\Middleware\Authenticate;
@@ -33,6 +34,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->spa()
+            ->maxContentWidth(MaxWidth::Full)
+            ->sidebarFullyCollapsibleOnDesktop()
             ->brandLogo(asset('images/logo.jpg'))
             ->brandLogoHeight('120px')
             ->brandName('Ajjmal')

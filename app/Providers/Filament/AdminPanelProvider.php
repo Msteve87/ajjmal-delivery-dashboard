@@ -35,7 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->spa()
             ->maxContentWidth(MaxWidth::Full)
-            ->sidebarFullyCollapsibleOnDesktop()
+            ->sidebarCollapsibleOnDesktop()
             ->brandLogo(asset('images/logo.jpg'))
             ->brandLogoHeight('120px')
             ->brandName('Ajjmal')

@@ -23,6 +23,7 @@ class OrderStatusController extends Controller
             'id',
             [
                 JmOrderStatus::processingInProgress->value,
+                JmOrderStatus::readyForDelivery->value,
                 JmOrderStatus::delivered->value,
                 JmOrderStatus::cancellationByCustomer->value,
                 JmOrderStatus::cancellationByMerchant->value,

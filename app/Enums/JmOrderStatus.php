@@ -12,7 +12,7 @@ enum JmOrderStatus: string
     case canceled = '6';
     case refunded = '7';
     case test = '8';
-    case onBackorderPaid = '9';
+    case readyForDelivery = '9';
     case awaitingBankWirePayment = '10';
     case remotePaymentAccepted = '11';
     case onBackorderNotPaid = '12';
@@ -24,6 +24,7 @@ enum JmOrderStatus: string
 
     case awaitingPaymentOnDeliveryValidation = '19';
 
+
     public function label(): string
     {
         return match ($this) {
@@ -31,11 +32,11 @@ enum JmOrderStatus: string
             self::paymentAccepted => 'Payment accepted',
             self::processingInProgress => 'Processing in progress',
             self::deliveryIsInProgress => 'Delivery Is In Progress',
+            self::readyForDelivery => 'Ready for delivery',
             self::delivered => 'Delivered',
             self::canceled => 'Canceled',
             self::refunded => 'Refunded',
             self::test => 'Test',
-            self::onBackorderPaid => 'On backorder (paid)',
             self::awaitingBankWirePayment => 'Awaiting bank wire payment',
             self::remotePaymentAccepted => 'Remote payment accepted',
             self::onBackorderNotPaid => 'On backorder (not paid)',

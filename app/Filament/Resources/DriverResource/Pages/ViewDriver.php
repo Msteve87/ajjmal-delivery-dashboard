@@ -63,6 +63,7 @@ class ViewDriver extends Page implements HasTable
             ->query(
                 SubOrder::query()
                     ->where('driver_id', $this->record->id)
+                    ->whereNotNull('delivered_at')
                     ->delivered()
                     ->unsettled()
             )

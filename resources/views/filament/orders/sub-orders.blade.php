@@ -43,7 +43,8 @@
                             <!-- Title & Price -->
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="text-lg font-semibold text-gray-800">{{ $product['name'] }}</h3>
-                                <span class="text-lg font-bold text-blue-600">{{ $product['details']['price'] ?? '' }}</span>
+                                <span
+                                    class="text-lg font-bold text-blue-600">{{ isset($product['price_now']) ? number_format((float) $product['price_now'], 2, '.', '') . 'LYD' : $product['details']['price'] ?? $product['price'] }}</span>
                             </div>
 
                             <!-- Description -->

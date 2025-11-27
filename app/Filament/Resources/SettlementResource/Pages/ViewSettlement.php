@@ -73,7 +73,6 @@ class ViewSettlement extends Page implements HasTable
         return $table
             ->query(
                 SubOrder::query()
-                    ->whereNotNull('delivered_at')
                     ->where('settlement_id', $this->record->id)
             )->columns([
                     Tables\Columns\TextColumn::make('tracking_id')

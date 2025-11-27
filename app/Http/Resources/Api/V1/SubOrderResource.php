@@ -55,7 +55,7 @@ class SubOrderResource extends JsonResource
                             'product_id' => $product['product_id'],
                             'name' => $product['details']['name'] ?? $product['name'],
                             'image' => $product['details']['images'][0]['src'] ?? '',
-                            'price' => $product['details']['price'] ?? $product['price'],
+                            'price' => isset($product['price_now']) ? number_format((float) $product['price_now'], 2, '.', '') : $product['details']['price'] ?? $product['price'],
                             'description' => $product['details']['description'] ?? '',
                             'quantity' => $product['quantity'],
                         ];

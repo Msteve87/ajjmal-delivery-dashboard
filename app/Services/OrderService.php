@@ -5,8 +5,6 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\SubOrder;
 use App\Models\OrderStatus;
-use App\Enums\JmOrderStatus;
-use App\Models\SubOrderStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -85,6 +83,7 @@ class OrderService
                             $product['details']['description'] = sanitize_html_string($product['details']['description']);
                             $product['jm_order_id'] = $item['id_order'];
                             $product['current_state_name'] = $item['current_state_name'];
+                            $product['details']['price'] = $product['price_now'];
                             return $product;
 
                         }, $item['products']);
@@ -133,6 +132,7 @@ class OrderService
                             $product['details']['description'] = sanitize_html_string($product['details']['description']);
                             $product['jm_order_id'] = $item['id_order'];
                             $product['current_state_name'] = $item['current_state_name'];
+                            $product['details']['price'] = $product['price_now'];
                             return $product;
                         }, $item['products']);
                     })->flatten(1)->toArray(),
@@ -237,6 +237,7 @@ class OrderService
                                 $product['details']['description'] = sanitize_html_string($product['details']['description']);
                                 $product['jm_order_id'] = $item['id_order'];
                                 $product['current_state_name'] = $item['current_state_name'];
+                                $product['details']['price'] = $product['price_now'];
                                 return $product;
                             }, $item['products']);
                         })->flatten(1)->toArray(),

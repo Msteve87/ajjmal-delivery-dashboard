@@ -76,11 +76,7 @@ class SubOrderService
                 );
 
             } catch (\Throwable $e) {
-                dd([
-                    'tracking_id' => $subOrder['id_order'],
-                    'error' => $e->getMessage(),
-                    'payload' => $subOrder,
-                ]);
+                \Log::error('Error while storing sub-order: ' . $e->getMessage());
             }
         }
     }

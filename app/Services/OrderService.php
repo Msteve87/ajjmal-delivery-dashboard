@@ -183,7 +183,12 @@ class OrderService
                 $order = $existingOrder;
             }
 
-            $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);
+            $subOrders = $items
+            ->filter(function ($order) use ($item) {
+                return $order['reference'] === $item['reference'];
+            })
+            ->values()
+            ->toArray();
 
             $this->subOrderService->storeSubOrders($order, $subOrders);
 
@@ -249,11 +254,9 @@ class OrderService
                 ->values()
                 ->toArray();
 
-            DB::transaction(function () use ($mergedItems) {
+            DB::transaction(function () use ($mergedItems, $items) {
                 foreach ($mergedItems as $item) {
                     $existingOrder = Order::where('reference', $item['reference'])->first();
-
-
 
                     if (!empty($item['latitude']) && !empty($item['longitude'])) {
                         $location = \App\Models\Location::create([
@@ -285,8 +288,13 @@ class OrderService
                         $order = $existingOrder;
                     }
 
-                    $subOrders = $this->ajjmalMarketApiService->getSubOrders($item['reference']);
-
+                    $subOrders = $items
+                        ->filter(function ($order) use ($item) {
+                            return $order['reference'] === $item['reference'];
+                        })
+                        ->values()
+                        ->toArray();
+                  
                     $this->subOrderService->storeSubOrders($order, $subOrders);
                 }
             });

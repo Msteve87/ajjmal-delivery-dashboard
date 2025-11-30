@@ -13,15 +13,6 @@ class SubOrder extends Model
         'products' => 'array',
     ];
 
-    protected static function booted()
-    {
-        static::updating(function ($subOrder) {
-            if ($subOrder->isDirty('sub_order_status_id') && $subOrder->sub_order_status_id == 5) {
-                $subOrder->delivered_at = now();
-            }
-        });
-    }
-
     protected function isPickedUp(): Attribute
     {
         return Attribute::make(

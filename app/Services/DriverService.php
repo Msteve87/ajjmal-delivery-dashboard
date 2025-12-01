@@ -37,6 +37,7 @@ class DriverService
                     'Module Wallet',
                     'Module Moamalat',
                     'Payment on delivery (POD)',
+                    'بطاقة مصرفية (اونلاين)',
                     'الدفع بالبطاقة المصرفية ( ماكينة)'
                 ]);
             })

@@ -35,6 +35,8 @@ class DriverSubOrderController extends Controller
             ->whereIn('sub_order_status_id', [
                 JmOrderStatus::processingInProgress->value,
                 JmOrderStatus::deliveryIsInProgress->value,
+                JmOrderStatus::readyForDelivery->value,
+                JmOrderStatus::paymentAccepted->value,
                 JmOrderStatus::awaitingCashOnDelivery->value,
                 JmOrderStatus::awaitingPaymentOnDeliveryValidation->value,
             ])

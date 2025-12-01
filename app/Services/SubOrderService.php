@@ -113,6 +113,7 @@ class SubOrderService
             ->whereIn('sub_order_status_id', [
                 JmOrderStatus::processingInProgress->value,
                 JmOrderStatus::awaitingCashOnDelivery->value,
+                JmOrderStatus::paymentAccepted->value,
                 JmOrderStatus::awaitingPaymentOnDeliveryValidation->value,
             ])
             ->whereNull('driver_id')

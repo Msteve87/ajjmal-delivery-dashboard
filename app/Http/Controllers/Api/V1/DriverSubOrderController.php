@@ -37,6 +37,7 @@ class DriverSubOrderController extends Controller
                 JmOrderStatus::deliveryIsInProgress->value,
                 JmOrderStatus::readyForDelivery->value,
                 JmOrderStatus::paymentAccepted->value,
+                JmOrderStatus::beingCollected->value,
                 JmOrderStatus::awaitingCashOnDelivery->value,
                 JmOrderStatus::awaitingPaymentOnDeliveryValidation->value,
             ])

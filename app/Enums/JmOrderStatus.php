@@ -21,9 +21,8 @@ enum JmOrderStatus: string
     case cancellationByCustomer = '15';
     case internalError = '16';
     case duplicateOrder = '17';
-
+    case beingCollected = '18';
     case awaitingPaymentOnDeliveryValidation = '19';
-
 
     public function label(): string
     {
@@ -46,6 +45,7 @@ enum JmOrderStatus: string
             self::internalError => 'Internal error',
             self::duplicateOrder => 'Duplicate order',
             self::awaitingPaymentOnDeliveryValidation => 'Awaiting Payment On Delivery Validation',
+            self::beingCollected => 'being collected',
         };
     }
 

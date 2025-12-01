@@ -114,6 +114,7 @@ class SubOrderService
                 JmOrderStatus::processingInProgress->value,
                 JmOrderStatus::awaitingCashOnDelivery->value,
                 JmOrderStatus::paymentAccepted->value,
+                JmOrderStatus::beingCollected->value,
                 JmOrderStatus::awaitingPaymentOnDeliveryValidation->value,
             ])
             ->whereNull('driver_id')

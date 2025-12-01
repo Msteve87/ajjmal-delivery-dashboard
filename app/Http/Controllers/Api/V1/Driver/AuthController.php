@@ -45,7 +45,7 @@ class AuthController extends Controller
 
             $driver->setRememberToken(Str::random(60));
 
-            if ($request->has('device_token')) {
+            if ($request->has('devicetoken')) {
                 $this->deviceTokenService->storeDeviceToken($driver->id, $request->device_token);
             }
 

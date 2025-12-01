@@ -46,9 +46,11 @@ class DriverController extends Controller
 
         $driver->save();
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Driver delivery status updated successfully']
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Driver delivery status updated successfully'
+            ]
         );
     }
 
@@ -62,6 +64,14 @@ class DriverController extends Controller
 
     public static function me()
     {
+        if (!auth()->user()->is_active) {
+            auth()->user()->currentAccessToken()?->delete();
+
+            return response()->json([
+                'message' => 'Your account is inactive.',
+            ], 401);
+        }
+
         return Auth::user();
     }
 }

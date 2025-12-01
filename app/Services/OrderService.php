@@ -203,11 +203,14 @@ class OrderService
         try {
             $processinginProgress = $this->getJmOrdersByStatus('Processing in Progress');
 
+            $paymentAccepted = $this->getJmOrdersByStatus('Payment accepted');
+
             $awaitingCashOnDeliveryValidation = $this->getJmOrdersByStatus('Awaiting Cash On Delivery validation');
 
             $awaitingPaymentOnDeliveryValidation = $this->getJmOrdersByStatus('Awaiting Payment On Delivery validation');
 
             $items = collect($processinginProgress)
+                ->merge($paymentAccepted)
                 ->merge($awaitingCashOnDeliveryValidation)
                 ->merge($awaitingPaymentOnDeliveryValidation);
 

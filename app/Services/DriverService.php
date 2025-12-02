@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\SubOrder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class DriverService
@@ -26,7 +27,8 @@ class DriverService
             })
             ->delivered()
             ->unsettled()
-            ->sum('total');
+            ->sum(DB::raw('total - COALESCE(discount,0)'));
+
     }
 
     public function getDeliveriesTotalOnline(string $driverId): float
@@ -43,7 +45,8 @@ class DriverService
             })
             ->delivered()
             ->unsettled()
-            ->sum('total');
+            ->sum(DB::raw('total - COALESCE(discount,0)'));
+
     }
 
     public function getDeliveriesFeesDue(string $driverId): float

@@ -183,12 +183,12 @@ class OrderService
                 $order = $existingOrder;
             }
 
-            $subOrders = $items
-            ->filter(function ($order) use ($item) {
-                return $order['reference'] === $item['reference'];
-            })
-            ->values()
-            ->toArray();
+            $subOrders = $item
+                ->filter(function ($order) use ($item) {
+                    return $order['reference'] === $item['reference'];
+                })
+                ->values()
+                ->toArray();
 
             $this->subOrderService->storeSubOrders($order, $subOrders);
 
@@ -297,7 +297,7 @@ class OrderService
                         })
                         ->values()
                         ->toArray();
-                  
+
                     $this->subOrderService->storeSubOrders($order, $subOrders);
                 }
             });

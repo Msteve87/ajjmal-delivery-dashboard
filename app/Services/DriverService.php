@@ -18,7 +18,7 @@ class DriverService
 
     public function getDeliveriesTotalCashOnHand(string $driverId): float
     {
-        return SubOrder::where('driver_id', $driverId)
+        $total = SubOrder::where('driver_id', $driverId)
             ->whereHas('order', function ($q) {
                 $q->whereIn('payment_method', [
                     'الدفع عند الاستلام',
@@ -27,14 +27,25 @@ class DriverService
             })
             ->delivered()
             ->unsettled()
-            ->sum(DB::raw('total - COALESCE(total_discounts,0)'));
-        ;
+            ->sum('total');
 
+        $totalDiscount = SubOrder::where('driver_id', $driverId)
+            ->whereHas('order', function ($q) {
+                $q->whereIn('payment_method', [
+                    'الدفع عند الاستلام',
+                    'Cash on delivery (COD)',
+                ]);
+            })
+            ->delivered()
+            ->unsettled()
+            ->sum('total_discounts');
+
+        return $total - $totalDiscount;
     }
 
     public function getDeliveriesTotalOnline(string $driverId): float
     {
-        return SubOrder::where('driver_id', $driverId)
+        $total = SubOrder::where('driver_id', $driverId)
             ->whereHas('order', function ($q) {
                 $q->whereIn('payment_method', [
                     'Module Wallet',
@@ -46,9 +57,23 @@ class DriverService
             })
             ->delivered()
             ->unsettled()
-            ->sum(DB::raw('total - COALESCE(total_discounts,0)'));
-        ;
+            ->sum('total');
 
+        $totalDiscount = SubOrder::where('driver_id', $driverId)
+            ->whereHas('order', function ($q) {
+                $q->whereIn('payment_method', [
+                    'Module Wallet',
+                    'Module Moamalat',
+                    'Payment on delivery (POD)',
+                    'بطاقة مصرفية (اونلاين)',
+                    'الدفع بالبطاقة المصرفية ( ماكينة)'
+                ]);
+            })
+            ->delivered()
+            ->unsettled()
+            ->sum('total_discounts');
+
+        return $total - $totalDiscount;
     }
 
     public function getDeliveriesFeesDue(string $driverId): float

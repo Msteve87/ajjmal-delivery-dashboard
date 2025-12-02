@@ -27,7 +27,8 @@ class DriverService
             })
             ->delivered()
             ->unsettled()
-            ->sum(DB::raw('total - COALESCE(discount,0)'));
+            ->sum(DB::raw('total - COALESCE(total_discounts,0)'));
+        ;
 
     }
 
@@ -45,7 +46,8 @@ class DriverService
             })
             ->delivered()
             ->unsettled()
-            ->sum(DB::raw('total - COALESCE(discount,0)'));
+            ->sum(DB::raw('total - COALESCE(total_discounts,0)'));
+        ;
 
     }
 

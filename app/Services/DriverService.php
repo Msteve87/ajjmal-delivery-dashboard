@@ -18,62 +18,37 @@ class DriverService
 
     public function getDeliveriesTotalCashOnHand(string $driverId): float
     {
-        $total = SubOrder::where('driver_id', $driverId)
-            ->whereHas('order', function ($q) {
-                $q->whereIn('payment_method', [
-                    'الدفع عند الاستلام',
-                    'Cash on delivery (COD)',
-                ]);
+        $methods = [
+            'الدفع عند الاستلام',
+            'Cash on delivery (COD)',
+        ];
+
+        return (float) SubOrder::where('driver_id', $driverId)
+            ->whereHas('order', function ($q) use ($methods) {
+                $q->whereIn('payment_method', $methods);
             })
             ->delivered()
             ->unsettled()
-            ->sum('total');
-
-        $totalDiscount = SubOrder::where('driver_id', $driverId)
-            ->whereHas('order', function ($q) {
-                $q->whereIn('payment_method', [
-                    'الدفع عند الاستلام',
-                    'Cash on delivery (COD)',
-                ]);
-            })
-            ->delivered()
-            ->unsettled()
-            ->sum('total_discounts');
-
-        return $total - $totalDiscount;
+            ->sum(DB::raw('CASE WHEN total > total_discounts THEN total - total_discounts ELSE 0 END'));
     }
 
     public function getDeliveriesTotalOnline(string $driverId): float
     {
-        $total = SubOrder::where('driver_id', $driverId)
-            ->whereHas('order', function ($q) {
-                $q->whereIn('payment_method', [
-                    'Module Wallet',
-                    'Module Moamalat',
-                    'Payment on delivery (POD)',
-                    'بطاقة مصرفية (اونلاين)',
-                    'الدفع بالبطاقة المصرفية ( ماكينة)'
-                ]);
+        $onlineMethods = [
+            'Module Wallet',
+            'Module Moamalat',
+            'Payment on delivery (POD)',
+            'بطاقة مصرفية (اونلاين)',
+            'الدفع بالبطاقة المصرفية ( ماكينة)'
+        ];
+
+        return (float) SubOrder::where('driver_id', $driverId)
+            ->whereHas('order', function ($q) use ($onlineMethods) {
+                $q->whereIn('payment_method', $onlineMethods);
             })
             ->delivered()
             ->unsettled()
-            ->sum('total');
-
-        $totalDiscount = SubOrder::where('driver_id', $driverId)
-            ->whereHas('order', function ($q) {
-                $q->whereIn('payment_method', [
-                    'Module Wallet',
-                    'Module Moamalat',
-                    'Payment on delivery (POD)',
-                    'بطاقة مصرفية (اونلاين)',
-                    'الدفع بالبطاقة المصرفية ( ماكينة)'
-                ]);
-            })
-            ->delivered()
-            ->unsettled()
-            ->sum('total_discounts');
-
-        return $total - $totalDiscount;
+            ->sum(DB::raw('CASE WHEN total > total_discounts THEN total - total_discounts ELSE 0 END'));
     }
 
     public function getDeliveriesFeesDue(string $driverId): float

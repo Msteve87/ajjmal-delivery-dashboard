@@ -15,6 +15,7 @@ class DriverSubOrderController extends Controller
     {
         $subOrders = SubOrder::where('driver_id', Auth::id())
             ->where('sub_order_status_id', JmOrderStatus::delivered->value)
+            ->unsettled()
             ->with('order')
             ->get();
 

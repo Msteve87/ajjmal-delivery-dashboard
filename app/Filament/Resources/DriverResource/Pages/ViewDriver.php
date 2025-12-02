@@ -119,6 +119,16 @@ class ViewDriver extends Page implements HasTable
                     )
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('total_discounts')
+                    ->label(__('filament/resources.sub_order.schema.total_discounts'))
+                    ->money('lyd', locale: 'en')
+                    ->summarize(
+                        Sum::make()
+                            ->label(__('filament/resources.sub_order.schema.total_amount'))
+                            ->numeric(locale: 'en')
+                    )
+                    ->sortable(),
+
                 // Tables\Columns\IconColumn::make('is_picked_up')
                 //     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
                 //     ->boolean(),

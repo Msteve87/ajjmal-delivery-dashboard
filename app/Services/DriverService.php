@@ -29,7 +29,7 @@ class DriverService
             })
             ->delivered()
             ->unsettled()
-            ->sum(DB::raw('CASE WHEN total > total_discounts THEN total - total_discounts ELSE 0 END'));
+            ->sum('total');
     }
 
     public function getDeliveriesTotalOnline(string $driverId): float
@@ -48,14 +48,8 @@ class DriverService
             })
             ->delivered()
             ->unsettled()
-            ->sum(DB::raw('CASE WHEN total > total_discounts THEN total - total_discounts ELSE 0 END'));
+            ->sum('total');
     }
 
-    public function getDeliveriesFeesDue(string $driverId): float
-    {
-        return SubOrder::where('driver_id', $driverId)
-            ->delivered()
-            ->unsettled()
-            ->sum('shipping_price') * 0.5;
-    }
+
 }

@@ -119,21 +119,6 @@ class ViewDriver extends Page implements HasTable
                     )
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('total_discounts')
-                    ->label(__('filament/resources.sub_order.schema.total_discounts'))
-                    ->money('lyd', locale: 'en')
-                    ->summarize(
-                        Sum::make()
-                            ->label(__('filament/resources.sub_order.schema.total_amount'))
-                            ->numeric(locale: 'en')
-                    )
-                    ->sortable(),
-
-                // Tables\Columns\IconColumn::make('is_picked_up')
-                //     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
-                //     ->boolean(),
-
-
                 Tables\Columns\TextColumn::make('order.payment_method')
                     ->label(__('filament/resources.sub_order.schema.payment_method'))
                     ->money('lyd', locale: 'en')
@@ -222,8 +207,6 @@ class ViewDriver extends Page implements HasTable
                                 $record->save();
                             }
 
-                            //$fileName = 'driver_' . $this->record->id . '_suborders_' . now()->format('Ymd_His') . '.pdf';
-                
                             return Excel::download(new DriverSubOrdersExport($records), 'settelemnts.xlsx', \Maatwebsite\Excel\Excel::XLSX);
                         })
                         ->visible(fn() => auth()->user()->hasPermissionTo('add.settlement'))

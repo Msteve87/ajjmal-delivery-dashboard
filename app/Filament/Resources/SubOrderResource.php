@@ -101,12 +101,6 @@ class SubOrderResource extends Resource
                     ->money('lyd', locale: 'en')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('total_discounts')
-                    ->label(__('filament/resources.sub_order.schema.total_discounts'))
-                    ->money('lyd', locale: 'en')
-                    ->color(fn($state) => $state != 0 ? 'danger' : null)
-                    ->sortable(),
-
                 // Tables\Columns\IconColumn::make('is_picked_up')
                 //     ->label(__('filament/resources.sub_order.schema.is_picked_up'))
                 //     ->boolean(),

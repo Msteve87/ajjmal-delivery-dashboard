@@ -217,48 +217,7 @@ class OrderService
                 ->merge($awaitingCashOnDeliveryValidation)
                 ->merge($awaitingPaymentOnDeliveryValidation);
 
-            $orderReferences = Order::whereHas('orderStatus', function ($query) {
-                $query->where('name', '!=', 'pending');
-            })->pluck('reference');
-
-            $mergedItems = collect($items)
-                ->groupBy('reference')
-                ->filter(function ($group, $reference) use ($orderReferences) {
-                    return !$orderReferences->contains($reference);
-                })
-                ->map(function ($group) {
-                    return [
-                        'delivery_date' => $group->first()['delivery_date'] ?? null,
-                        'start_time' => $group->first()['start_time'] ?? null,
-                        'end_time' => $group->first()['end_time'] ?? null,
-                        'id_order' => $group->first()['id_order'],
-                        'reference' => $group->first()['reference'],
-                        'payment' => $group->first()['payment'],
-                        'total_paid' => $group->sum('total_paid'),
-                        'total_shipping' => $group->max()['total_shipping'],
-                        'total_discounts' => $group->max()['total_discounts'],
-                        'current_state_name' => $group->first()['current_state_name'],
-                        'address' => $group->first()['customer']['address'],
-                        'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
-                        'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                        'latitude' => $group->first()['location']['latitude'] ?? null,
-                        'longitude' => $group->first()['location']['longitude'] ?? null,
-                        'products' => $group->map(function ($item) {
-                            return array_map(function ($product) use ($item) {
-                                $product['details']['description'] = sanitize_html_string($product['details']['description']);
-                                $product['jm_order_id'] = $item['id_order'];
-                                $product['current_state_name'] = $item['current_state_name'];
-                                $product['details']['price'] = $product['price_now'];
-                                return $product;
-                            }, $item['products']);
-                        })->flatten(1)->toArray(),
-                        'items' => $group->sum(function ($item) {
-                            return count($item['products']);
-                        }),
-                    ];
-                })
-                ->values()
-                ->toArray();
+            $mergedItems = $this->getMeargedItems($items);
 
             DB::transaction(function () use ($mergedItems, $items) {
                 foreach ($mergedItems as $item) {
@@ -395,4 +354,51 @@ class OrderService
         return $stats;
     }
 
+    public function getMeargedItems($items)
+    {
+        $orderReferences = Order::whereHas('orderStatus', function ($query) {
+            $query->where('name', '!=', 'pending');
+        })->pluck('reference');
+
+        $mergedItems = collect($items)
+            ->groupBy('reference')
+            ->filter(function ($group, $reference) use ($orderReferences) {
+                return !$orderReferences->contains($reference);
+            })
+            ->map(function ($group) {
+                return [
+                    'delivery_date' => $group->first()['delivery_date'] ?? null,
+                    'start_time' => $group->first()['start_time'] ?? null,
+                    'end_time' => $group->first()['end_time'] ?? null,
+                    'id_order' => $group->first()['id_order'],
+                    'reference' => $group->first()['reference'],
+                    'payment' => $group->first()['payment'],
+                    'total_paid' => $group->sum('total_paid'),
+                    'total_shipping' => $group->max()['total_shipping'],
+                    'total_discounts' => $group->max()['total_discounts'],
+                    'current_state_name' => $group->first()['current_state_name'],
+                    'address' => $group->first()['customer']['address'],
+                    'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
+                    'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
+                    'latitude' => $group->first()['location']['latitude'] ?? null,
+                    'longitude' => $group->first()['location']['longitude'] ?? null,
+                    'products' => $group->map(function ($item) {
+                        return array_map(function ($product) use ($item) {
+                            $product['details']['description'] = sanitize_html_string($product['details']['description']);
+                            $product['jm_order_id'] = $item['id_order'];
+                            $product['current_state_name'] = $item['current_state_name'];
+                            $product['details']['price'] = $product['price_now'];
+                            return $product;
+                        }, $item['products']);
+                    })->flatten(1)->toArray(),
+                    'items' => $group->sum(function ($item) {
+                        return count($item['products']);
+                    }),
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        return $mergedItems;
+    }
 }

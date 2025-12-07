@@ -13,10 +13,10 @@ return new class extends Migration {
         Schema::create('sub_orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tracking_id')->unique();
-            $table->decimal('base_price');
-            $table->decimal('total');
-            $table->decimal('shipping_price');
-            $table->decimal('total_discounts')->default(0);
+            $table->decimal('base_price', 10, 2)->unsigned();
+            $table->decimal('total', 10, 2)->unsigned();
+            $table->decimal('shipping_price', 10, 2)->unsigned();
+            $table->decimal('total_discounts', 10, 2)->default(0)->unsigned();
             $table->json('products')->nullable();
             $table->foreignId('sub_order_status_id')->constrained('sub_order_statuses');
             $table->foreignId('order_id')->constrained('orders');

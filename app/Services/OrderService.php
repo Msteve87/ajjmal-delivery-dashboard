@@ -305,7 +305,7 @@ class OrderService
 
                 $subOrder?->update([
                     'total' => $item['total_paid'],
-                    'base_price' => $item['total_paid'] - $item['total_shipping'],
+                    'base_price' => max(0, $item['total_paid'] - $item['total_shipping']),
                     'shipping_price' => $item['total_shipping'],
                     'total_discounts' => $item['total_discounts'],
                     // 'products' => $item['products'],

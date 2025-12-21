@@ -43,12 +43,15 @@ class LocalRateResource extends Resource
                             ->label('Home Delivery Rate')
                             ->numeric()
                             ->prefix('LYD')
-                            ->required(),
+                            ->required()
+                            ->maxValue(50),
+
                         Forms\Components\TextInput::make('locker_rate')
                             ->label('Smart Locker Rate')
                             ->numeric()
                             ->prefix('LYD')
-                            ->required(),
+                            ->required()
+                            ->maxValue(50),
                     ])
                     ->columns(2),
             ]);
@@ -59,20 +62,20 @@ class LocalRateResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('areas')
-                    ->label('Areas')
+                    ->label(__('filament/resources.local-rate.columns.areas'))
                     ->badge()
                     ->separator(',')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('home_rate')
-                    ->label('Home Rate')
-                    ->money('LYD')
+                    ->label(__('filament/resources.local-rate.columns.home_rate'))
+                    ->money('LYD', locale: 'en')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('locker_rate')
-                    ->label('Locker Rate')
-                    ->money('LYD')
+                    ->label(__('filament/resources.local-rate.columns.locker_rate'))
+                    ->money('LYD', locale: 'en')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Last Updated')
+                    ->label(__('filament/resources.local-rate.columns.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

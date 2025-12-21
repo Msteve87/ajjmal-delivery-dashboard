@@ -163,5 +163,22 @@ return [
             'created_at' => 'Created At',
         ],
         'view-page' => 'View settled orders'
-    ]
+    ],
+    'local-rate' => [
+        'label' => 'Local Rate',
+        'plural_label' => 'Local Rates',
+        'schema' => [
+            'id' => 'Id',
+            'areas' => 'Areas',
+            'home_rate' => 'Home Rate',
+            'locker_rate' => 'Locker Rate',
+            'created_at' => 'Created At',
+        ],
+        'columns' => [
+            'areas' => 'Areas',
+            'home_rate' => 'Home Rate',
+            'locker_rate' => 'Locker Rate',
+            'created_at' => 'Created At',
+        ],
+    ],
 ];

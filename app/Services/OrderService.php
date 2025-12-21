@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\Order;
-use App\Models\SubOrder;
 use App\Models\OrderStatus;
-use Illuminate\Support\Facades\DB;
+use App\Models\SubOrder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -27,16 +26,32 @@ class OrderService
         $params = [
             'state' => $status,
             'order' => 'desc',
-            'limit' => '1000'
+            'limit' => '1000',
         ];
 
-        $response = Http::get(env('JM_API_URL_STANDALONE') . '/delivery', $params);
+        $response = Http::withHeader('Content-Type', 'application/json')
+            ->withOptions([
+                'verify' => false,
+            ])->get(env('JM_API_URL_STANDALONE') . '/delivery', $params);
 
-        if ($response->successful()) {
-            return $response->json()['data'];
-        } else {
-            throw new \Exception('Error while fetching JM orders by status');
+        $raw = $response->body();
+
+        $start = strpos($raw, '{');
+
+        if ($start === false) {
+            throw new \Exception('No JSON object found in response');
         }
+
+        $cleanJson = substr($raw, $start);
+
+        $data = json_decode($cleanJson, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception(json_last_error_msg());
+        }
+
+        return $data['data'] ?? [];
+
     }
 
     public function getJmOrders()
@@ -58,38 +73,38 @@ class OrderService
         $mergedItems = collect($items)
             ->groupBy('reference')
             ->filter(function ($group, $reference) use ($orderReferences) {
-                return !$orderReferences->contains($reference);
+                return ! $orderReferences->contains($reference);
             })
             ->map(function ($group) {
                 return [
-                    'delivery_date' => $group->first()['delivery_date'] ?? null,
-                    'start_time' => $group->first()['start_time'] ?? null,
-                    'end_time' => $group->first()['end_time'] ?? null,
-                    'reference' => $group->first()['reference'],
-                    'payment_method' => $group->first()['payment'],
-                    'total_paid' => number_format((float) $group->sum('total_paid'), 2, '.', ''),
-                    'total_shipping' => number_format((float) $group->max('total_shipping'), 2, '.', ''),
-                    'total_discounts' => number_format((float) $group->max('total_discounts'), 2, '.', ''),
-                    'status' => 'pending',
-                    'status_ar' => 'جديدة',
+                    'delivery_date'      => $group->first()['delivery_date'] ?? null,
+                    'start_time'         => $group->first()['start_time'] ?? null,
+                    'end_time'           => $group->first()['end_time'] ?? null,
+                    'reference'          => $group->first()['reference'],
+                    'payment_method'     => $group->first()['payment'],
+                    'total_paid'         => number_format((float) $group->sum('total_paid'), 2, '.', ''),
+                    'total_shipping'     => number_format((float) $group->max('total_shipping'), 2, '.', ''),
+                    'total_discounts'    => number_format((float) $group->max('total_discounts'), 2, '.', ''),
+                    'status'             => 'pending',
+                    'status_ar'          => 'جديدة',
                     'current_state_name' => $group->first()['current_state_name'],
-                    'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
-                    'address' => $group->first()['customer']['address'],
-                    'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                    'latitude' => $group->first()['location']['latitude'],
-                    'longitude' => $group->first()['location']['longitude'],
-                    'products' => $group->map(function ($item) {
+                    'customer_name'      => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
+                    'address'            => $group->first()['customer']['address'],
+                    'customer_phone'     => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
+                    'latitude'           => $group->first()['location']['latitude'],
+                    'longitude'          => $group->first()['location']['longitude'],
+                    'products'           => $group->map(function ($item) {
                         return array_map(function ($product) use ($item) {
                             $product['details']['description'] = sanitize_html_string($product['details']['description']);
-                            $product['jm_order_id'] = $item['id_order'];
-                            $product['current_state_name'] = $item['current_state_name'];
-                            $product['details']['price'] = $product['price_now'];
+                            $product['jm_order_id']            = $item['id_order'];
+                            $product['current_state_name']     = $item['current_state_name'];
+                            $product['details']['price']       = $product['price_now'];
                             return $product;
 
                         }, $item['products']);
                     })->flatten(1)->toArray(),
 
-                    'items' => $group->sum(function ($item) {
+                    'items'              => $group->sum(function ($item) {
                         return count($item['products']);
                     }),
                 ];
@@ -112,31 +127,31 @@ class OrderService
             ->groupBy('reference')
             ->map(function ($group) {
                 return [
-                    'delivery_date' => $group->first()['delivery_date'] ?? null,
-                    'start_time' => $group->first()['start_time'] ?? null,
-                    'end_time' => $group->first()['end_time'] ?? null,
-                    'id_order' => $group->first()['id_order'],
-                    'reference' => $group->first()['reference'],
-                    'payment' => $group->first()['payment'],
-                    'total_paid' => $group->sum('total_paid'),
-                    'total_shipping' => $group->max()['total_shipping'],
-                    'total_discounts' => number_format((float) $group->max('total_discounts'), 2, '.', ''),
+                    'delivery_date'      => $group->first()['delivery_date'] ?? null,
+                    'start_time'         => $group->first()['start_time'] ?? null,
+                    'end_time'           => $group->first()['end_time'] ?? null,
+                    'id_order'           => $group->first()['id_order'],
+                    'reference'          => $group->first()['reference'],
+                    'payment'            => $group->first()['payment'],
+                    'total_paid'         => $group->sum('total_paid'),
+                    'total_shipping'     => $group->max()['total_shipping'],
+                    'total_discounts'    => number_format((float) $group->max('total_discounts'), 2, '.', ''),
                     'current_state_name' => $group->first()['current_state_name'],
-                    'address' => $group->first()['customer']['address'],
-                    'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
-                    'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                    'latitude' => $group->first()['location']['latitude'],
-                    'longitude' => $group->first()['location']['longitude'],
-                    'products' => $group->map(function ($item) {
+                    'address'            => $group->first()['customer']['address'],
+                    'customer_name'      => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
+                    'customer_phone'     => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
+                    'latitude'           => $group->first()['location']['latitude'],
+                    'longitude'          => $group->first()['location']['longitude'],
+                    'products'           => $group->map(function ($item) {
                         return array_map(function ($product) use ($item) {
                             $product['details']['description'] = sanitize_html_string($product['details']['description']);
-                            $product['jm_order_id'] = $item['id_order'];
-                            $product['current_state_name'] = $item['current_state_name'];
-                            $product['details']['price'] = $product['price_now'];
+                            $product['jm_order_id']            = $item['id_order'];
+                            $product['current_state_name']     = $item['current_state_name'];
+                            $product['details']['price']       = $product['price_now'];
                             return $product;
                         }, $item['products']);
                     })->flatten(1)->toArray(),
-                    'items' => $group->sum(function ($item) {
+                    'items'              => $group->sum(function ($item) {
                         return count($item['products']);
                     }),
                 ];
@@ -154,30 +169,30 @@ class OrderService
 
             $existingOrder = Order::where('reference', $item['reference'])->first();
 
-            if (!empty($item['latitude']) && !empty($item['longitude'])) {
+            if (! empty($item['latitude']) && ! empty($item['longitude'])) {
                 $location = \App\Models\Location::create([
-                    'latitude' => $item['latitude'],
+                    'latitude'  => $item['latitude'],
                     'longitude' => $item['longitude'],
                 ]);
             }
 
-            if (!$existingOrder) {
+            if (! $existingOrder) {
                 $order = Order::create([
-                    'reference' => $item['reference'],
-                    'price' => $item['total_paid'] - $item['total_shipping'],
-                    'total_paid' => $item['total_paid'],
-                    'total_shipping' => $item['total_shipping'],
+                    'reference'       => $item['reference'],
+                    'price'           => $item['total_paid'] - $item['total_shipping'],
+                    'total_paid'      => $item['total_paid'],
+                    'total_shipping'  => $item['total_shipping'],
                     'total_discounts' => $item['total_discounts'],
-                    'payment_method' => $item['payment'],
+                    'payment_method'  => $item['payment'],
                     'order_status_id' => 1,
-                    'items' => $item['items'],
-                    'address' => $item['address'],
-                    'customer_name' => $item['customer_name'],
-                    'customer_phone' => $item['customer_phone'],
-                    'products' => $item['products'],
-                    'start_time' => empty($item['start_time']) ? null : $item['start_time'],
-                    'end_time' => empty($item['end_time']) ? null : $item['end_time'],
-                    'location_id' => $location->id ?? null,
+                    'items'           => $item['items'],
+                    'address'         => $item['address'],
+                    'customer_name'   => $item['customer_name'],
+                    'customer_phone'  => $item['customer_phone'],
+                    'products'        => $item['products'],
+                    'start_time'      => empty($item['start_time']) ? null : $item['start_time'],
+                    'end_time'        => empty($item['end_time']) ? null : $item['end_time'],
+                    'location_id'     => $location->id ?? null,
                 ]);
             } else {
                 $order = $existingOrder;
@@ -191,7 +206,6 @@ class OrderService
                 ->toArray();
 
             $this->subOrderService->storeSubOrders($order, $subOrders);
-
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -223,31 +237,31 @@ class OrderService
                 foreach ($mergedItems as $item) {
                     $existingOrder = Order::where('reference', $item['reference'])->first();
 
-                    if (!empty($item['latitude']) && !empty($item['longitude'])) {
+                    if (! empty($item['latitude']) && ! empty($item['longitude'])) {
                         $location = \App\Models\Location::create([
-                            'latitude' => $item['latitude'],
+                            'latitude'  => $item['latitude'],
                             'longitude' => $item['longitude'],
                         ]);
                     }
 
-                    if (!$existingOrder) {
+                    if (! $existingOrder) {
                         $order = Order::create([
-                            'delivery_date' => $item['delivery_date'],
-                            'reference' => $item['reference'],
-                            'price' => $item['total_paid'] - $item['total_shipping'],
-                            'total_paid' => $item['total_paid'],
-                            'total_shipping' => $item['total_shipping'],
+                            'delivery_date'   => $item['delivery_date'],
+                            'reference'       => $item['reference'],
+                            'price'           => $item['total_paid'] - $item['total_shipping'],
+                            'total_paid'      => $item['total_paid'],
+                            'total_shipping'  => $item['total_shipping'],
                             'total_discounts' => $item['total_discounts'],
-                            'payment_method' => $item['payment'],
+                            'payment_method'  => $item['payment'],
                             'order_status_id' => 1,
-                            'items' => $item['items'],
-                            'address' => $item['address'],
-                            'customer_name' => $item['customer_name'],
-                            'customer_phone' => $item['customer_phone'],
-                            'products' => $item['products'],
-                            'start_time' => empty($item['start_time']) ? null : $item['start_time'],
-                            'end_time' => empty($item['end_time']) ? null : $item['end_time'],
-                            'location_id' => $location->id ?? null,
+                            'items'           => $item['items'],
+                            'address'         => $item['address'],
+                            'customer_name'   => $item['customer_name'],
+                            'customer_phone'  => $item['customer_phone'],
+                            'products'        => $item['products'],
+                            'start_time'      => empty($item['start_time']) ? null : $item['start_time'],
+                            'end_time'        => empty($item['end_time']) ? null : $item['end_time'],
+                            'location_id'     => $location->id ?? null,
                         ]);
                     } else {
                         $order = $existingOrder;
@@ -272,31 +286,32 @@ class OrderService
     {
         return Order::create(
             [
-                'reference' => $data['reference'],
-                'price' => $data['total_paid'] - $data['total_shipping'],
-                'total_paid' => $data['total_paid'],
-                'total_shipping' => $data['total_shipping'],
+                'reference'       => $data['reference'],
+                'price'           => $data['total_paid'] - $data['total_shipping'],
+                'total_paid'      => $data['total_paid'],
+                'total_shipping'  => $data['total_shipping'],
                 'total_discounts' => $data['total_discounts'],
-                'payment_method' => $data['payment'],
+                'payment_method'  => $data['payment'],
                 'order_status_id' => OrderStatus::where('slug', 'awaiting')->first()->id,
-                'items' => $data['items'],
-                'address' => $data['address'],
-                'customer_name' => $data['customer_name'],
-                'customer_phone' => $data['customer_phone'],
-                'products' => $data['products'],
-                'driver_id' => Auth::id(),
-                'delivery_date' => $data['delivery_date'],
-                'start_time' => empty($data['start_time']) ? null : $data['start_time'],
-                'end_time' => empty($data['end_time']) ? null : $data['end_time'],
-                'location_id' => $data['location_id'],
+                'items'           => $data['items'],
+                'address'         => $data['address'],
+                'customer_name'   => $data['customer_name'],
+                'customer_phone'  => $data['customer_phone'],
+                'products'        => $data['products'],
+                'driver_id'       => Auth::id(),
+                'delivery_date'   => $data['delivery_date'],
+                'start_time'      => empty($data['start_time']) ? null : $data['start_time'],
+                'end_time'        => empty($data['end_time']) ? null : $data['end_time'],
+                'location_id'     => $data['location_id'],
             ]
         );
     }
 
     public function updateJmOrders()
     {
-        $res = Http::get(env('JM_API_URL'), ['route' => 'list']);
-
+        $res = Http::withOptions([
+            'verify' => false,
+        ])->get(env('JM_API_URL'), ['route' => 'list']);
         $items = $res->json()['data'];
 
         try {
@@ -304,14 +319,14 @@ class OrderService
                 $subOrder = SubOrder::where('tracking_id', $item['id_order'])->first();
 
                 $subOrder?->update([
-                    'total' => $item['total_paid'],
-                    'base_price' => max(0, $item['total_paid'] - $item['total_shipping']),
-                    'shipping_price' => $item['total_shipping'],
-                    'total_discounts' => $item['total_discounts'],
+                    'total'               => $item['total_paid'],
+                    'base_price'          => max(0, $item['total_paid'] - $item['total_shipping']),
+                    'shipping_price'      => $item['total_shipping'],
+                    'total_discounts'     => $item['total_discounts'],
                     // 'products' => $item['products'],
                     'sub_order_status_id' => $item['current_state'],
-                    'date_add' => $item['date_add'],
-                    'date_upd' => $item['date_upd'],
+                    'date_add'            => $item['date_add'],
+                    'date_upd'            => $item['date_upd'],
                 ]);
             }
         } catch (\Exception $e) {
@@ -323,10 +338,10 @@ class OrderService
     {
         $response = Http::post(env('JM_API_URL_STANDALONE') . "/delivery/change_state.php", [
             'order_id' => $jmOrderId,
-            'state_id' => $jmStateId
+            'state_id' => $jmStateId,
         ]);
 
-        if (!$response->json()['success'] ?? false) {
+        if (! $response->json()['success'] ?? false) {
             throw new HttpException(400, 'Failed to update JM order');
         }
     }
@@ -336,7 +351,7 @@ class OrderService
         $driverId = Auth::id();
 
         $stats = [
-            'cancelled' => SubOrder::where('driver_id', $driverId)
+            'cancelled'   => SubOrder::where('driver_id', $driverId)
                 ->where('sub_order_status_id', 14)
                 ->where('sub_order_status_id', 15)
                 ->count(),
@@ -345,7 +360,7 @@ class OrderService
                 ->whereIn('sub_order_status_id', ['3', '4', '9', '11', '13', '18', '19'])
                 ->count(),
 
-            'delivered' => SubOrder::where('driver_id', $driverId)
+            'delivered'   => SubOrder::where('driver_id', $driverId)
                 ->unsettled()
                 ->where('sub_order_status_id', '5')
                 ->count(),
@@ -363,35 +378,35 @@ class OrderService
         $mergedItems = collect($items)
             ->groupBy('reference')
             ->filter(function ($group, $reference) use ($orderReferences) {
-                return !$orderReferences->contains($reference);
+                return ! $orderReferences->contains($reference);
             })
             ->map(function ($group) {
                 return [
-                    'delivery_date' => $group->first()['delivery_date'] ?? null,
-                    'start_time' => $group->first()['start_time'] ?? null,
-                    'end_time' => $group->first()['end_time'] ?? null,
-                    'id_order' => $group->first()['id_order'],
-                    'reference' => $group->first()['reference'],
-                    'payment' => $group->first()['payment'],
-                    'total_paid' => $group->sum('total_paid'),
-                    'total_shipping' => $group->max()['total_shipping'],
-                    'total_discounts' => $group->max()['total_discounts'],
+                    'delivery_date'      => $group->first()['delivery_date'] ?? null,
+                    'start_time'         => $group->first()['start_time'] ?? null,
+                    'end_time'           => $group->first()['end_time'] ?? null,
+                    'id_order'           => $group->first()['id_order'],
+                    'reference'          => $group->first()['reference'],
+                    'payment'            => $group->first()['payment'],
+                    'total_paid'         => $group->sum('total_paid'),
+                    'total_shipping'     => $group->max()['total_shipping'],
+                    'total_discounts'    => $group->max()['total_discounts'],
                     'current_state_name' => $group->first()['current_state_name'],
-                    'address' => $group->first()['customer']['address'],
-                    'customer_name' => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
-                    'customer_phone' => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
-                    'latitude' => $group->first()['location']['latitude'] ?? null,
-                    'longitude' => $group->first()['location']['longitude'] ?? null,
-                    'products' => $group->map(function ($item) {
+                    'address'            => $group->first()['customer']['address'],
+                    'customer_name'      => $group->first()['customer']['firstname'] . ' ' . $group->first()['customer']['lastname'],
+                    'customer_phone'     => $group->first()['customer']['phone'] ?? $group->first()['customer']['mobile'],
+                    'latitude'           => $group->first()['location']['latitude'] ?? null,
+                    'longitude'          => $group->first()['location']['longitude'] ?? null,
+                    'products'           => $group->map(function ($item) {
                         return array_map(function ($product) use ($item) {
                             $product['details']['description'] = sanitize_html_string($product['details']['description']);
-                            $product['jm_order_id'] = $item['id_order'];
-                            $product['current_state_name'] = $item['current_state_name'];
-                            $product['details']['price'] = $product['price_now'];
+                            $product['jm_order_id']            = $item['id_order'];
+                            $product['current_state_name']     = $item['current_state_name'];
+                            $product['details']['price']       = $product['price_now'];
                             return $product;
                         }, $item['products']);
                     })->flatten(1)->toArray(),
-                    'items' => $group->sum(function ($item) {
+                    'items'              => $group->sum(function ($item) {
                         return count($item['products']);
                     }),
                 ];

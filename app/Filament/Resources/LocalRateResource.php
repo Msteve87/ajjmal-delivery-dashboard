@@ -32,15 +32,20 @@ class LocalRateResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('Delivery Rate Configuration')
-                    ->description('Set the delivery rate for specific areas.')
+                    ->description('Set the delivery rates for specific areas based on delivery type.')
                     ->schema([
                         Forms\Components\TagsInput::make('areas')
                             ->label('Areas')
                             ->placeholder('Add an area...')
                             ->required()
                             ->columnSpanFull(),
-                        Forms\Components\TextInput::make('rate')
-                            ->label('Delivery Rate')
+                        Forms\Components\TextInput::make('home_rate')
+                            ->label('Home Delivery Rate')
+                            ->numeric()
+                            ->prefix('LYD')
+                            ->required(),
+                        Forms\Components\TextInput::make('locker_rate')
+                            ->label('Smart Locker Rate')
                             ->numeric()
                             ->prefix('LYD')
                             ->required(),
@@ -58,8 +63,12 @@ class LocalRateResource extends Resource
                     ->badge()
                     ->separator(',')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('rate')
-                    ->label('Rate')
+                Tables\Columns\TextColumn::make('home_rate')
+                    ->label('Home Rate')
+                    ->money('LYD')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('locker_rate')
+                    ->label('Locker Rate')
                     ->money('LYD')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')

@@ -10,9 +10,13 @@ class LocalRateSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\LocalRate::create([
-            'areas' => ["طرابلس", "السراج", "جنزور", "الكريمية", "تاجوراء"],
-            'rate'  => 5,
-        ]);
+        \App\Models\LocalRate::updateOrCreate(
+            ['id' => 1],
+            [
+                'areas'       => ["طرابلس", "السراج", "جنزور", "الكريمية", "تاجوراء"],
+                'home_rate'   => 5,
+                'locker_rate' => 2,
+            ]
+        );
     }
 }

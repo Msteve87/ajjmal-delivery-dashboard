@@ -180,5 +180,6 @@ return [
             'locker_rate' => 'Locker Rate',
             'created_at' => 'Created At',
         ],
+        'description' => 'Set the delivery rates for specific areas based on delivery type.',
     ],
 ];

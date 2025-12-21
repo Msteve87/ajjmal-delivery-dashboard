@@ -19,35 +19,35 @@ class LocalRateResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return 'Local Delivery Rate';
+        return __('filament/resources.local-rate.label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Local Delivery Rates';
+        return __('filament/resources.local-rate.plural_label');
     }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Delivery Rate Configuration')
-                    ->description('Set the delivery rates for specific areas based on delivery type.')
+                Forms\Components\Section::make(__('filament/resources.local-rate.config_title'))
+                    ->description(__('filament/resources.local-rate.description'))
                     ->schema([
                         Forms\Components\TagsInput::make('areas')
-                            ->label('Areas')
-                            ->placeholder('Add an area...')
+                            ->label(__('filament/resources.local-rate.schema.areas'))
+                            ->placeholder('أضف منطقة..')
                             ->required()
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('home_rate')
-                            ->label('Home Delivery Rate')
+                            ->label(__('filament/resources.local-rate.schema.home_rate'))
                             ->numeric()
                             ->prefix('LYD')
                             ->required()
                             ->maxValue(50),
 
                         Forms\Components\TextInput::make('locker_rate')
-                            ->label('Smart Locker Rate')
+                            ->label(__('filament/resources.local-rate.schema.locker_rate'))
                             ->numeric()
                             ->prefix('LYD')
                             ->required()

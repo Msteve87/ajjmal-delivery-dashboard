@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\V1\DeviceTokenController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\SubOrderController;
-use App\Http\Controllers\Api\V1\OrderStatusController;
 use App\Http\Controllers\Api\V1\Driver\OrderController;
+use App\Http\Controllers\Api\V1\LocalRateController;
+use App\Http\Controllers\Api\V1\OrderStatusController;
 use App\Http\Controllers\Api\V1\PaymentMethodController;
+use App\Http\Controllers\Api\V1\SubOrderController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')
     ->group(function () {
@@ -23,7 +23,6 @@ Route::middleware('auth:sanctum')
 
         Route::controller(SubOrderController::class)
             ->group(function () {
-
                 Route::get('/sub-orders/{trackingId}/show', 'showByTrackingId');
                 Route::get('/sub-orders/{trackingId}/accept-sub-order', 'acceptSubOrder');
                 Route::post('/sub-orders/update/{trackingId}', 'updateSubOrderStatus');
@@ -40,5 +39,10 @@ Route::middleware('auth:sanctum')
         Route::controller(PaymentMethodController::class)
             ->group(function () {
                 Route::get('/payment-methods/list', [PaymentMethodController::class, 'index']);
+            });
+
+        Route::controller(LocalRateController::class)
+            ->group(function () {
+                Route::get('/local-rates/list', 'index')->withoutMiddleware('auth:sanctum');
             });
     });

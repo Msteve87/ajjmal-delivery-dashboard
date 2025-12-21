@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
@@ -12,20 +11,21 @@ class AjjmalMarketApiService
 
     public function __construct()
     {
-        $this->ajjmalBaseUrl = config('services.api_url');
+        $this->ajjmalBaseUrl       = config('services.api_url');
         $this->ajjmalStandaloneUrl = config('services.ajjmal.standalone_url') . '/delivery';
     }
 
     public function getNewOrders()
     {
         $params = [
-            'state' => 'Processing in Progress',
+            'state'   => 'Processing in Progress',
             'sort_by' => 'total_paid',
-            'order' => 'desc',
+            'order'   => 'desc',
         ];
 
-        $response = Http::get($this->ajjmalStandaloneUrl, $params);
-
+        $response = Http::withOptions([
+            'verify' => false,
+        ])->get($this->ajjmalStandaloneUrl, $params);
 
         if ($response->json()['success']) {
             return $response->json()['data'];
@@ -38,7 +38,7 @@ class AjjmalMarketApiService
     {
         $params = [
             'sort_by' => 'total_paid',
-            'order' => 'desc',
+            'order'   => 'desc',
         ];
 
         $response = Http::get($this->ajjmalStandaloneUrl, $params);
@@ -66,9 +66,9 @@ class AjjmalMarketApiService
     public function getJmOrderById($id)
     {
         $params = [
-            'state' => 'Processing in Progress',
+            'state'   => 'Processing in Progress',
             'sort_by' => 'total_paid',
-            'order' => 'desc',
+            'order'   => 'desc',
         ];
 
         $response = Http::get($this->ajjmalStandaloneUrl, $params);

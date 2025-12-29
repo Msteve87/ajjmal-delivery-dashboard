@@ -57,6 +57,11 @@ class LocalRateResource extends Resource
             ]);
     }
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasPermissionTo('edit.rates');
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -84,11 +89,13 @@ class LocalRateResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn() => auth()->user()->hasPermissionTo('edit.rates')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(fn() => auth()->user()->hasPermissionTo('edit.rates')),
                 ]),
             ]);
     }

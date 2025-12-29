@@ -1,11 +1,8 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PermissionSeeder extends Seeder
 {
@@ -14,25 +11,29 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('permissions')->insert([
-            ['name' => 'assign.permission', 'guard_name' => 'sanctum'],
-            ['name' => 'add.settlement', 'guard_name' => 'sanctum'],
-            ['name' => 'browse.activity_log', 'guard_name' => 'sanctum'],
-            ['name' => 'browse.order', 'guard_name' => 'sanctum'],
-            ['name' => 'add.user', 'guard_name' => 'sanctum'],
-            ['name' => 'edit.user', 'guard_name' => 'sanctum'],
-            ['name' => 'delete.user', 'guard_name' => 'sanctum'],
-            ['name' => 'browse.user', 'guard_name' => 'sanctum'],
+        $permissions = [
+            'assign.permission',
+            'add.settlement',
+            'browse.activity_log',
+            'browse.order',
+            'add.user',
+            'edit.user',
+            'delete.user',
+            'browse.user',
+            'add.driver',
+            'edit.driver',
+            'view.driver',
+            'browse.driver',
+            'update.order.status',
+            'browse.own_activity_log',
+            'assign.delivery.tasks',
+            'edit.rates',
+        ];
 
-            ['name' => 'add.driver', 'guard_name' => 'sanctum'],
-            ['name' => 'edit.driver', 'guard_name' => 'sanctum'],
-            ['name' => 'view.driver', 'guard_name' => 'sanctum'],
-            ['name' => 'browse.driver', 'guard_name' => 'sanctum'],
-
-            ['name' => 'update.order.status', 'guard_name' => 'sanctum'],
-            ['name' => 'browse.user', 'guard_name' => 'sanctum'],
-            ['name' => 'browse.own_activity_log', 'guard_name' => 'sanctum'],
-            ['name' => 'assign.delivery.tasks', 'guard_name' => 'sanctum']
-        ]);
+        foreach ($permissions as $name) {
+            Permission::firstOrCreate(
+                ['name' => $name, 'guard_name' => 'sanctum']
+            );
+        }
     }
 }

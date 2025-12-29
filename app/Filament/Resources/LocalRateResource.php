@@ -44,14 +44,14 @@ class LocalRateResource extends Resource
                             ->numeric()
                             ->prefix('LYD')
                             ->required()
-                            ->maxValue(50),
+                            ->maxValue(config('rates.max_rate')),
 
                         Forms\Components\TextInput::make('locker_rate')
                             ->label(__('filament/resources.local-rate.schema.locker_rate'))
                             ->numeric()
                             ->prefix('LYD')
                             ->required()
-                            ->maxValue(50),
+                            ->maxValue(config('rates.max_rate')),
                     ])
                     ->columns(2),
             ]);

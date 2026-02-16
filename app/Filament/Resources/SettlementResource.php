@@ -89,9 +89,11 @@ class SettlementResource extends Resource
 
                         $subOrders = SubOrder::where('settlement_id', $record->id)->get();
 
-                        $fileName = 'driver_' . $record->id . '_suborders_' . now()->format('Ymd_His') . '.pdf';
+                        //$fileName = 'driver_' . $record->id . '_suborders_' . now()->format('Ymd_His') . '.pdf';
 
-                        return Excel::download(new DriverSubOrdersExport($subOrders), $fileName, \Maatwebsite\Excel\Excel::MPDF);
+                        //return Excel::download(new DriverSubOrdersExport($subOrders), $fileName, \Maatwebsite\Excel\Excel::MPDF);
+
+                        return Excel::download(new DriverSubOrdersExport($subOrders),'settelemnts.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 
                     })
                     ->color('success')

@@ -22,9 +22,9 @@ class DeviceTokenService
 
     public function storeDeviceToken($driverId, $token, $deviceType = null)
     {
-        return DB::table('device_tokens')->updateOrInsert(
+        return (DB::table('device_tokens')->updateOrInsert(
             ['driver_id' => $driverId],
             ['token' => $token, 'device_type' => $deviceType]
-        );
+        ));
     }
 }

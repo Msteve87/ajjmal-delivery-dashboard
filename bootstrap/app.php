@@ -25,6 +25,20 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies([
             '192.168.10.26',
         ]);
+
+        $middleware->appendToGroup('web', [
+            function ($request, $next) {
+                \Log::info('Checking Request Scheme:', [
+                    'scheme' => $request->getScheme(),
+                    'isSecure' => $request->isSecure(),
+                    'secure' => $request->secure(),
+                    'x-forwarded-proto' => $request->header('x-forwarded-proto'),
+                    'remote_addr' => $request->server('REMOTE_ADDR'),
+                ]);
+                return $next($request);
+            }
+        ]);
+
         $middleware->api(prepend: [
             'App\Http\Middleware\ForceJsonResponse::class',
         ]);

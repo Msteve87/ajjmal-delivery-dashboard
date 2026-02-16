@@ -22,9 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->trustProxies([
-            '192.168.10.26',
-        ]);
+        $middleware->trustProxies(at: '*');
 
         $middleware->api(prepend: [
             'App\Http\Middleware\ForceJsonResponse::class',
